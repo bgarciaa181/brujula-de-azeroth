@@ -785,3 +785,97 @@ dialog { overflow-y: auto; }
   .community-card { transition: transform .15s; }
   .community-card:hover { transform: translateY(-3px); }
 }
+
+/* ======================================================
+   Diario de aventuras: libro de pergamino como el del juego
+   ====================================================== */
+.journal { display: grid; gap: 14px; }
+.j-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.j-factions { display: flex; gap: 8px; }
+.j-fac {
+  display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; cursor: pointer;
+  font: inherit; font-family: var(--font-display); font-size: 1.1rem; color: var(--suave);
+  background: var(--panel); border: 1px solid var(--linea); border-radius: 12px;
+}
+.j-fac .wow-icon.lg { width: 40px; height: 40px; }
+.j-fac.alianza { --f: #4a78c8; }
+.j-fac.horda { --f: #c0432f; }
+.j-fac[aria-pressed="true"] { color: var(--texto); border-color: var(--f); background: color-mix(in srgb, var(--f) 22%, var(--panel)); }
+.j-level { flex: 1; min-width: 260px; display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--panel); border: 1px solid var(--linea); border-radius: 12px; }
+.j-level label { font-weight: 700; }
+.j-level input { flex: 1; min-width: 80px; accent-color: var(--oro); }
+.j-level output { font-family: var(--font-display); font-size: 1.8rem; color: var(--oro-claro); min-width: 2ch; text-align: right; }
+.j-step { width: 34px; height: 34px; flex: none; font: inherit; font-size: 1.3rem; line-height: 1; cursor: pointer; color: var(--texto); background: var(--noche-2); border: 1px solid var(--linea); border-radius: 8px; }
+.j-step:hover { border-color: var(--oro); }
+
+/* El libro */
+.j-book {
+  --perg: #ecdcb0; --perg2: #d9c28c; --tinta: #3a2814; --tinta2: #6a4c26; --titulo: #5a2d0c;
+  display: grid; grid-template-columns: 1fr 1fr; border-radius: 10px; overflow: hidden;
+  box-shadow: 0 0 0 3px #5b3a1a, 0 0 0 5px #2a1a0a, 0 0 0 7px var(--oro-osc), 0 18px 40px rgba(0, 0, 0, .6);
+  color: var(--tinta);
+}
+.j-page {
+  min-width: 0; padding: 22px 22px 26px;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, .35), transparent 50%),
+    radial-gradient(ellipse at 80% 90%, rgba(120, 80, 30, .18), transparent 55%),
+    linear-gradient(180deg, var(--perg), var(--perg2));
+}
+.j-left { box-shadow: inset -18px 0 24px -16px rgba(60, 35, 10, .55); }
+.j-right { box-shadow: inset 18px 0 24px -16px rgba(60, 35, 10, .55); }
+.j-title { font-family: var(--font-display); font-size: 1.9rem; color: var(--titulo); }
+.j-sub { font-family: var(--font-quote); font-style: italic; color: var(--tinta2); margin-bottom: 10px; }
+.j-head {
+  display: flex; align-items: center; gap: 8px; margin: 16px 0 6px;
+  font-family: var(--font-display); font-size: 1.15rem; color: var(--titulo);
+  border-bottom: 1px solid rgba(90, 45, 12, .3); padding-bottom: 4px;
+}
+.j-head.soon { color: var(--tinta2); }
+.mark {
+  display: inline-grid; place-items: center; width: 22px; height: 26px; flex: none;
+  font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; color: #ffd200;
+  text-shadow: 0 0 2px #000, 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+.j-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.j-goal { display: flex; align-items: center; gap: 10px; }
+.j-goal > span:nth-child(2) { display: grid; min-width: 0; flex: 1; }
+.j-goal b { font-weight: 700; color: var(--tinta); }
+.j-goal small { font-size: .8rem; color: var(--tinta2); }
+.j-goal .wow-icon.sm, .j-goal .pet-icon { width: 28px; height: 28px; box-shadow: 0 0 0 1.5px #5b3a1a; }
+.j-goal .pet-icon { border-radius: 5px; }
+.j-dot { width: 12px; height: 12px; border-radius: 50%; flex: none; margin: 0 8px; background: #b8860b; box-shadow: 0 0 0 2px rgba(90, 45, 12, .4); }
+.j-dot.soon { background: transparent; border: 2px solid var(--tinta2); box-shadow: none; }
+.j-list.soon b { color: var(--tinta2); font-weight: 500; }
+.j-changed { font-size: .66rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--tinta2); border: 1px solid rgba(90, 45, 12, .4); border-radius: 4px; padding: 1px 5px; }
+
+/* Ruta */
+.j-route { display: grid; gap: 2px; max-height: 520px; overflow-y: auto; padding-right: 4px; overscroll-behavior: contain; }
+.j-zone {
+  display: grid; grid-template-columns: 52px minmax(0, 1fr); grid-template-rows: auto 6px; column-gap: 8px; row-gap: 3px;
+  align-items: center; text-align: left; padding: 6px 8px; cursor: pointer;
+  font: inherit; color: var(--tinta); background: none; border: none; border-radius: 6px;
+}
+.j-zone:hover { background: rgba(90, 45, 12, .1); }
+.j-zlv { grid-row: span 2; font-family: var(--font-display); font-size: .95rem; color: var(--tinta2); font-variant-numeric: tabular-nums; }
+.j-zname { font-size: .92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.j-zbar { position: relative; height: 6px; border-radius: 99px; background: rgba(90, 45, 12, .15); }
+.j-zbar i { position: absolute; top: 0; bottom: 0; border-radius: 99px; background: rgba(90, 45, 12, .35); }
+.j-zbar b { position: absolute; top: -3px; width: 2px; height: 12px; background: #8b1a1a; }
+.j-zone.done { opacity: .45; }
+.j-zone.done .j-zname { text-decoration: line-through; }
+.j-zone.now { background: rgba(184, 134, 11, .22); }
+.j-zone.now .j-zname { font-weight: 700; }
+.j-zone.now .j-zbar i { background: #b8860b; }
+.j-foot { margin-top: 10px; font-size: .78rem; font-style: italic; color: var(--tinta2); }
+.j-book .new-badge { background: #8b1a1a; color: #fff3d6; }
+
+@media (max-width: 760px) {
+  .j-book { grid-template-columns: 1fr; }
+  .j-left, .j-right { box-shadow: none; }
+  .j-right { border-top: 2px dashed rgba(90, 45, 12, .35); }
+  .j-route { max-height: 380px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .j-goal { animation: subir .3s ease-out backwards; }
+}

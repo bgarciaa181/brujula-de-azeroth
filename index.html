@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=11">
+<link rel="stylesheet" href="css/estilos.css?v=12">
 
 </head>
 <body>
@@ -75,6 +75,29 @@
 
 <main>
   <div class="wrap">
+    <section id="diario">
+      <div class="section-head">
+        <h2>Diario de aventuras</h2>
+        <p>Dime tu facción y tu nivel. Te digo qué hacer.</p>
+      </div>
+      <div class="journal">
+        <div class="j-controls">
+          <div class="j-factions" id="j-factions"></div>
+          <div class="j-level">
+            <label for="j-lvl">Nivel</label>
+            <button type="button" class="j-step" id="j-minus" aria-label="Bajar nivel">−</button>
+            <input type="range" id="j-lvl" min="1" max="60" value="1">
+            <button type="button" class="j-step" id="j-plus" aria-label="Subir nivel">+</button>
+            <output id="j-lvl-out" for="j-lvl">1</output>
+          </div>
+        </div>
+        <div class="j-book">
+          <div class="j-page j-left" id="j-now"></div>
+          <div class="j-page j-right" id="j-route"></div>
+        </div>
+      </div>
+    </section>
+
     <section id="clases">
       <div class="section-head">
         <h2>Las clases</h2>
@@ -347,8 +370,8 @@
 
 <dialog id="detail" aria-labelledby="d-name"></dialog>
 
-<script src="js/datos.js?v=11"></script>
-<script src="js/talentos-datos.js?v=11"></script>
-<script src="js/app.js?v=11"></script>
+<script src="js/datos.js?v=12"></script>
+<script src="js/talentos-datos.js?v=12"></script>
+<script src="js/app.js?v=12"></script>
 </body>
 </html>

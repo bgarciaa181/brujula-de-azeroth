@@ -180,6 +180,122 @@ function pintarTest() {
   }
 }
 
+// ---------- DIARIO DE AVENTURAS ----------
+const diario = { faccion: "alianza", nivel: 1 };
+try {
+  diario.faccion = localStorage.getItem("diario-faccion") || "alianza";
+  diario.nivel = parseInt(localStorage.getItem("diario-nivel"), 10) || 1;
+} catch (e) {}
+
+function zonasDeFaccion() {
+  return ZONAS.filter(z => z[3] === "ambas" || z[3] === diario.faccion);
+}
+
+function lineaObjetivo(icono, titulo, detalle, extra = "") {
+  return `<li class="j-goal">${icono}<span><b>${titulo}</b>${detalle ? `<small>${detalle}</small>` : ""}</span>${extra}</li>`;
+}
+
+function pintarDiario() {
+  const n = diario.nivel;
+  document.getElementById("j-lvl").value = n;
+  document.getElementById("j-lvl-out").textContent = n;
+  try {
+    localStorage.setItem("diario-faccion", diario.faccion);
+    localStorage.setItem("diario-nivel", n);
+  } catch (e) {}
+
+  // Facciones
+  const fac = document.getElementById("j-factions");
+  fac.innerHTML = "";
+  for (const [id, nombre] of [["alianza", "Alianza"], ["horda", "Horda"]]) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "j-fac " + id;
+    b.setAttribute("aria-pressed", String(diario.faccion === id));
+    b.innerHTML = `${iconoFaccion(id, "lg")}<span>${nombre}</span>`;
+    b.addEventListener("click", () => { diario.faccion = id; pintarDiario(); });
+    fac.appendChild(b);
+  }
+
+  // Página izquierda: qué hacer ahora
+  const zonas = zonasDeFaccion().filter(z => z[1] <= n && n <= z[2]);
+  const mazmorras = MAZMORRAS.filter(m => m[1] <= n && n <= m[2]);
+  const mascotas = MASCOTAS.filter(m => m[2] <= n && m[2] >= n - 6);
+  const proximas = zonasDeFaccion().filter(z => z[1] > n && z[1] <= n + 6);
+  const raids = n === 60 ? RAIDS : [];
+
+  let html = `<h3 class="j-title">Nivel ${n}</h3><p class="j-sub">${diario.faccion === "alianza" ? "Alianza" : "Horda"} · lo que te toca ahora</p>`;
+
+  html += `<h4 class="j-head"><span class="mark">!</span> Ve a estas zonas</h4><ul class="j-list">`;
+  html += zonas.length
+    ? zonas.map(z => lineaObjetivo(
+        '<span class="j-dot zone"></span>',
+        z[0],
+        `${z[1]}–${z[2]} · ${z[5]}`,
+        ZONAS_NUEVAS.includes(z[0]) ? '<span class="new-badge">Nueva</span>' : (z[4] ? '<span class="j-changed">Cambiada</span>' : ""))).join("")
+    : lineaObjetivo('<span class="j-dot zone"></span>', "Sin zonas para este nivel", "");
+  html += `</ul>`;
+
+  if (mazmorras.length) {
+    html += `<h4 class="j-head"><span class="mark">!</span> Mazmorras con grupo</h4><ul class="j-list">`;
+    html += mazmorras.map(m => lineaObjetivo(iconoWow("achievement_dungeon_classicdungeonmaster", "sm"), m[0], `${m[1]}–${m[2]} · ${m[3]}`, m[4] ? '<span class="new-badge">Nueva</span>' : "")).join("");
+    html += `</ul>`;
+  }
+
+  if (raids.length) {
+    html += `<h4 class="j-head"><span class="mark">!</span> Raids</h4><ul class="j-list">`;
+    html += raids.map(r => lineaObjetivo(r.icono ? iconoWow(r.icono, "sm") : '<span class="wow-icon sm unknown">?</span>', r.nombre, `${r.jugadores} jugadores · 9 de diciembre`)).join("");
+    html += `</ul>`;
+  }
+
+  if (mascotas.length) {
+    html += `<h4 class="j-head"><span class="mark">?</span> Si eres cazador, doma</h4><ul class="j-list">`;
+    html += mascotas.map(m => lineaObjetivo(iconoFamilia(m[1]), m[0], `${m[1]} nv ${m[2]} · ${m[3]}`)).join("");
+    html += `</ul>`;
+  }
+
+  if (proximas.length) {
+    html += `<h4 class="j-head soon">Pronto</h4><ul class="j-list soon">`;
+    html += proximas.map(z => lineaObjetivo('<span class="j-dot soon"></span>', z[0], `desde nivel ${z[1]}`)).join("");
+    html += `</ul>`;
+  }
+  document.getElementById("j-now").innerHTML = html;
+
+  // Página derecha: la ruta completa del 1 al 60
+  const ruta = zonasDeFaccion().slice().sort((a, b) => a[1] - b[1] || a[2] - b[2]);
+  document.getElementById("j-route").innerHTML = `
+    <h3 class="j-title">Ruta 1–60</h3>
+    <p class="j-sub">Toca una zona para saltar a su nivel</p>
+    <div class="j-route">
+      ${ruta.map(z => {
+        const estado = n > z[2] ? "done" : (z[1] <= n ? "now" : "");
+        return `<button type="button" class="j-zone ${estado}" data-lvl="${z[1]}">
+          <span class="j-zlv">${z[1]}–${z[2]}</span>
+          <span class="j-zname">${z[0]}${ZONAS_NUEVAS.includes(z[0]) ? " ★" : ""}</span>
+          <span class="j-zbar"><i style="left:${(z[1] - 1) / 59 * 100}%;width:${(z[2] - z[1]) / 59 * 100}%"></i><b style="left:${(n - 1) / 59 * 100}%"></b></span>
+        </button>`;
+      }).join("")}
+    </div>
+    <p class="j-foot">★ zona nueva de Forever · Shen'dralas aún no tiene nivel confirmado</p>`;
+  // La ruta se mueve sola hasta la primera zona de tu nivel
+  const lista = document.querySelector(".j-route");
+  const actual = lista.querySelector(".j-zone.now");
+  if (actual) lista.scrollTop = actual.offsetTop - lista.offsetTop - 60;
+
+  document.querySelectorAll(".j-zone").forEach(b => b.addEventListener("click", () => {
+    diario.nivel = parseInt(b.dataset.lvl, 10);
+    pintarDiario();
+  }));
+}
+
+function cambiarNivelDiario(delta) {
+  diario.nivel = Math.min(60, Math.max(1, diario.nivel + delta));
+  pintarDiario();
+}
+document.getElementById("j-lvl").addEventListener("input", e => { diario.nivel = parseInt(e.target.value, 10); pintarDiario(); });
+document.getElementById("j-minus").addEventListener("click", () => cambiarNivelDiario(-1));
+document.getElementById("j-plus").addEventListener("click", () => cambiarNivelDiario(1));
+
 // ---------- PvE / PvP ----------
 let modoJuego = "pve";
 
@@ -685,6 +801,7 @@ function cargarNoticias() {
 
 // ---------- MENÚ DE SECCIONES ----------
 const SECCIONES = [
+  ["diario", "Diario", "inv_misc_map_01"],
   ["clases", "Clases", "classicon_warrior"],
   ["modo", "PvE / PvP", "achievement_pvp_p_250k"],
   ["test", "Test", "inv_misc_dice_01"],
@@ -751,6 +868,14 @@ for (const p of [...PROFESIONES.principales, ...PROFESIONES.secundarias]) {
 }
 for (const m of MAZMORRAS) {
   INDICE.push({ texto: m[0], tipo: `Mazmorra · nivel ${m[1]}–${m[2]}`, icono: iconoWow("achievement_dungeon_classicdungeonmaster", "sm"), ir: () => { cambiarModo("pve"); document.getElementById("dg-lvl").value = m[1]; pintarMazmorras(); irA("modo"); } });
+}
+for (const z of ZONAS) {
+  INDICE.push({ texto: z[0], tipo: `Zona · nivel ${z[1]}–${z[2]}`, icono: iconoWow("inv_misc_map_01", "sm"), ir: () => {
+    if (z[3] !== "ambas") diario.faccion = z[3];
+    diario.nivel = z[1];
+    pintarDiario();
+    irA("diario");
+  } });
 }
 for (const c of CAMPOS_BATALLA) {
   INDICE.push({ texto: c.nombre, tipo: "Campo de batalla · PvP", icono: iconoWow(c.icono, "sm"), ir: () => { cambiarModo("pvp"); irA("modo"); } });
@@ -846,6 +971,7 @@ document.getElementById("hero-classes").innerHTML = CLASSES.map(c =>
 
 pintarMenu();
 seguirScroll();
+pintarDiario();
 pintar();
 pintarTest();
 pintarPersonaje();

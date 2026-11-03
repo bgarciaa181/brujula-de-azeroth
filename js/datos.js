@@ -355,3 +355,54 @@ const CAMPOS_BATALLA = [
   { nombre: "Battle for Gilneas", icono: "achievement_battleground_battleforgilneas", nueva: true, tipo: "" },
   { nombre: "Darkspear Islands", icono: "inv_misc_tournaments_banner_troll", nueva: true, tipo: "" }
 ];
+
+// ---------- ZONAS PARA SUBIR DE NIVEL ----------
+// Fuente: wow-travelcraft.com y mmonster.co (datos de la beta). Shen'dralas aún no tiene nivel confirmado.
+// [nombre, nivel mínimo, nivel máximo, facción ("alianza", "horda" o "ambas"), nueva o cambiada en Forever, continente]
+const ZONAS = [
+  ["Dun Morogh", 1, 10, "alianza", true, "Reinos del Este"],
+  ["Bosque de Elwynn", 1, 10, "alianza", true, "Reinos del Este"],
+  ["Teldrassil", 1, 10, "alianza", false, "Kalimdor"],
+  ["Claros de Tirisfal", 1, 10, "horda", true, "Reinos del Este"],
+  ["Durotar", 1, 10, "horda", false, "Kalimdor"],
+  ["Mulgore", 1, 10, "horda", false, "Kalimdor"],
+  ["Isla Zephras", 1, 12, "ambas", true, "Solo Skyborne"],
+  ["Loch Modan", 10, 20, "alianza", false, "Reinos del Este"],
+  ["Páramos de Poniente", 10, 20, "alianza", false, "Reinos del Este"],
+  ["Costa Oscura", 10, 20, "alianza", false, "Kalimdor"],
+  ["Bosque de Argénteos", 10, 20, "horda", false, "Reinos del Este"],
+  ["Los Baldíos", 10, 25, "horda", false, "Kalimdor"],
+  ["Montañas Crestagrana", 15, 25, "ambas", true, "Reinos del Este"],
+  ["Sierra Espolón", 15, 27, "ambas", false, "Kalimdor"],
+  ["Bosque del Ocaso", 18, 30, "ambas", true, "Reinos del Este"],
+  ["Vallefresno", 18, 30, "ambas", false, "Kalimdor"],
+  ["Laderas de Trabalomas", 20, 30, "ambas", true, "Reinos del Este"],
+  ["Los Humedales", 20, 30, "ambas", true, "Reinos del Este"],
+  ["Las Mil Agujas", 25, 35, "ambas", false, "Kalimdor"],
+  ["Montañas de Alterac", 30, 40, "ambas", true, "Reinos del Este"],
+  ["Tierras Altas de Arathi", 30, 40, "ambas", false, "Reinos del Este"],
+  ["Desolace", 30, 40, "ambas", true, "Kalimdor"],
+  ["Vega de Tuercespina", 30, 45, "ambas", true, "Reinos del Este"],
+  ["Tierras Inhóspitas", 35, 45, "ambas", true, "Reinos del Este"],
+  ["Riverglades", 35, 45, "ambas", true, "Reinos del Este"],
+  ["Pantano de las Penas", 35, 45, "ambas", true, "Reinos del Este"],
+  ["Marjal Revolcafango", 35, 45, "ambas", true, "Kalimdor"],
+  ["Tierras del Interior", 40, 50, "ambas", false, "Reinos del Este"],
+  ["Feralas", 40, 50, "ambas", false, "Kalimdor"],
+  ["Tanaris", 40, 50, "ambas", true, "Kalimdor"],
+  ["La Garganta de Fuego", 43, 50, "ambas", false, "Reinos del Este"],
+  ["Las Tierras Devastadas", 45, 55, "ambas", false, "Reinos del Este"],
+  ["Azshara", 45, 55, "ambas", true, "Kalimdor"],
+  ["Frondavil", 48, 55, "ambas", false, "Kalimdor"],
+  ["Cráter de Un'Goro", 48, 55, "ambas", true, "Kalimdor"],
+  ["Las Estepas Ardientes", 50, 58, "ambas", true, "Reinos del Este"],
+  ["Tierras de la Peste del Oeste", 51, 58, "ambas", false, "Reinos del Este"],
+  ["Tierras de la Peste del Este", 53, 60, "ambas", false, "Reinos del Este"],
+  ["Cuna del Invierno", 53, 60, "ambas", true, "Kalimdor"],
+  ["Paso de la Muerte", 55, 60, "ambas", false, "Reinos del Este"],
+  ["Claro de la Luna", 55, 60, "ambas", false, "Kalimdor"],
+  ["Silithus", 55, 60, "ambas", false, "Kalimdor"],
+  ["Monte Hyjal", 55, 60, "ambas", true, "Kalimdor"]
+];
+// Zonas completamente nuevas de Forever (para marcarlas aparte)
+const ZONAS_NUEVAS = ["Isla Zephras", "Riverglades", "Monte Hyjal"];
