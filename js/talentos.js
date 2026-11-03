@@ -173,7 +173,12 @@ function pintarArboles() {
         if (t.nombre === "?") b.classList.add("hidden-talent");
         b.setAttribute("aria-label", `${t.nombre}, ${p} de ${t.rangos}`);
         b.innerHTML = `${iconoTalento(t)}<span class="rank">${p}/${t.rangos}</span><span class="t-name">${t.nombre}</span>`;
-        b.addEventListener("click", () => ponerPunto(i));
+        b.addEventListener("click", () => {
+          ponerPunto(i);
+          ocultarTooltip();
+        });
+        b.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") mostrarTooltip(i, b); });
+        b.addEventListener("pointerleave", ocultarTooltip);
         filaDiv.appendChild(b);
       });
       arbol.appendChild(filaDiv);
@@ -182,14 +187,48 @@ function pintarArboles() {
   });
 }
 
-function mostrarInfo(indice, motivo) {
+// Texto del tooltip, con los colores del juego
+function textoTooltip(indice) {
   const t = lista[indice];
   const p = puntosEn(indice);
-  document.getElementById("t-info").innerHTML = `
-    <div class="info-head">${iconoTalento(t)}<div><b>${t.nombre}</b><span>${t.nombreArbol} · fila ${t.fila} · ${p}/${t.rangos}</span></div></div>
-    ${t.desc ? `<p class="info-desc">${t.desc}</p>` : ""}
-    ${t.req ? `<p class="info-req">Requisito: ${t.req === "?" ? "un talento que aún no se conoce" : t.req}</p>` : ""}
-    ${motivo ? `<p class="info-block">${motivo}</p>` : ""}`;
+  const motivo = motivoBloqueo(indice);
+  let html = `<div class="tip-head">${iconoTalento(t)}<div><b class="tip-name">${t.nombre}</b><span class="tip-rank">Rango ${p}/${t.rangos}</span></div></div>`;
+  const necesarios = (t.fila - 1) * 5;
+  if (necesarios > 0 && puntosArbol(t.arbol) < necesarios) {
+    html += `<p class="tip-red">Requiere ${necesarios} puntos en ${t.nombreArbol}</p>`;
+  }
+  if (t.req) {
+    const r = lista.findIndex(x => x.arbol === t.arbol && x.nombre === t.req);
+    const hecho = r >= 0 && puntosEn(r) >= lista[r].rangos;
+    if (!hecho) html += `<p class="tip-red">Requiere ${t.req === "?" ? "un talento oculto" : t.req}</p>`;
+  }
+  if (t.desc) html += `<p class="tip-desc">${t.desc}</p>`;
+  if (t.nombre === "?") html += `<p class="tip-desc">Se conocerá cuando salga el juego.</p>`;
+  if (!motivo) html += `<p class="tip-green">Toca para aprender</p>`;
+  else if (p === t.rangos) html += `<p class="tip-green">Aprendido</p>`;
+  return html;
+}
+
+function mostrarInfo(indice, motivo) {
+  document.getElementById("t-info").innerHTML = textoTooltip(indice) + (motivo && puntosEn(indice) < lista[indice].rangos ? `<p class="tip-red">${motivo}</p>` : "");
+}
+
+// Tooltip flotante al pasar el ratón (en el móvil se usa el cuadro de abajo)
+const tip = document.getElementById("tooltip");
+function mostrarTooltip(indice, boton) {
+  tip.innerHTML = textoTooltip(indice);
+  tip.hidden = false;
+  const r = boton.getBoundingClientRect();
+  const ancho = tip.offsetWidth;
+  let x = r.right + 10;
+  if (x + ancho > window.innerWidth - 10) x = r.left - ancho - 10;
+  let y = r.top;
+  if (y + tip.offsetHeight > window.innerHeight - 10) y = window.innerHeight - tip.offsetHeight - 10;
+  tip.style.left = Math.max(10, x) + "px";
+  tip.style.top = Math.max(10, y) + "px";
+}
+function ocultarTooltip() {
+  tip.hidden = true;
 }
 
 function pintarOrden() {
@@ -216,8 +255,11 @@ function pintarOrden() {
   const t = orden[siguiente] !== undefined ? lista[orden[siguiente]] : null;
   if (t) {
     const rango = orden.slice(0, siguiente + 1).filter(i => i === orden[siguiente]).length;
-    box.innerHTML = `<span class="np-label">En el nivel ${nivelJugador} pon el punto en</span>
-      <div class="np-main">${iconoTalento(t, "big")}<div><b>${t.nombre}</b><span>${t.nombreArbol} · rango ${rango} de ${t.rangos}</span></div></div>`;
+    const despues = orden.slice(siguiente + 1, siguiente + 3).map((i, k) =>
+      `<div class="np-next">${iconoTalento(lista[i], "small")}<span>Nv ${nivelJugador + k + 1}</span><b>${lista[i].nombre}</b></div>`).join("");
+    box.innerHTML = `<span class="np-label">Nivel ${nivelJugador}: pon el punto en</span>
+      <div class="np-main">${iconoTalento(t, "big")}<div><b>${t.nombre}</b><span>${t.nombreArbol} · rango ${rango} de ${t.rangos}</span></div></div>
+      ${despues ? `<div class="np-after">${despues}</div>` : ""}`;
   } else {
     box.innerHTML = `<span class="np-label">${orden.length ? "La build no llega a tu nivel todavía." : "Cuando tengas una build, aquí verás qué talento toca en tu nivel."}</span>`;
   }
@@ -311,10 +353,25 @@ document.getElementById("btn-forum").addEventListener("click", () => {
   window.open("https://github.com/bgarciaa181/brujula-de-azeroth/discussions/new/choose", "_blank", "noopener");
 });
 
-document.getElementById("btn-screen").addEventListener("click", e => {
+// Modo segunda pantalla: solo el orden, en grande, y la pantalla no se apaga
+let bloqueoPantalla = null;
+document.getElementById("btn-screen").addEventListener("click", async e => {
   const activo = document.body.classList.toggle("segunda-pantalla");
   e.currentTarget.setAttribute("aria-pressed", String(activo));
+  window.scrollTo(0, 0);
+  try {
+    if (activo && navigator.wakeLock) bloqueoPantalla = await navigator.wakeLock.request("screen");
+    if (!activo && bloqueoPantalla) { bloqueoPantalla.release(); bloqueoPantalla = null; }
+  } catch (err) {}
 });
+
+function cambiarNivel(delta) {
+  nivelJugador = Math.min(60, Math.max(10, nivelJugador + delta));
+  document.getElementById("my-level").value = nivelJugador;
+  pintarOrden();
+}
+document.getElementById("lvl-minus").addEventListener("click", () => cambiarNivel(-1));
+document.getElementById("lvl-plus").addEventListener("click", () => cambiarNivel(1));
 
 document.getElementById("my-level").addEventListener("input", e => {
   const n = parseInt(e.target.value, 10);

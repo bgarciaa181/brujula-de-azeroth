@@ -154,3 +154,42 @@
 .t-community h2 { font-size: 1.4rem; color: var(--oro-claro); }
 .forum-link { width: fit-content; text-decoration: none; }
 .segunda-pantalla .t-community { display: none; }
+
+/* ---------- Tooltip como el del juego ---------- */
+.wow-tip {
+  background: linear-gradient(180deg, rgba(10, 14, 36, .97), rgba(4, 6, 18, .97));
+  border: 1px solid #8a8a8a; border-radius: 6px;
+  box-shadow: 0 0 0 1px #000, inset 0 0 0 1px rgba(255, 255, 255, .06), 0 10px 30px rgba(0, 0, 0, .6);
+  color: #fff; padding: 10px 12px; display: grid; gap: 5px; font-size: .92rem;
+}
+.wow-tip.floating { position: fixed; z-index: 30; width: 280px; pointer-events: none; }
+.wow-tip[hidden] { display: none; }
+.tip-head { display: flex; align-items: center; gap: 10px; }
+.tip-head > div { display: grid; }
+.tip-name { font-size: 1.05rem; color: #fff; }
+.tip-rank { color: #fff; font-size: .85rem; }
+.tip-desc { color: #ffd100; }
+.tip-red { color: #ff2020; }
+.tip-green { color: #1eff00; }
+.t-info.wow-tip { border-color: #8a8a8a; }
+
+/* ---------- Nivel con botones grandes ---------- */
+.lvl-ctrl { display: flex; align-items: center; gap: 6px; }
+.lvl-ctrl label { display: flex; align-items: center; gap: 6px; font-size: .85rem; color: var(--suave); }
+.lvl-btn {
+  width: 38px; height: 38px; font: inherit; font-size: 1.4rem; line-height: 1; cursor: pointer;
+  color: #1a1408; background: var(--oro); border: none; border-radius: 10px;
+}
+.lvl-btn:hover { background: var(--oro-claro); }
+.np-after { display: grid; gap: 6px; border-top: 1px solid var(--linea); padding-top: 8px; }
+.np-next { display: grid; grid-template-columns: 26px 44px 1fr; align-items: center; gap: 8px; font-size: .9rem; color: var(--suave); }
+.np-next b { color: var(--texto); font-weight: 500; }
+
+/* ---------- Segunda pantalla más grande ---------- */
+.segunda-pantalla .t-bar .t-actions .btn:not(#btn-screen) { display: none; }
+.segunda-pantalla .t-bar .t-sum { display: none; }
+.segunda-pantalla .lvl-btn { width: 64px; height: 64px; font-size: 2rem; }
+.segunda-pantalla .order-head input { width: 80px; font-size: 1.4rem; }
+.segunda-pantalla .next-pick { padding: 18px; }
+.segunda-pantalla .np-next { font-size: 1.1rem; grid-template-columns: 34px 52px 1fr; }
+.segunda-pantalla .np-next .t-icon.small { width: 34px; height: 34px; }

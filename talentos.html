@@ -17,8 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=12">
-<link rel="stylesheet" href="css/talentos.css?v=12">
+<link rel="stylesheet" href="css/estilos.css?v=13">
+<link rel="stylesheet" href="css/talentos.css?v=13">
 </head>
 <body class="pagina-talentos">
 
@@ -51,13 +51,17 @@
     <section class="t-trees-wrap" id="trees-wrap">
       <div class="tree-tabs" id="tree-tabs" role="tablist" aria-label="Árboles"></div>
       <div class="trees" id="trees"></div>
-      <div class="t-info" id="t-info">Toca un talento para ver qué hace.</div>
+      <div class="t-info wow-tip" id="t-info">Toca un talento para ver qué hace.</div>
     </section>
 
     <section class="t-order">
       <div class="order-head">
         <h2>Orden por nivel</h2>
-        <label for="my-level">Tu nivel <input type="number" id="my-level" min="10" max="60" value="10" inputmode="numeric"></label>
+        <div class="lvl-ctrl">
+          <button type="button" class="lvl-btn" id="lvl-minus" aria-label="Bajar nivel">−</button>
+          <label for="my-level">Nivel <input type="number" id="my-level" min="10" max="60" value="10" inputmode="numeric"></label>
+          <button type="button" class="lvl-btn" id="lvl-plus" aria-label="Subir nivel">+</button>
+        </div>
       </div>
       <div class="next-pick" id="next-pick"></div>
       <ol class="order-list" id="order-list"></ol>
@@ -93,6 +97,8 @@
   </div>
 </main>
 
+<div class="wow-tip floating" id="tooltip" hidden></div>
+
 <footer>
   <div class="wrap">
     <p>Árboles de talentos del cliente 1.60.1, según la calculadora de <a href="https://metabot.gg/en/wow-forever/talent-calculator" target="_blank">MetaBot.GG</a>. Los talentos con "?" se conocerán tras el lanzamiento. Descripciones en inglés.</p>
@@ -101,8 +107,8 @@
   </div>
 </footer>
 
-<script src="js/datos.js?v=12"></script>
-<script src="js/talentos-datos.js?v=12"></script>
-<script src="js/talentos.js?v=12"></script>
+<script src="js/datos.js?v=13"></script>
+<script src="js/talentos-datos.js?v=13"></script>
+<script src="js/talentos.js?v=13"></script>
 </body>
 </html>
