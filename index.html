@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Brújula de Azeroth</title>
-<meta name="description" content="Fansite no oficial en español para empezar en World of Warcraft: Forever. Clases, roles, razas y talentos explicados fácil.">
+<title>Brújula de Azeroth · Guía de WoW Forever en español</title>
+<meta name="description" content="Guía de World of Warcraft: Forever en español. Las 9 clases, calculadora de talentos, mascotas de cazador, mazmorras por nivel, razas y test para elegir clase.">
+<link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/">
 <meta property="og:title" content="Brújula de Azeroth">
 <meta property="og:description" content="Guía en español de WoW Forever: clases, talentos, mascotas y más.">
 <meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
@@ -16,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=8">
+<link rel="stylesheet" href="css/estilos.css?v=9">
 
 </head>
 <body>
@@ -84,6 +85,44 @@
         <div class="row" id="faction-filter" role="group" aria-label="Facción"></div>
       </div>
       <div class="grid" id="grid"></div>
+    </section>
+
+    <section id="modo">
+      <div class="section-head">
+        <h2>¿PvE o PvP?</h2>
+        <p>Elige cómo quieres jugar.</p>
+      </div>
+      <div class="mode-switch" role="tablist" aria-label="Modo de juego">
+        <button type="button" class="mode-btn pve" id="mode-pve" role="tab" aria-selected="true">
+          <span class="wow-icon xl"><img src="https://render.worldofwarcraft.com/us/icons/56/achievement_dungeon_classicdungeonmaster.jpg" alt="" onerror="this.remove()"></span>
+          <b>PvE</b><small>Mazmorras y raids</small>
+        </button>
+        <button type="button" class="mode-btn pvp" id="mode-pvp" role="tab" aria-selected="false">
+          <span class="wow-icon xl"><img src="https://render.worldofwarcraft.com/us/icons/56/achievement_pvp_p_250k.jpg" alt="" onerror="this.remove()"></span>
+          <b>PvP</b><small>Contra jugadores</small>
+        </button>
+      </div>
+
+      <div class="mode-panel" id="panel-pve">
+        <div class="dg-level">
+          <label for="dg-lvl">Mi nivel</label>
+          <input type="range" id="dg-lvl" min="10" max="60" value="20">
+          <output id="dg-lvl-out" for="dg-lvl">20</output>
+        </div>
+        <div class="dg-now" id="dg-now"></div>
+        <details class="dg-all">
+          <summary>Ver las 35 mazmorras</summary>
+          <div class="dg-chart" id="dg-chart"></div>
+        </details>
+        <p class="dg-note"><span class="new-badge">Nueva</span> = nueva en Forever. Los niveles de las clásicas son los de Classic, pueden cambiar.</p>
+      </div>
+
+      <div class="mode-panel" id="panel-pvp" hidden>
+        <div class="bg-list" id="bg-list"></div>
+        <h3 class="sub">Mascotas de cazador para PvP</h3>
+        <div class="mode-pets" id="pvp-pets"></div>
+        <p class="dg-note">Nueva temporada de PvP en primavera de 2027.</p>
+      </div>
     </section>
 
     <section id="test">
@@ -272,8 +311,8 @@
 
 <dialog id="detail" aria-labelledby="d-name"></dialog>
 
-<script src="js/datos.js?v=8"></script>
-<script src="js/talentos-datos.js?v=8"></script>
-<script src="js/app.js?v=8"></script>
+<script src="js/datos.js?v=9"></script>
+<script src="js/talentos-datos.js?v=9"></script>
+<script src="js/app.js?v=9"></script>
 </body>
 </html>

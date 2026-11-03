@@ -692,3 +692,74 @@ section[id] { scroll-margin-top: 150px; }
 .tag-pvp { background: rgba(217, 83, 79, .22); color: #f08a76; }
 .pet-ability { display: block; font-size: .82rem; color: var(--texto); margin-top: 4px; }
 .pet-main .tag-pve, .pet-main .tag-pvp, .family .tag-pve, .family .tag-pvp { font-size: .64rem; }
+
+/* ---------- Iconos de rol reales (cuadrados) ---------- */
+.wow-icon.rol { width: 26px; height: 26px; border-radius: 5px; background: var(--noche-2); }
+.wow-icon.rol-tanque { box-shadow: 0 0 0 2px #5b8def, 0 0 0 3px #000; }
+.wow-icon.rol-sanador { box-shadow: 0 0 0 2px #4fb35a, 0 0 0 3px #000; }
+.wow-icon.rol-melee { box-shadow: 0 0 0 2px #e0634f, 0 0 0 3px #000; }
+.wow-icon.rol-distancia { box-shadow: 0 0 0 2px #b07ce8, 0 0 0 3px #000; }
+.roles { gap: 8px; }
+.chip .wow-icon.rol { width: 22px; height: 22px; margin-left: -6px; }
+.quiz-opt .wow-icon.rol { width: 56px; height: 56px; border-radius: 10px; }
+.chip[aria-pressed="true"] .wow-icon.rol { background: var(--noche-2); }
+
+/* ---------- PvE / PvP ---------- */
+.mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.mode-btn {
+  --m: #4fb35a; display: grid; justify-items: center; gap: 6px; padding: 18px 10px; cursor: pointer;
+  font: inherit; color: var(--suave); background: var(--panel); border: 2px solid var(--linea); border-radius: 16px;
+}
+.mode-btn.pvp { --m: #e0634f; }
+.mode-btn b { font-family: var(--font-display); font-size: 2rem; line-height: 1; color: var(--texto); }
+.mode-btn small { font-size: .8rem; }
+.mode-btn .wow-icon.xl { width: 64px; height: 64px; filter: grayscale(.8) brightness(.7); transition: filter .2s, transform .2s; }
+.mode-btn[aria-selected="true"] {
+  border-color: var(--m); color: var(--texto);
+  background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--m) 25%, transparent), transparent 70%), var(--panel);
+}
+.mode-btn[aria-selected="true"] b { color: var(--m); }
+.mode-btn[aria-selected="true"] .wow-icon.xl { filter: none; box-shadow: 0 0 0 2px var(--m), 0 0 0 3px #000, 0 0 24px var(--m); }
+.mode-panel { display: grid; gap: 14px; }
+.mode-panel[hidden] { display: none; }
+
+.dg-level { display: flex; align-items: center; gap: 12px; padding: 12px 14px; background: var(--panel); border-radius: 10px; border: 1px solid var(--linea); }
+.dg-level label { font-weight: 700; }
+.dg-level input { flex: 1; accent-color: #4fb35a; }
+.dg-level output { font-family: var(--font-display); font-size: 1.6rem; color: #7fd88a; min-width: 2ch; }
+.dg-now { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+.dg-card { position: relative; display: grid; gap: 2px; padding: 14px; border-radius: 12px; background: linear-gradient(160deg, rgba(79, 179, 90, .14), var(--panel) 60%); border: 1px solid rgba(79, 179, 90, .35); }
+.dg-card.new { border-color: var(--oro-osc); background: linear-gradient(160deg, rgba(214, 176, 106, .16), var(--panel) 60%); }
+.dg-lv { font-family: var(--font-display); font-size: 1.5rem; color: #7fd88a; line-height: 1; }
+.dg-card.new .dg-lv { color: var(--oro-claro); }
+.dg-card b { font-size: 1rem; }
+.dg-card small { color: var(--suave); font-size: .78rem; }
+.dg-card .new-badge { position: absolute; top: 10px; right: 10px; }
+.dg-all { background: var(--panel); border: 1px solid var(--linea); border-radius: 10px; }
+.dg-all summary { cursor: pointer; padding: 12px 14px; font-weight: 500; }
+.dg-chart { position: relative; padding: 24px 14px 14px; display: grid; gap: 3px; overflow-x: auto; }
+.dg-axis { position: relative; height: 14px; margin-left: 46%; font-size: .66rem; color: var(--suave); }
+.dg-axis span { position: absolute; transform: translateX(-50%); }
+.dg-me { display: none; }
+.dg-row { display: grid; grid-template-columns: 46% 1fr; align-items: center; gap: 0; font-size: .74rem; color: var(--suave); }
+.dg-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px; }
+.dg-track { position: relative; height: 10px; background: var(--noche-2); border-radius: 99px; }
+.dg-bar { position: absolute; top: 0; bottom: 0; border-radius: 99px; background: var(--linea); }
+.dg-row.on { color: var(--texto); font-weight: 700; }
+.dg-row.on .dg-bar { background: #4fb35a; box-shadow: 0 0 8px rgba(79, 179, 90, .6); }
+.dg-note { font-size: .8rem; color: var(--suave); }
+
+.bg-list { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.bg-card { display: grid; justify-items: center; text-align: center; gap: 6px; padding: 16px 10px; border-radius: 12px; background: linear-gradient(160deg, rgba(224, 99, 79, .14), var(--panel) 60%); border: 1px solid rgba(224, 99, 79, .35); }
+.bg-card.new { border-color: var(--oro-osc); }
+.bg-card .wow-icon.xl { width: 60px; height: 60px; }
+.bg-card small { color: var(--suave); font-size: .78rem; }
+.mode-pets { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.mini-pet { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--panel); border-radius: 10px; border: 1px solid var(--linea); }
+.mini-pet span:last-child { display: grid; }
+.mini-pet small { color: var(--suave); font-size: .76rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .mode-btn { transition: transform .15s, border-color .2s; }
+  .mode-btn:hover { transform: translateY(-3px); }
+  .dg-card, .bg-card { animation: subir .35s ease-out backwards; }
+}

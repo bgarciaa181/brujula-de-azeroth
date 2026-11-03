@@ -172,6 +172,68 @@ function pintarTest() {
   }
 }
 
+// ---------- PvE / PvP ----------
+let modoJuego = "pve";
+
+function cambiarModo(modo) {
+  modoJuego = modo;
+  document.getElementById("mode-pve").setAttribute("aria-selected", String(modo === "pve"));
+  document.getElementById("mode-pvp").setAttribute("aria-selected", String(modo === "pvp"));
+  document.getElementById("panel-pve").hidden = modo !== "pve";
+  document.getElementById("panel-pvp").hidden = modo !== "pvp";
+  // Las mascotas de más abajo también se filtran igual
+  modoMascotas = modo;
+  pintarMascotas();
+}
+
+function pintarMazmorras() {
+  const nivel = parseInt(document.getElementById("dg-lvl").value, 10);
+  document.getElementById("dg-lvl-out").textContent = nivel;
+
+  // Mazmorras para tu nivel ahora
+  const ahora = MAZMORRAS.filter(m => m[1] <= nivel && nivel <= m[2]);
+  document.getElementById("dg-now").innerHTML = ahora.length
+    ? ahora.map(m => `
+      <div class="dg-card${m[4] ? " new" : ""}">
+        <span class="dg-lv">${m[1]}–${m[2]}</span>
+        <b>${m[0]}</b>
+        <small>${m[3]}</small>
+        ${m[4] ? '<span class="new-badge">Nueva</span>' : ""}
+      </div>`).join("")
+    : '<p class="empty">No hay mazmorras para tu nivel. ¡Sigue subiendo!</p>';
+
+  // Gráfico con todas: cada barra va del nivel mínimo al máximo
+  document.getElementById("dg-chart").innerHTML = `
+    <div class="dg-axis">${[10, 20, 30, 40, 50, 60].map(n => `<span style="left:${(n - 10) * 2}%">${n}</span>`).join("")}</div>
+    <div class="dg-me" style="left:${(nivel - 10) * 2}%"></div>
+    ${MAZMORRAS.map(m => {
+      const activa = m[1] <= nivel && nivel <= m[2];
+      return `<div class="dg-row${activa ? " on" : ""}">
+        <span class="dg-name">${m[0]}${m[4] ? " ★" : ""}</span>
+        <span class="dg-track"><span class="dg-bar" style="left:${(m[1] - 10) * 2}%;width:${(m[2] - m[1]) * 2}%"></span></span>
+      </div>`;
+    }).join("")}`;
+}
+
+function pintarPvP() {
+  document.getElementById("bg-list").innerHTML = CAMPOS_BATALLA.map(c => `
+    <div class="bg-card${c.nueva ? " new" : ""}">
+      ${iconoWow(c.icono, "xl")}
+      <b>${c.nombre}</b>
+      ${c.tipo ? `<small>${c.tipo}</small>` : ""}
+      ${c.nueva ? '<span class="new-badge">Nuevo en Forever</span>' : ""}
+    </div>`).join("");
+
+  // Las mascotas PvP más rápidas
+  const pets = MASCOTAS.filter(m => familia(m[1])[5]).sort((a, b) => (a[4] || 99) - (b[4] || 99)).slice(0, 4);
+  document.getElementById("pvp-pets").innerHTML = pets.map(m => `
+    <div class="mini-pet">${iconoFamilia(m[1])}<span><b>${m[0]}</b><small>${m[1]} · nv ${m[2]}${m[4] ? ` · ${m[4].toFixed(1)} s` : ""}</small></span></div>`).join("");
+}
+
+document.getElementById("mode-pve").addEventListener("click", () => cambiarModo("pve"));
+document.getElementById("mode-pvp").addEventListener("click", () => cambiarModo("pvp"));
+document.getElementById("dg-lvl").addEventListener("input", pintarMazmorras);
+
 // ---------- CREA TU PERSONAJE ----------
 const pj = { faccion: null, raza: null, clase: null, genero: "male" };
 
@@ -616,6 +678,7 @@ function cargarNoticias() {
 // ---------- MENÚ DE SECCIONES ----------
 const SECCIONES = [
   ["clases", "Clases", "classicon_warrior"],
+  ["modo", "PvE / PvP", "achievement_pvp_p_250k"],
   ["test", "Test", "inv_misc_dice_01"],
   ["personaje", "Personaje", "achievement_character_human_male"],
   ["talentos.html", "Talentos", "ability_marksmanship"],
@@ -676,6 +739,12 @@ for (const f of FAMILIAS) {
 }
 for (const p of [...PROFESIONES.principales, ...PROFESIONES.secundarias]) {
   INDICE.push({ texto: p[0], tipo: "Profesión", icono: iconoWow(p[4], "sm"), ir: () => irA("profesiones") });
+}
+for (const m of MAZMORRAS) {
+  INDICE.push({ texto: m[0], tipo: `Mazmorra · nivel ${m[1]}–${m[2]}`, icono: iconoWow("achievement_dungeon_classicdungeonmaster", "sm"), ir: () => { cambiarModo("pve"); document.getElementById("dg-lvl").value = m[1]; pintarMazmorras(); irA("modo"); } });
+}
+for (const c of CAMPOS_BATALLA) {
+  INDICE.push({ texto: c.nombre, tipo: "Campo de batalla · PvP", icono: iconoWow(c.icono, "sm"), ir: () => { cambiarModo("pvp"); irA("modo"); } });
 }
 for (const r of RAIDS) {
   INDICE.push({ texto: r.nombre, tipo: `Raid de ${r.jugadores}`, icono: r.icono ? iconoWow(r.icono, "sm") : '<span class="wow-icon sm unknown">?</span>', ir: () => irA("raids") });
@@ -773,6 +842,8 @@ nuevaRonda();
 pintarRaids();
 prepararComparador();
 pintarMascotas();
+pintarMazmorras();
+pintarPvP();
 pintarRazas();
 pintarProfesiones();
 pintarCalendario();

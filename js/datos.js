@@ -29,16 +29,16 @@ function iconoWow(icono, extra = "") {
   return `<span class="wow-icon ${extra}" aria-hidden="true"><img src="${ICONOS_URL}${icono}.jpg" alt="" loading="lazy" onerror="this.remove()"></span>`;
 }
 
-// Iconos de rol dibujados a mano (SVG)
-const ROL_SVG = {
-  tanque: '<path d="M12 2l8 3v6c0 5-3.4 9-8 11-4.6-2-8-6-8-11V5z"/>',
-  sanador: '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
-  melee: '<path d="M19.5 2.5l2 2L11 15l-2-2z"/><path d="M5 12.5l6.5 6.5-1.5 1.5L3.5 14z"/><path d="M6 17l1 1-3.5 3.5-1-1z"/>',
-  distancia: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="1.6"/>'
+// Iconos de rol: iconos reales del juego, con un borde del color del rol
+const ROL_ICONO = {
+  tanque: "inv_shield_06",
+  sanador: "spell_holy_flashheal",
+  melee: "ability_dualwield",
+  distancia: "inv_weapon_bow_07"
 };
 
 function iconoRol(rol) {
-  return `<span class="rol rol-${rol}" title="${ROLES[rol]}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">${ROL_SVG[rol]}</svg></span>`;
+  return `<span class="wow-icon rol rol-${rol}" title="${ROLES[rol]}" aria-hidden="true"><img src="${ICONOS_URL}${ROL_ICONO[rol]}.jpg" alt="" loading="lazy" onerror="this.remove()"></span>`;
 }
 
 const ROLES = {
@@ -302,4 +302,56 @@ const TEST = [
     { texto: "Sí, soy nuevo", icono: "inv_misc_map_01", puntos: { cazador: 2, paladin: 2 } },
     { texto: "No, ya he jugado", icono: "inv_misc_book_09", puntos: {} }
   ] }
+];
+
+// ---------- MAZMORRAS (PvE) ----------
+// Fuente: foreverchanges.pro (beta 1.60.1.70753)
+// Niveles de las nuevas: Blizzard. Niveles de las clásicas: datos de Classic, sin confirmar en Forever.
+// [nombre, nivel mínimo, nivel máximo, zona, nueva en Forever]
+const MAZMORRAS = [
+  ["Hall of Thanes", 13, 18, "Bajo Forjaz", true],
+  ["Sima Ígnea", 13, 18, "Orgrimmar", false],
+  ["Ruins of Lordaeron", 15, 20, "Lordaeron", true],
+  ["Cuevas de los Lamentos", 17, 24, "Los Baldíos", false],
+  ["Las Minas de la Muerte", 17, 26, "Páramos de Poniente", false],
+  ["Castillo de Colmillo Oscuro", 22, 30, "Bosque de Argénteos", false],
+  ["Cavernas de Brazanegra", 24, 32, "Vallefresno", false],
+  ["Las Mazmorras", 24, 32, "Ventormenta", false],
+  ["Excavation Site: Wetlands", 26, 31, "Los Humedales", true],
+  ["City of Dalaran", 28, 33, "Montañas de Alterac", true],
+  ["Gnomeregan", 29, 38, "Dun Morogh", false],
+  ["Horado Rajacieno", 29, 38, "Los Baldíos", false],
+  ["Monasterio Escarlata: Cementerio", 30, 38, "Claros de Tirisfal", false],
+  ["Monasterio Escarlata: Biblioteca", 33, 41, "Claros de Tirisfal", false],
+  ["The Drowned City", 35, 40, "Costa de Tuercespina", true],
+  ["Monasterio Escarlata: Armería", 36, 44, "Claros de Tirisfal", false],
+  ["Zahúrda Rajacieno", 37, 46, "Los Baldíos", false],
+  ["Monasterio Escarlata: Catedral", 38, 46, "Claros de Tirisfal", false],
+  ["Krol'dok Stronghold", 40, 45, "Riverglades", true],
+  ["Uldaman", 41, 51, "Tierras Inhóspitas", false],
+  ["Zul'Farrak", 44, 54, "Tanaris", false],
+  ["Maraudon", 46, 55, "Desolace", false],
+  ["Alcaz Prison", 48, 53, "Marjal Revolcafango", true],
+  ["Templo de Atal'Hakkar", 50, 60, "Pantano de las Penas", false],
+  ["Profundidades de Roca Negra", 52, 60, "Montaña Roca Negra", false],
+  ["La Masacre: Este", 54, 60, "Feralas", false],
+  ["Blackmaw Hold", 55, 60, "Azshara", true],
+  ["Cumbre de Roca Negra Inferior", 55, 60, "Montaña Roca Negra", false],
+  ["La Masacre: Norte", 56, 60, "Feralas", false],
+  ["La Masacre: Oeste", 56, 60, "Feralas", false],
+  ["Scholomance", 58, 60, "Tierras de la Peste del Oeste", false],
+  ["Shaper's Terrace", 58, 60, "Cráter de Un'Goro", true],
+  ["Stratholme: Puerta principal", 58, 60, "Tierras de la Peste del Este", false],
+  ["Stratholme: Puerta de servicio", 58, 60, "Tierras de la Peste del Este", false],
+  ["Cumbre de Roca Negra Superior", 59, 60, "Montaña Roca Negra", false]
+];
+
+// ---------- CAMPOS DE BATALLA (PvP) ----------
+// Fuente: MetaBot.GG (cliente 1.60.1). El tamaño de los equipos aún no se conoce.
+const CAMPOS_BATALLA = [
+  { nombre: "Garganta Grito de Guerra", icono: "achievement_bg_winwsg", nueva: false, tipo: "Captura la bandera" },
+  { nombre: "Cuenca de Arathi", icono: "achievement_bg_winab", nueva: false, tipo: "Controla las bases" },
+  { nombre: "Valle de Alterac", icono: "achievement_bg_winav", nueva: false, tipo: "Gran batalla" },
+  { nombre: "Battle for Gilneas", icono: "achievement_battleground_battleforgilneas", nueva: true, tipo: "" },
+  { nombre: "Darkspear Islands", icono: "inv_misc_tournaments_banner_troll", nueva: true, tipo: "" }
 ];
