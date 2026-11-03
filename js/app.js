@@ -9,7 +9,7 @@ function crearChips(contenedor, opciones, getActual, alPulsar) {
     const b = document.createElement("button");
     b.className = "chip";
     b.type = "button";
-    b.textContent = texto;
+    b.innerHTML = (ROLES[valor] ? iconoRol(valor) : "") + `<span>${texto}</span>`;
     b.setAttribute("aria-pressed", String(getActual() === valor));
     b.addEventListener("click", () => { alPulsar(valor); pintar(); });
     caja.appendChild(b);
@@ -23,10 +23,10 @@ function razasDeFaccion(clase) {
 
 function pintar() {
   crearChips("role-filter",
-    [["todos", "Todos los roles"], ...Object.entries(ROLES)],
+    [["todos", "Todos"], ...Object.entries(ROLES)],
     () => rolElegido, v => rolElegido = v);
   crearChips("faction-filter",
-    [["todas", "Ambas facciones"], ["alianza", "Alianza"], ["horda", "Horda"]],
+    [["todas", "Las dos facciones"], ["alianza", "Alianza"], ["horda", "Horda"]],
     () => faccionElegida, v => faccionElegida = v);
 
   const lista = CLASSES.filter(c =>
@@ -44,16 +44,16 @@ function pintar() {
     card.innerHTML = `
       ${iconoClase(c)}
       <h3>${c.nombre}</h3>
-      <p class="trees">${c.arboles.map(a => a[0]).join(" · ")}</p>
-      <div class="tags">${c.roles.map(r => `<span class="tag">${ROLES[r]}</span>`).join("")}</div>
-      ${c.facil ? '<span class="easy">Fácil para empezar</span>' : ""}`;
+      <div class="roles">${c.roles.map(iconoRol).join("")}</div>
+      <div class="specs">${c.arboles.map(a => `<span class="spec" title="${a[0]}">${iconoWow(a[2])}<small>${a[0]}</small></span>`).join("")}</div>
+      ${c.facil ? '<span class="easy">Fácil</span>' : ""}`;
     card.style.setProperty("--i", i);
     card.addEventListener("click", () => { location.hash = c.id; });
     grid.appendChild(card);
   });
   document.getElementById("result-count").textContent =
     lista.length === 0 ? "Ninguna clase cumple esos filtros."
-    : `${lista.length} ${lista.length === 1 ? "clase" : "clases"}. Toca una para ver su ficha.`;
+    : "Toca una clase para ver su ficha.";
 }
 
 // ---------- FICHA DE CLASE ----------
@@ -70,32 +70,30 @@ function abrirFicha(id) {
       ${iconoClase(c)}
       <div>
         <h2 id="d-name">${c.nombre}</h2>
-        <p>Recurso: ${c.recurso} · ${c.roles.map(r => ROLES[r]).join(", ")}</p>
+        <div class="roles">${c.roles.map(iconoRol).join("")}<span class="res">${c.recurso}</span></div>
       </div>
       <button class="close" type="button" aria-label="Cerrar">×</button>
     </div>
     <div class="d-body">
       <p class="pitch">${c.pitch}</p>
       <div class="stats">
-        <div><b>${c.habilidades}</b><span>habilidades de entrenador</span></div>
+        <div><b>${c.habilidades}</b><span>habilidades</span></div>
         <div><b>${c.nuevas}</b><span>nuevas en Forever</span></div>
-        <div><b>${c.razas.length}</b><span>razas disponibles</span></div>
+        <div><b>${c.razas.length}</b><span>razas</span></div>
       </div>
       <div>
-        <h3>Sus 3 árboles de talentos</h3>
-        <div class="tree-list">${c.arboles.map(a => `<div class="tree"><b>${a[0]}</b><span>${a[1]}</span></div>`).join("")}</div>
+        <h3>Especializaciones</h3>
+        <div class="tree-list">${c.arboles.map(a => `<div class="tree">${iconoWow(a[2])}<b>${a[0]}</b><span>${a[1]}</span></div>`).join("")}</div>
       </div>
       <div>
-        <h3>Razas que pueden jugarla</h3>
+        <h3>Razas</h3>
         <div class="races">
           <div><strong>Alianza</strong>${ali.join(", ") || "Ninguna"}</div>
           <div><strong>Horda</strong>${hor.join(", ") || "Ninguna"}</div>
         </div>
       </div>
       <div>
-        <h3>Talentos para subir de nivel</h3>
-        <p class="pending">Lo añadiremos cuando salga el juego y lo hayamos probado. Mientras tanto, puedes hacer tu propia build.</p>
-        <a class="cta" href="talentos.html#${c.id}">Abrir los talentos de ${c.nombre} →</a>
+        <a class="cta" href="talentos.html#${c.id}">Ver talentos de ${c.nombre} →</a>
       </div>
     </div>`;
   dialogo.querySelector(".close").addEventListener("click", cerrarFicha);
@@ -138,15 +136,18 @@ function comparar() {
   const a = CLASSES.find(c => c.id === selA.value);
   const b = CLASSES.find(c => c.id === selB.value);
 
-  // Cada fila: [nombre, valor de A, valor de B, ¿es un número?]
-  const filas = [
-    ["Roles", a.roles.map(r => ROLES[r]).join(", "), b.roles.map(r => ROLES[r]).join(", "), false],
-    ["Recurso", a.recurso, b.recurso, false],
-    ["Árboles", a.arboles.map(t => t[0]).join(", "), b.arboles.map(t => t[0]).join(", "), false],
-    ["Habilidades", a.habilidades, b.habilidades, true],
-    ["Nuevas en Forever", a.nuevas, b.nuevas, true],
-    ["Razas de Alianza", contarRazas(a, "alianza"), contarRazas(b, "alianza"), true],
-    ["Razas de Horda", contarRazas(a, "horda"), contarRazas(b, "horda"), true]
+  // Filas con iconos
+  const iconos = [
+    ["Roles", c => c.roles.map(iconoRol).join("")],
+    ["Especializaciones", c => c.arboles.map(t => `<span title="${t[0]}">${iconoWow(t[2], "sm")}</span>`).join("")],
+    ["Recurso", c => `<span class="res">${c.recurso}</span>`]
+  ];
+  // Filas con números: se dibujan como barras
+  const numeros = [
+    ["Habilidades", a.habilidades, b.habilidades, 65],
+    ["Nuevas en Forever", a.nuevas, b.nuevas, 8],
+    ["Razas de Alianza", contarRazas(a, "alianza"), contarRazas(b, "alianza"), 5],
+    ["Razas de Horda", contarRazas(a, "horda"), contarRazas(b, "horda"), 5]
   ];
 
   let html = `<div class="cmp-row cmp-head">
@@ -155,13 +156,21 @@ function comparar() {
       <span class="cmp-cls" style="--cls:${b.color}">${iconoClase(b)}<b>${b.nombre}</b></span>
     </div>`;
 
-  for (const [nombre, va, vb, numero] of filas) {
-    const ganaA = numero && va > vb ? " win" : "";
-    const ganaB = numero && vb > va ? " win" : "";
+  for (const [nombre, f] of iconos) {
     html += `<div class="cmp-row">
         <span class="cmp-label">${nombre}</span>
-        <span class="cmp-val${ganaA}">${va}</span>
-        <span class="cmp-val${ganaB}">${vb}</span>
+        <span class="cmp-val icons">${f(a)}</span>
+        <span class="cmp-val icons">${f(b)}</span>
+      </div>`;
+  }
+
+  for (const [nombre, va, vb, max] of numeros) {
+    const barra = (v, color, gana) => `<span class="cmp-val bar${gana ? " win" : ""}">
+        <span class="bar-track"><span class="bar-fill" style="width:${Math.round(v / max * 100)}%;background:${color}"></span></span><b>${v}</b></span>`;
+    html += `<div class="cmp-row">
+        <span class="cmp-label">${nombre}</span>
+        ${barra(va, a.color, va > vb)}
+        ${barra(vb, b.color, vb > va)}
       </div>`;
   }
   document.getElementById("cmp-table").innerHTML = html;
@@ -232,19 +241,28 @@ function pintarRazas() {
 }
 
 // ---------- PROFESIONES ----------
-function filaProfesion(p) {
-  return `<div class="prof">
-      <span class="prof-name">${p[0]}<small>${p[1]}</small></span>
-      <span class="prof-num">${p[2]}<small>recetas</small></span>
-      <span class="prof-num new">+${p[3]}<small>nuevas</small></span>
+function iconoProfesion(nombre) {
+  const p = [...PROFESIONES.principales, ...PROFESIONES.secundarias].find(x => x[0] === nombre);
+  return iconoWow(p[4]);
+}
+
+function fichaProfesion(p) {
+  return `<div class="prof-tile ${p[1] === "Recolección" ? "gather" : ""}">
+      ${iconoWow(p[4], "lg")}
+      <b>${p[0]}</b>
+      <span class="prof-count">${p[2]} recetas</span>
+      <span class="prof-new">+${p[3]} nuevas</span>
     </div>`;
 }
 
 function pintarProfesiones() {
-  document.getElementById("prof-main").innerHTML = PROFESIONES.principales.map(filaProfesion).join("");
-  document.getElementById("prof-sec").innerHTML = PROFESIONES.secundarias.map(filaProfesion).join("");
-  document.getElementById("prof-pairs").innerHTML = PAREJAS.map(p =>
-    `<div class="pair"><b>${p[0]} + ${p[1]}</b><span>${p[2]}</span></div>`).join("");
+  document.getElementById("prof-main").innerHTML = PROFESIONES.principales.map(fichaProfesion).join("");
+  document.getElementById("prof-sec").innerHTML = PROFESIONES.secundarias.map(fichaProfesion).join("");
+  document.getElementById("prof-pairs").innerHTML = PAREJAS.map(p => `
+    <div class="pair">
+      <span class="pair-icons">${iconoProfesion(p[0])}<i>+</i>${iconoProfesion(p[1])}</span>
+      <div><b>${p[0]} + ${p[1]}</b><span>${p[2]}</span></div>
+    </div>`).join("");
 }
 
 // ---------- CALENDARIO ----------
@@ -252,6 +270,7 @@ function pintarCalendario() {
   const etiquetas = { hecho: "Hecho", pronto: "Ya llega", futuro: "Próximamente" };
   document.getElementById("timeline").innerHTML = CALENDARIO.map(e => `
     <li class="step ${e.estado}">
+      ${iconoWow(e.icono, "step-icon")}
       <span class="step-date">${e.fecha}</span>
       <h3>${e.titulo} <span class="step-state">${etiquetas[e.estado]}</span></h3>
       <p>${e.texto}</p>
@@ -313,6 +332,10 @@ function cargarNoticias() {
       lista.innerHTML = '<p class="empty">No se han podido cargar las noticias ahora mismo.</p>';
     });
 }
+
+// ---------- TIRA DE CLASES DE LA CABECERA ----------
+document.getElementById("hero-classes").innerHTML = CLASSES.map(c =>
+  `<a href="#${c.id}" class="hero-cls" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}<span>${c.nombre}</span></a>`).join("");
 
 pintar();
 prepararComparador();

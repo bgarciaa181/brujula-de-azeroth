@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Brújula de Azeroth</title>
 <meta name="description" content="Fansite no oficial en español para empezar en World of Warcraft: Forever. Clases, roles, razas y talentos explicados fácil.">
+<link rel="icon" type="image/svg+xml" href="img/icono.svg">
+<meta name="theme-color" content="#0b0e1a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
@@ -30,15 +32,15 @@
       </div>
     </div>
     <div class="hero">
-      <p class="eyebrow">Guía en español para empezar</p>
+      <p class="eyebrow">WoW Forever · en español</p>
       <h1>Elige tu clase <span>sin perderte en Azeroth</span></h1>
-      <p class="lead">Las 9 clases de World of Warcraft: Forever explicadas en corto: qué hace cada una, qué rol cumple y con qué razas puedes jugarla.</p>
-      <a class="cta" href="talentos.html">Abrir la calculadora de talentos →</a>
+      <div class="hero-classes" id="hero-classes"></div>
+      <a class="cta" href="talentos.html">Calculadora de talentos →</a>
     </div>
     <div class="count" id="count">
       <span class="count-label">Lanzamiento en España</span>
       <span class="count-time" id="count-time">—</span>
-      <span class="count-note">Jueves 5 de noviembre, 00:00 (hora peninsular)</span>
+      <span class="count-note">Jueves 5 nov · 00:00</span>
     </div>
   </div>
 </header>
@@ -66,7 +68,7 @@
     <section id="comparador">
       <div class="section-head">
         <h2>Comparador de clases</h2>
-        <p>Elige dos clases y míralas lado a lado.</p>
+        <p>Dos clases, frente a frente.</p>
       </div>
       <div class="cmp-pick">
         <label for="cmp-a">Clase 1<select id="cmp-a"></select></label>
@@ -79,7 +81,7 @@
     <section id="mascotas">
       <div class="section-head">
         <h2>Mascotas de cazador</h2>
-        <p>Mascotas raras que merece la pena domar, ordenadas por nivel. Solo puedes domar bestias de tu nivel o menos, a partir del nivel 10.</p>
+        <p>Las raras que merece la pena domar. Desde nivel 10, y solo bestias de tu nivel o menos.</p>
       </div>
       <div class="pet-legend">
         <span><i class="dot nueva"></i>Nueva en Forever</span>
@@ -96,7 +98,7 @@
     <section id="razas">
       <div class="section-head">
         <h2>Razas</h2>
-        <p>Toca una raza para ver sus habilidades raciales. Las marcadas como <span class="new-badge">Nueva</span> no existían en Classic.</p>
+        <p>Toca una raza para ver sus habilidades. <span class="new-badge">Nueva</span> = no existía en Classic.</p>
       </div>
       <div class="row race-filter" id="race-filter" role="group" aria-label="Facción de las razas"></div>
       <div class="races-list" id="races-list"></div>
@@ -105,7 +107,7 @@
     <section id="profesiones">
       <div class="section-head">
         <h2>Profesiones</h2>
-        <p>Puedes tener dos principales y todas las secundarias. Todas llegan a 300 puntos.</p>
+        <p>Elige dos principales. Las secundarias, todas las que quieras.</p>
       </div>
       <div class="prof-ranks" aria-label="Rangos de profesión">
         <div><b>75</b><span>Aprendiz</span></div>
@@ -113,24 +115,18 @@
         <div><b>225</b><span>Experto</span></div>
         <div><b>300</b><span>Artesano</span></div>
       </div>
-      <div class="prof-grid">
-        <div>
-          <h3 class="sub">Principales</h3>
-          <div class="prof-list" id="prof-main"></div>
-        </div>
-        <div>
-          <h3 class="sub">Secundarias</h3>
-          <div class="prof-list" id="prof-sec"></div>
-          <h3 class="sub">Parejas que van bien juntas</h3>
-          <div class="pairs" id="prof-pairs"></div>
-        </div>
-      </div>
+      <h3 class="sub">Principales</h3>
+      <div class="prof-tiles" id="prof-main"></div>
+      <h3 class="sub">Secundarias</h3>
+      <div class="prof-tiles" id="prof-sec"></div>
+      <h3 class="sub">Parejas que van bien juntas</h3>
+      <div class="pairs" id="prof-pairs"></div>
     </section>
 
     <section id="calendario">
       <div class="section-head">
         <h2>Calendario</h2>
-        <p>La hoja de ruta que ha anunciado Blizzard.</p>
+        <p>Lo que ha anunciado Blizzard.</p>
       </div>
       <ol class="timeline" id="timeline"></ol>
     </section>
@@ -138,7 +134,7 @@
     <section id="noticias">
       <div class="section-head">
         <h2>Últimas noticias</h2>
-        <p id="news-info">Se actualizan solas cada pocas horas. Los artículos están en inglés.</p>
+        <p id="news-info">Se actualizan solas. Artículos en inglés.</p>
       </div>
       <div class="news" id="news-list"></div>
     </section>
@@ -146,7 +142,7 @@
     <section>
       <div class="section-head">
         <h2>Los talentos, en 3 ideas</h2>
-        <p>Lo justo para no perderte al subir de nivel.</p>
+        <p>Lo justo para no perderte.</p>
       </div>
       <div class="basics">
         <div class="basic">

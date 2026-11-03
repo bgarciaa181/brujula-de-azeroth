@@ -24,58 +24,75 @@ function iconoClase(c) {
     `<img src="${ICONOS_URL}${c.icono}.jpg" alt="" loading="lazy" onerror="this.remove()"></span>`;
 }
 
+// Icono cualquiera del juego (habilidad, profesión, objeto...)
+function iconoWow(icono, extra = "") {
+  return `<span class="wow-icon ${extra}" aria-hidden="true"><img src="${ICONOS_URL}${icono}.jpg" alt="" loading="lazy" onerror="this.remove()"></span>`;
+}
+
+// Iconos de rol dibujados a mano (SVG)
+const ROL_SVG = {
+  tanque: '<path d="M12 2l8 3v6c0 5-3.4 9-8 11-4.6-2-8-6-8-11V5z"/>',
+  sanador: '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',
+  melee: '<path d="M19.5 2.5l2 2L11 15l-2-2z"/><path d="M5 12.5l6.5 6.5-1.5 1.5L3.5 14z"/><path d="M6 17l1 1-3.5 3.5-1-1z"/>',
+  distancia: '<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="1.6"/>'
+};
+
+function iconoRol(rol) {
+  return `<span class="rol rol-${rol}" title="${ROLES[rol]}"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">${ROL_SVG[rol]}</svg></span>`;
+}
+
 const ROLES = {
   tanque:    "Tanque",
   sanador:   "Sanador",
-  melee:     "Daño cuerpo a cuerpo",
-  distancia: "Daño a distancia"
+  melee:     "Cuerpo a cuerpo",
+  distancia: "A distancia"
 };
 
 const CLASSES = [
   { id: "guerrero", icono: "classicon_warrior", habilidades: 39, nuevas: 2, nombre: "Guerrero", color: "#C69B6D", recurso: "Ira",
     roles: ["tanque", "melee"],
     pitch: "Armadura pesada y golpes directos. Genera ira al pegar y recibir daño.",
-    arboles: [["Armas", "Daño"], ["Furia", "Daño"], ["Protección", "Tanque"]],
+    arboles: [["Armas", "Daño", "ability_warrior_savageblow"], ["Furia", "Daño", "ability_warrior_innerrage"], ["Protección", "Tanque", "ability_warrior_defensivestance"]],
     razas: ["humano","enano","elfo","gnomo","skyHO","orco","nomuerto","tauren","trol","skyWS"] },
   { id: "paladin", icono: "classicon_paladin", habilidades: 55, nuevas: 7, nombre: "Paladín", color: "#F48CBA", recurso: "Maná",
     roles: ["tanque", "sanador", "melee"],
     pitch: "Guerrero sagrado que aguanta mucho y puede curarse a sí mismo.",
-    arboles: [["Sagrado", "Sanador"], ["Protección", "Tanque"], ["Reprensión", "Daño"]],
+    arboles: [["Sagrado", "Sanador", "spell_holy_holybolt"], ["Protección", "Tanque", "spell_holy_devotionaura"], ["Reprensión", "Daño", "spell_holy_auraoflight"]],
     razas: ["humano","enano","nomuerto"], facil: true },
   { id: "cazador", icono: "classicon_hunter", habilidades: 62, nuevas: 4, nombre: "Cazador", color: "#AAD372", recurso: "Maná",
     roles: ["distancia"],
     pitch: "Ataca desde lejos mientras su mascota se lleva los golpes.",
-    arboles: [["Bestias", "Daño"], ["Puntería", "Daño"], ["Supervivencia", "Daño"]],
+    arboles: [["Bestias", "Daño", "ability_hunter_beasttaming"], ["Puntería", "Daño", "ability_marksmanship"], ["Supervivencia", "Daño", "ability_hunter_swiftstrike"]],
     razas: ["humano","enano","elfo","skyHO","orco","tauren","trol","skyWS"], facil: true },
   { id: "picaro", icono: "classicon_rogue", habilidades: 28, nuevas: 1, nombre: "Pícaro", color: "#FFF468", recurso: "Energía",
     roles: ["melee"],
     pitch: "Sigilo, venenos y mucho daño en poco tiempo. Elige cuándo empieza la pelea.",
-    arboles: [["Asesinato", "Daño"], ["Combate", "Daño"], ["Sutileza", "Daño"]],
+    arboles: [["Asesinato", "Daño", "ability_rogue_eviscerate"], ["Combate", "Daño", "ability_backstab"], ["Sutileza", "Daño", "ability_stealth"]],
     razas: ["humano","enano","elfo","gnomo","skyHO","orco","nomuerto","trol","skyWS"] },
   { id: "sacerdote", icono: "classicon_priest", habilidades: 56, nuevas: 6, nombre: "Sacerdote", color: "#E8E8E8", recurso: "Maná",
     roles: ["sanador", "distancia"],
     pitch: "El sanador clásico. Con Sombras se convierte en un lanzador de daño.",
-    arboles: [["Disciplina", "Sanador"], ["Sagrado", "Sanador"], ["Sombras", "Daño"]],
+    arboles: [["Disciplina", "Sanador", "spell_holy_wordfortitude"], ["Sagrado", "Sanador", "spell_holy_guardianspirit"], ["Sombras", "Daño", "spell_shadow_shadowwordpain"]],
     razas: ["humano","enano","elfo","gnomo","nomuerto","trol"] },
   { id: "chaman", icono: "classicon_shaman", habilidades: 55, nuevas: 4, nombre: "Chamán", color: "#3F8FE8", recurso: "Maná",
     roles: ["sanador", "melee", "distancia"],
     pitch: "Usa tótems que ayudan al grupo. Puede curar, pegar o lanzar hechizos.",
-    arboles: [["Elemental", "Daño a distancia"], ["Mejora", "Daño cuerpo a cuerpo"], ["Restauración", "Sanador"]],
+    arboles: [["Elemental", "Daño a distancia", "spell_nature_lightning"], ["Mejora", "Daño cuerpo a cuerpo", "spell_nature_lightningshield"], ["Restauración", "Sanador", "spell_nature_magicimmunity"]],
     razas: ["enano","orco","tauren","trol","skyWS"] },
   { id: "mago", icono: "classicon_mage", habilidades: 63, nuevas: 3, nombre: "Mago", color: "#3FC7EB", recurso: "Maná",
     roles: ["distancia"],
     pitch: "Mucho daño desde lejos y control de enemigos. Frágil si te alcanzan.",
-    arboles: [["Arcano", "Daño"], ["Fuego", "Daño"], ["Escarcha", "Daño"]],
+    arboles: [["Arcano", "Daño", "spell_holy_magicalsentry"], ["Fuego", "Daño", "spell_fire_firebolt02"], ["Escarcha", "Daño", "spell_frost_frostbolt02"]],
     razas: ["humano","gnomo","skyHO","orco","nomuerto","trol"] },
   { id: "brujo", icono: "classicon_warlock", habilidades: 51, nuevas: 2, nombre: "Brujo", color: "#8788EE", recurso: "Maná",
     roles: ["distancia"],
     pitch: "Invoca demonios y desgasta a los enemigos con daño a lo largo del tiempo.",
-    arboles: [["Aflicción", "Daño"], ["Demonología", "Daño"], ["Destrucción", "Daño"]],
+    arboles: [["Aflicción", "Daño", "spell_shadow_deathcoil"], ["Demonología", "Daño", "spell_shadow_metamorphosis"], ["Destrucción", "Daño", "spell_shadow_rainoffire"]],
     razas: ["humano","gnomo","orco","nomuerto","trol"] },
   { id: "druida", icono: "classicon_druid", habilidades: 58, nuevas: 1, nombre: "Druida", color: "#FF7C0A", recurso: "Maná",
     roles: ["tanque", "sanador", "melee", "distancia"],
     pitch: "Cambia de forma para hacer de todo: oso, felino, sanador o lanzador.",
-    arboles: [["Equilibrio", "Daño a distancia"], ["Combate feral", "Tanque o daño"], ["Restauración", "Sanador"]],
+    arboles: [["Equilibrio", "Daño a distancia", "spell_nature_starfall"], ["Combate feral", "Tanque o daño", "ability_racial_bearform"], ["Restauración", "Sanador", "spell_nature_healingtouch"]],
     razas: ["elfo","skyHO","tauren","skyWS"] }
 ];
 
@@ -138,24 +155,24 @@ const RACIALES = {
 
 // ---------- PROFESIONES ----------
 // Fuente: datos del cliente 1.60.1. Todas llegan a 300 puntos.
-// [nombre, tipo, recetas totales, recetas nuevas en Forever]
+// [nombre, tipo, recetas totales, recetas nuevas en Forever, icono]
 const PROFESIONES = {
   principales: [
-    ["Peletería", "Fabricación", 595, 271],
-    ["Herrería", "Fabricación", 512, 197],
-    ["Sastrería", "Fabricación", 471, 180],
-    ["Ingeniería", "Fabricación", 282, 77],
-    ["Encantamiento", "Fabricación", 262, 63],
-    ["Alquimia", "Fabricación", 196, 70],
-    ["Minería", "Recolección", 21, 5],
-    ["Herboristería", "Recolección", 7, 5],
-    ["Desuello", "Recolección", 4, 4]
+    ["Peletería", "Fabricación", 595, 271, "trade_leatherworking"],
+    ["Herrería", "Fabricación", 512, 197, "trade_blacksmithing"],
+    ["Sastrería", "Fabricación", 471, 180, "trade_tailoring"],
+    ["Ingeniería", "Fabricación", 282, 77, "trade_engineering"],
+    ["Encantamiento", "Fabricación", 262, 63, "trade_engraving"],
+    ["Alquimia", "Fabricación", 196, 70, "trade_alchemy"],
+    ["Minería", "Recolección", 21, 5, "trade_mining"],
+    ["Herboristería", "Recolección", 7, 5, "trade_herbalism"],
+    ["Desuello", "Recolección", 4, 4, "inv_misc_pelt_wolf_01"]
   ],
   secundarias: [
-    ["Cocina", "Fabricación", 133, 44],
-    ["Primeros auxilios", "Fabricación", 32, 17],
-    ["Pesca", "Recolección", 6, 5],
-    ["Comprensión", "Nueva: sube usándola", 7, 7]
+    ["Cocina", "Fabricación", 133, 44, "inv_misc_food_15"],
+    ["Primeros auxilios", "Fabricación", 32, 17, "spell_holy_sealofsacrifice"],
+    ["Pesca", "Recolección", 6, 5, "trade_fishing"],
+    ["Comprensión", "Nueva: sube usándola", 7, 7, "inv_misc_book_09"]
   ]
 };
 
@@ -172,13 +189,13 @@ const PAREJAS = [
 // ---------- CALENDARIO OFICIAL ----------
 // estado: "hecho", "pronto" o "futuro"
 const CALENDARIO = [
-  { fecha: "17 sep – 22 oct 2026", titulo: "Beta", texto: "Beta cerrada hasta nivel 30.", estado: "hecho" },
-  { fecha: "27 oct 2026", titulo: "Reserva de nombres", texto: "Creación de personajes anticipada.", estado: "hecho" },
-  { fecha: "5 nov 2026 · 00:00", titulo: "Lanzamiento", texto: "Abren los servidores (4 nov a las 15:00 en EE. UU., hora del Pacífico).", estado: "pronto" },
-  { fecha: "9 dic 2026", titulo: "Abren las primeras raids", texto: "Barrow Deeps (10 jugadores, 8 jefes), Cima Hyjal (20 jugadores, 13 jefes) y Guarida de Onyxia (40 jugadores, 1 jefe).", estado: "futuro" },
-  { fecha: "Invierno 2026", titulo: "Modo Hardcore", texto: "Servidores donde si mueres, pierdes el personaje. Sin fecha exacta todavía.", estado: "futuro" },
-  { fecha: "Primavera 2027", titulo: "Primera gran actualización", texto: "Dos raids nuevas de nivel 60, dos mazmorras nuevas, nuevas misiones y zona, una cadena de misiones legendaria y nueva temporada JcJ.", estado: "futuro" },
-  { fecha: "Verano 2027", titulo: "Segunda gran actualización", texto: "Una raid nueva de nivel 60 y una raid clásica renovada.", estado: "futuro" }
+  { fecha: "17 sep – 22 oct 2026", titulo: "Beta", icono: "inv_misc_spyglass_02", texto: "Beta cerrada hasta nivel 30.", estado: "hecho" },
+  { fecha: "27 oct 2026", titulo: "Reserva de nombres", icono: "inv_misc_note_01", texto: "Creación de personajes anticipada.", estado: "hecho" },
+  { fecha: "5 nov 2026 · 00:00", titulo: "Lanzamiento", icono: "inv_misc_map_01", texto: "Abren los servidores (4 nov a las 15:00 en EE. UU., hora del Pacífico).", estado: "pronto" },
+  { fecha: "9 dic 2026", titulo: "Abren las primeras raids", icono: "achievement_boss_onyxia", texto: "Barrow Deeps (10 jugadores, 8 jefes), Cima Hyjal (20 jugadores, 13 jefes) y Guarida de Onyxia (40 jugadores, 1 jefe).", estado: "futuro" },
+  { fecha: "Invierno 2026", titulo: "Modo Hardcore", icono: "inv_misc_bone_humanskull_01", texto: "Servidores donde si mueres, pierdes el personaje. Sin fecha exacta todavía.", estado: "futuro" },
+  { fecha: "Primavera 2027", titulo: "Primera gran actualización", icono: "inv_misc_head_dragon_01", texto: "Dos raids nuevas de nivel 60, dos mazmorras nuevas, nuevas misiones y zona, una cadena de misiones legendaria y nueva temporada JcJ.", estado: "futuro" },
+  { fecha: "Verano 2027", titulo: "Segunda gran actualización", icono: "inv_scroll_03", texto: "Una raid nueva de nivel 60 y una raid clásica renovada.", estado: "futuro" }
 ];
 
 // ---------- MASCOTAS DE CAZADOR ----------

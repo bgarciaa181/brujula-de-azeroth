@@ -365,3 +365,101 @@ section[id] { scroll-margin-top: 150px; }
 .family b { display: block; }
 .family span { font-size: .84rem; color: var(--suave); }
 @media (max-width: 520px) { .pets { grid-template-columns: 1fr; } }
+
+/* ======================================================
+   Versión más visual
+   ====================================================== */
+
+/* Icono genérico del juego */
+.wow-icon {
+  position: relative; display: inline-grid; place-items: center; flex: none;
+  width: 34px; height: 34px; border-radius: 6px; overflow: hidden; background: var(--noche-2);
+  box-shadow: 0 0 0 1.5px #3a3f50, 0 0 0 2.5px #000;
+}
+.wow-icon img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.wow-icon.sm { width: 26px; height: 26px; border-radius: 4px; }
+.wow-icon.lg { width: 52px; height: 52px; border-radius: 8px; box-shadow: 0 0 0 2px var(--oro-osc), 0 0 0 3px #000; }
+
+/* Iconos de rol */
+.rol { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; flex: none; }
+.rol svg { width: 15px; height: 15px; }
+.rol-tanque { background: rgba(91, 141, 239, .18); color: #7fa6f5; }
+.rol-sanador { background: rgba(79, 179, 90, .18); color: #6fd17a; }
+.rol-melee { background: rgba(224, 99, 79, .18); color: #f08a76; }
+.rol-distancia { background: rgba(176, 124, 232, .18); color: #c39cf0; }
+.roles { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.res { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--suave); }
+.chip { display: inline-flex; align-items: center; gap: 6px; }
+.chip .rol { width: 22px; height: 22px; margin-left: -6px; }
+.chip[aria-pressed="true"] .rol { background: rgba(0, 0, 0, .2); color: #1a1408; }
+
+/* Tira de clases en la cabecera */
+.hero-classes { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 8px; max-width: 640px; }
+.hero-cls { display: grid; justify-items: center; gap: 6px; text-decoration: none; color: var(--suave); font-size: .7rem; }
+.hero-cls .sigil { width: 100%; height: auto; aspect-ratio: 1; max-width: 60px; }
+.hero-cls:hover { color: var(--texto); }
+.hero-cls:hover .sigil { box-shadow: 0 0 0 2px var(--cls), 0 0 0 3px #000, 0 0 18px var(--cls); }
+@media (max-width: 520px) {
+  .hero-classes { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .hero-cls span { display: none; }
+}
+
+/* Fichas de clase con iconos */
+.card .sigil { width: 60px; height: 60px; grid-row: span 3; }
+.card .roles { margin-top: 2px; }
+.specs { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+.spec { display: grid; justify-items: center; gap: 3px; }
+.spec small { font-size: .66rem; color: var(--suave); }
+.easy { font-size: .64rem; }
+
+/* Ficha (ventana) */
+.d-head .roles { margin-top: 4px; }
+.tree { align-items: center; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; }
+
+/* Comparador visual */
+.cmp-val.icons { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.cmp-val.bar { display: flex; align-items: center; gap: 8px; }
+.bar-track { flex: 1; height: 10px; border-radius: 99px; background: var(--noche-2); overflow: hidden; min-width: 40px; }
+.bar-fill { display: block; height: 100%; border-radius: 99px; }
+.cmp-val.bar b { font-variant-numeric: tabular-nums; min-width: 2ch; text-align: right; }
+.cmp-val.bar.win b { color: var(--oro-claro); }
+.cmp-val.win::after { content: none; }
+.cmp-val.bar.win::after { content: "★"; color: var(--oro); }
+
+/* Profesiones en fichas */
+.prof-tiles { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); margin-bottom: 22px; }
+.prof-tile {
+  display: grid; justify-items: center; text-align: center; gap: 4px; padding: 14px 8px 12px;
+  background: linear-gradient(180deg, var(--panel-2), var(--panel)); border: 1px solid var(--linea); border-radius: 12px;
+}
+.prof-tile.gather { border-color: rgba(79, 179, 90, .35); }
+.prof-tile b { font-size: .95rem; margin-top: 4px; }
+.prof-count { font-size: .76rem; color: var(--suave); }
+.prof-new { font-size: .72rem; font-weight: 700; color: #1a1408; background: var(--oro); border-radius: 99px; padding: 1px 8px; }
+.pairs { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.pair { display: flex; align-items: center; gap: 12px; }
+.pair-icons { display: flex; align-items: center; gap: 4px; flex: none; }
+.pair-icons i { font-style: normal; color: var(--oro); font-weight: 700; }
+.pair b { display: block; }
+
+/* Calendario con iconos */
+.step { padding-left: 64px; min-height: 56px; }
+.step .step-icon { position: absolute; left: 18px; top: 0; width: 36px; height: 36px; }
+.step.pronto .step-icon { box-shadow: 0 0 0 2px var(--oro), 0 0 0 3px #000, 0 0 16px var(--oro); }
+.step::before { left: -9px; top: 10px; }
+
+/* Más diversión: los iconos se mueven un poco al pasar por encima */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-cls .sigil, .spec .wow-icon, .prof-tile .wow-icon, .pet-icon { transition: transform .2s; }
+  .hero-cls:hover .sigil { transform: translateY(-4px) scale(1.06); }
+  .card:hover .spec .wow-icon, .prof-tile:hover .wow-icon, .pet:hover .pet-icon { transform: rotate(-6deg) scale(1.1); }
+  .bar-fill { animation: crecer .8s ease-out both; transform-origin: left; }
+  @keyframes crecer { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .step.pronto .step-icon { animation: latido 2s ease-in-out infinite; }
+  @keyframes latido { 50% { box-shadow: 0 0 0 2px var(--oro-claro), 0 0 0 3px #000, 0 0 26px var(--oro); } }
+}
+.step::before { display: none; }
+.step { margin-left: 0; border-left: none; padding-left: 52px; }
+.step .step-icon { left: 0; }
+.step:not(:last-child)::after { content: ""; position: absolute; left: 17px; top: 42px; bottom: 4px; width: 2px; background: var(--linea); }
+.prof-tiles { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
