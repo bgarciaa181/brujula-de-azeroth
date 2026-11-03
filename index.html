@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brújula de Azeroth</title>
+<meta name="description" content="Fansite no oficial en español para empezar en World of Warcraft: Forever. Clases, roles, razas y talentos explicados fácil.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
+<link rel="stylesheet" href="css/estilos.css">
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+        <circle cx="18" cy="18" r="16" fill="none" stroke="#e6c27a" stroke-width="2"/>
+        <path d="M18 5 L22 18 L18 31 L14 18 Z" fill="#e6c27a"/>
+        <path d="M18 5 L22 18 L14 18 Z" fill="#fff3d6"/>
+      </svg>
+      <div>
+        <div class="brand-name">Brújula de Azeroth</div>
+        <div class="brand-tag">Fansite no oficial · WoW Forever</div>
+      </div>
+    </div>
+    <div class="hero">
+      <h1>¿Empiezas en WoW Forever? Elige tu clase sin volverte loco</h1>
+      <p>Las 9 clases explicadas en español y en corto: qué hace cada una, qué rol puede cumplir y con qué razas puedes jugarla.</p>
+    </div>
+    <div class="count" id="count">
+      <span class="count-label">Lanzamiento en España</span>
+      <span class="count-time" id="count-time">—</span>
+      <span class="count-note">Jueves 5 de noviembre, 00:00 (hora peninsular)</span>
+    </div>
+  </div>
+</header>
+
+<nav class="filters" aria-label="Filtros">
+  <div class="wrap">
+    <div class="row" id="role-filter" role="group" aria-label="Rol"></div>
+    <div class="row" id="faction-filter" role="group" aria-label="Facción"></div>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <section>
+      <div class="section-head">
+        <h2>Las clases</h2>
+        <p id="result-count">Toca una clase para ver su ficha.</p>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Los talentos, en 3 ideas</h2>
+        <p>Lo justo para no perderte al subir de nivel.</p>
+      </div>
+      <div class="basics">
+        <div class="basic">
+          <div class="big">Nv. 10</div>
+          <h3>Tu primer punto</h3>
+          <p>A partir del nivel 10 recibes un punto de talento. Al principio solo puedes elegir talentos de la primera fila de cada árbol.</p>
+        </div>
+        <div class="basic">
+          <div class="big">3 árboles</div>
+          <h3>Repártelos como quieras</h3>
+          <p>Puedes poner puntos en los tres árboles. No hace falta terminar uno para empezar otro, pero para subir de nivel suele ir mejor centrarse en uno.</p>
+        </div>
+        <div class="basic">
+          <div class="big">4 especiales</div>
+          <h3>Talentos de 1 punto</h3>
+          <p>Cada árbol tiene cuatro talentos especiales de un solo punto. Forever añade uno nuevo al llegar a 16 puntos en ese árbol.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Para ir más a fondo</h2>
+        <p>Calculadoras de talentos completas (en inglés).</p>
+      </div>
+      <div class="links">
+        <a href="https://metabot.gg/en/wow-forever/talent-calculator" target="_blank" rel="noopener"><span>MetaBot · Calculadora de talentos</span><span>metabot.gg ↗</span></a>
+        <a href="https://www.zockify.com/forever/talents/" target="_blank" rel="noopener"><span>Zockify · Calculadora de talentos</span><span>zockify.com ↗</span></a>
+        <a href="https://www.icy-veins.com/wow-forever/choosing-your-main" target="_blank" rel="noopener"><span>Icy Veins · Cómo elegir clase</span><span>icy-veins.com ↗</span></a>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Brújula de Azeroth es un fansite no oficial y sin ánimo de lucro. No está afiliado ni respaldado por Blizzard Entertainment. World of Warcraft y Warcraft son marcas de Blizzard Entertainment.</p>
+    <p>Datos de clases y razas del cliente 1.60.1. Última revisión: 3 de noviembre de 2026.</p>
+    <p class="credit">Creado por <strong>Bea García</strong> · <a href="https://github.com/bgarciaa181" target="_blank" rel="noopener">github.com/bgarciaa181</a></p>
+  </div>
+</footer>
+
+<dialog id="detail" aria-labelledby="d-name"></dialog>
+
+<script src="js/datos.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
