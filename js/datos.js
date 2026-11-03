@@ -202,26 +202,28 @@ const CALENDARIO = [
 // Fuentes: foreverdb.net (cliente beta 1.60.1.70707) y mmonster.co (beta 70450)
 // velocidad = segundos entre ataques (menos = ataca más rápido)
 // estado: "nueva" = mascota nueva de Forever · "vista" = vista en la beta de Forever · "classic" = dato de Classic, sin confirmar aún en Forever
+// [nombre, icono, habilidad, qué hace, sirve para PvE, sirve para PvP]
+// PvE / PvP según lo que hace la habilidad de la familia
 const FAMILIAS = [
-  ["Lobo", "ability_hunter_pet_wolf", "Furious Howl", "Sube el poder de ataque del grupo"],
-  ["Felino", "ability_hunter_pet_cat", "Prowl", "Sigilo para emboscar"],
-  ["Oso", "ability_hunter_pet_bear", "Swipe", "Golpea a varios enemigos"],
-  ["Jabalí", "ability_hunter_pet_boar", "Charge", "Carga hacia el enemigo"],
-  ["Raptor", "ability_hunter_pet_raptor", "Savage Rend", "Desgarro con sangrado"],
-  ["Serpiente alada", "ability_hunter_pet_windserpent", "Lightning Breath", "Ataque de rayo a distancia"],
-  ["Murciélago", "ability_hunter_pet_bat", "Sonic Blast", "Molesta a los lanzadores de hechizos"],
-  ["Ave rapaz", "ability_hunter_pet_owl", "Mine!", "Desarma al enemigo"],
-  ["Carroñero", "ability_hunter_pet_vulture", "Demoralizing Screech", "Baja el ataque del enemigo"],
-  ["Crocolisco", "ability_hunter_pet_crocolisk", "Dismember", "Reduce la sanación del enemigo"],
-  ["Hiena", "ability_hunter_pet_hyena", "Tendon Rip", "Ralentiza al enemigo"],
-  ["Gorila", "ability_hunter_pet_gorilla", "Thunderstomp", "Daño en área"],
-  ["Escórpido", "ability_hunter_pet_scorpid", "Scorpid Poison", "Veneno"],
-  ["Araña", "ability_hunter_pet_spider", "Web", "Inmoviliza al enemigo"],
-  ["Tortuga", "ability_hunter_pet_turtle", "Shell Shield", "Reduce el daño recibido"],
-  ["Cangrejo", "ability_hunter_pet_crab", "Pinch", "Pellizco"],
-  ["Zancaalta", "ability_hunter_pet_tallstrider", "Dust Cloud", "Ciega al enemigo"],
-  ["Zorro", null, "Trickster's Dance", "Familia nueva"],
-  ["Can del Núcleo", "ability_hunter_pet_corehound", "Lava Breath", "Exótica"]
+  ["Lobo", "ability_hunter_pet_wolf", "Furious Howl", "Sube el poder de ataque del grupo", true, false],
+  ["Felino", "ability_hunter_pet_cat", "Prowl", "Sigilo para emboscar", false, true],
+  ["Oso", "ability_hunter_pet_bear", "Swipe", "Golpea a varios enemigos a la vez", true, false],
+  ["Jabalí", "ability_hunter_pet_boar", "Charge", "Carga hacia el enemigo", false, true],
+  ["Raptor", "ability_hunter_pet_raptor", "Savage Rend", "Desgarro con sangrado", true, false],
+  ["Serpiente alada", "ability_hunter_pet_windserpent", "Lightning Breath", "Rayo a distancia que ignora armadura", true, true],
+  ["Murciélago", "ability_hunter_pet_bat", "Sonic Blast", "Molesta a los lanzadores de hechizos", false, true],
+  ["Ave rapaz", "ability_hunter_pet_owl", "Mine!", "Desarma al enemigo", false, true],
+  ["Carroñero", "ability_hunter_pet_vulture", "Demoralizing Screech", "Baja el ataque de los enemigos", true, false],
+  ["Crocolisco", "ability_hunter_pet_crocolisk", "Dismember", "Reduce la sanación que recibe el enemigo", false, true],
+  ["Hiena", "ability_hunter_pet_hyena", "Tendon Rip", "Ralentiza al enemigo", false, true],
+  ["Gorila", "ability_hunter_pet_gorilla", "Thunderstomp", "Daño en área", true, false],
+  ["Escórpido", "ability_hunter_pet_scorpid", "Scorpid Poison", "Veneno que hace daño con el tiempo", true, false],
+  ["Araña", "ability_hunter_pet_spider", "Web", "Inmoviliza al enemigo", false, true],
+  ["Tortuga", "ability_hunter_pet_turtle", "Shell Shield", "Reduce el daño que recibe", true, false],
+  ["Cangrejo", "ability_hunter_pet_crab", "Pinch", "Pellizco de daño", true, false],
+  ["Zancaalta", "ability_hunter_pet_tallstrider", "Dust Cloud", "Ciega al enemigo", false, true],
+  ["Zorro", null, "Trickster's Dance", "Familia nueva, aún por probar", false, false],
+  ["Can del Núcleo", "ability_hunter_pet_corehound", "Lava Breath", "Exótica, no se puede domar todavía", false, false]
 ];
 
 // [nombre, familia, nivel, zona, velocidad o null, estado, nota]
@@ -243,6 +245,33 @@ const MASCOTAS = [
   ["Snarler", "Lobo", 42, "Feralas", null, "classic", "Lobo con Bite 6 y Furious Howl 3."],
   ["Ravage", "Hiena", 51, "Las Tierras Devastadas", 1.3, "classic", "Hiena rápida para el final del juego."],
   ["Deathmaw", "Lobo", 53, "Las Estepas Ardientes", 1.2, "classic", "Lobo rápido para el final del juego."]
+];
+
+// ---------- ICONOS DE RAZA ----------
+// Los Skyborne son nuevos y no tienen icono propio en el servidor de Blizzard
+const ICONO_RAZA = {
+  humano: "human", enano: "dwarf", elfo: "nightelf", gnomo: "gnome",
+  orco: "orc", nomuerto: "undead", tauren: "tauren", trol: "troll"
+};
+
+// Escudos oficiales de Alianza y Horda
+function iconoFaccion(f, extra = "") {
+  const icono = f === "alianza" ? "achievement_pvp_a_a" : "achievement_pvp_h_h";
+  return `<span class="wow-icon faction-icon ${extra}" title="${f === "alianza" ? "Alianza" : "Horda"}" aria-hidden="true"><img src="${ICONOS_URL}${icono}.jpg" alt="" loading="lazy" onerror="this.remove()"></span>`;
+}
+
+function iconoRaza(id, genero = "male", extra = "") {
+  const r = ICONO_RAZA[id];
+  const img = r ? `<img src="${ICONOS_URL}achievement_character_${r}_${genero}.jpg" alt="" loading="lazy" onerror="this.remove()">` : "";
+  return `<span class="wow-icon race-icon ${extra}" aria-hidden="true"><span class="letter">${RACES[id].nombre[0]}</span>${img}</span>`;
+}
+
+// ---------- RAIDS DEL 9 DE DICIEMBRE ----------
+const APERTURA_RAIDS = new Date("2026-12-09T00:00:00+01:00");
+const RAIDS = [
+  { nombre: "Barrow Deeps", jugadores: 10, jefes: 8, icono: null, nota: "Nueva en Forever" },
+  { nombre: "Cima Hyjal", jugadores: 20, jefes: 13, icono: "achievement_boss_archimonde", nota: "Hyjal Summit" },
+  { nombre: "Guarida de Onyxia", jugadores: 40, jefes: 1, icono: "achievement_boss_onyxia", nota: "Onyxia's Lair" }
 ];
 
 // ---------- TEST: ¿QUÉ CLASE VA CONTIGO? ----------

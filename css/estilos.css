@@ -504,3 +504,191 @@ section[id] { scroll-margin-top: 150px; }
 }
 .quiz { grid-template-columns: minmax(0, 1fr); }
 .quiz-options { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); }
+
+/* ---------- Tamaños extra de icono ---------- */
+.wow-icon.xl { width: 72px; height: 72px; border-radius: 10px; box-shadow: 0 0 0 2px var(--oro-osc), 0 0 0 3px #000, 0 6px 20px rgba(0, 0, 0, .5); }
+.wow-icon.xxl { width: 110px; height: 110px; border-radius: 14px; box-shadow: 0 0 0 3px var(--oro-osc), 0 0 0 4px #000, 0 10px 30px rgba(0, 0, 0, .6); }
+.wow-icon.unknown { font-family: var(--font-display); font-size: 2rem; color: var(--suave); }
+.race-icon .letter { font-family: var(--font-display); color: var(--suave); }
+
+/* ---------- Crea tu personaje ---------- */
+.builder { display: grid; gap: 16px; background: var(--panel); border: 1px solid var(--linea); border-radius: 16px; padding: 18px; }
+.b-step { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start; position: relative; }
+.b-num { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--oro); color: #1a1408; font-weight: 700; margin-top: 8px; }
+.b-factions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.b-faction {
+  display: flex; align-items: center; gap: 12px; padding: 12px; cursor: pointer;
+  font: inherit; font-family: var(--font-display); font-size: 1.3rem; color: var(--texto);
+  border-radius: 12px; border: 1px solid var(--linea); background: var(--noche-2);
+}
+.b-faction.alianza { --f: #4a78c8; }
+.b-faction.horda { --f: #c0432f; }
+.b-faction:hover { border-color: var(--f); }
+.b-faction[aria-pressed="true"] { border-color: var(--f); background: color-mix(in srgb, var(--f) 22%, var(--noche-2)); }
+.b-races, .b-classes { display: flex; flex-wrap: wrap; gap: 8px; }
+.b-pick {
+  display: grid; justify-items: center; gap: 4px; width: 78px; padding: 8px 4px; cursor: pointer;
+  font: inherit; font-size: .72rem; color: var(--suave); background: var(--noche-2);
+  border: 1px solid var(--linea); border-radius: 10px;
+}
+.b-pick .sigil { width: 44px; height: 44px; }
+.b-pick .wow-icon.lg { width: 44px; height: 44px; }
+.b-pick:hover:not(:disabled) { border-color: var(--oro-osc); color: var(--texto); }
+.b-pick[aria-pressed="true"] { border-color: var(--oro); color: var(--texto); background: color-mix(in srgb, var(--oro) 12%, var(--noche-2)); }
+.b-pick:disabled { opacity: .25; cursor: not-allowed; filter: grayscale(1); }
+.gender { position: absolute; right: 0; top: -2px; font: inherit; font-size: .8rem; cursor: pointer; background: none; border: 1px solid var(--linea); color: var(--suave); border-radius: 99px; padding: 2px 10px; }
+.gender:hover { color: var(--texto); border-color: var(--oro-osc); }
+.b-step:nth-child(2) { padding-top: 26px; }
+.b-hint { color: var(--suave); text-align: center; padding: 10px; }
+.b-card {
+  --f: #4a78c8; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center;
+  padding: 18px; border-radius: 14px; border: 1px solid var(--f);
+  background: radial-gradient(circle at 0% 50%, color-mix(in srgb, var(--cls) 22%, transparent), transparent 60%), var(--noche-2);
+}
+.b-card.horda { --f: #c0432f; }
+.b-portrait { position: relative; width: 110px; height: 110px; }
+.b-portrait .wow-icon.xl { width: 96px; height: 96px; }
+.b-portrait .sigil { position: absolute; right: 0; bottom: 0; width: 46px; height: 46px; }
+.b-info { display: grid; gap: 8px; }
+.b-fac { font-size: .76rem; text-transform: uppercase; letter-spacing: .1em; color: var(--suave); }
+.b-info h3 { font-size: 1.8rem; }
+.b-racials { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.b-racials li { font-size: .78rem; padding: 3px 9px; border-radius: 99px; background: rgba(255, 255, 255, .06); cursor: help; }
+.b-racials li.new { background: var(--oro); color: #1a1408; font-weight: 700; }
+@media (max-width: 520px) {
+  .b-card { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .b-info .roles, .b-racials { justify-content: center; }
+  .b-pick { width: calc(25% - 6px); }
+  .b-faction { font-size: 1.1rem; }
+}
+
+/* ---------- Minijuego ---------- */
+.game {
+  display: grid; justify-items: center; gap: 16px; text-align: center; padding: 22px 16px;
+  border-radius: 16px; border: 1px solid var(--linea);
+  background: radial-gradient(circle at 50% 30%, rgba(214, 176, 106, .14), transparent 55%), var(--panel);
+}
+.g-score { display: flex; gap: 18px; font-size: .85rem; color: var(--suave); }
+.g-score b { font-family: var(--font-display); font-size: 1.3rem; color: var(--oro-claro); margin-left: 4px; }
+.g-icon { border-radius: 16px; }
+.g-icon.ok .wow-icon { box-shadow: 0 0 0 3px #4fb35a, 0 0 0 4px #000, 0 0 30px #4fb35a; }
+.g-icon.ko .wow-icon { box-shadow: 0 0 0 3px #d9534f, 0 0 0 4px #000, 0 0 30px #d9534f; }
+.g-name { min-height: 1.6em; color: var(--suave); }
+.g-name b { color: var(--texto); }
+.g-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 560px; }
+.g-opt {
+  display: grid; justify-items: center; gap: 6px; padding: 12px 4px; cursor: pointer;
+  font: inherit; font-size: .85rem; color: var(--texto); background: var(--noche-2);
+  border: 1px solid var(--linea); border-radius: 12px;
+}
+.g-opt:hover:not(:disabled) { border-color: var(--cls); }
+.g-opt.right { border-color: #4fb35a; background: rgba(79, 179, 90, .15); }
+.g-opt.wrong { border-color: #d9534f; background: rgba(217, 83, 79, .15); }
+.g-opt:disabled:not(.right):not(.wrong) { opacity: .4; }
+@media (max-width: 520px) { .g-options { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- Mascotas por nivel ---------- */
+.pet-level { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; padding: 12px 14px; background: var(--panel); border-radius: 10px; border: 1px solid var(--linea); }
+.pet-level label { font-weight: 700; }
+.pet-level input { flex: 1; min-width: 140px; accent-color: var(--oro); }
+.pet-level output { font-family: var(--font-display); font-size: 1.5rem; color: var(--oro-claro); min-width: 2ch; }
+#pet-count { font-size: .85rem; color: var(--suave); }
+.pet.locked { opacity: .3; filter: grayscale(1); }
+
+/* ---------- Raids ---------- */
+.raids { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.raid {
+  display: grid; justify-items: center; text-align: center; gap: 8px; padding: 20px 14px;
+  border-radius: 14px; border: 1px solid var(--linea);
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+}
+.raid h3 { font-size: 1.4rem; margin-top: 6px; }
+.raid-note { font-size: .78rem; color: var(--suave); }
+.raid-stats { display: flex; gap: 20px; }
+.raid-stats div { display: grid; }
+.raid-stats b { font-family: var(--font-display); font-size: 1.8rem; color: var(--oro-claro); line-height: 1; }
+.raid-stats span { font-size: .75rem; color: var(--suave); }
+.raid-people { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; max-width: 180px; }
+.raid-people i { width: 9px; height: 9px; border-radius: 50%; background: var(--oro-osc); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .b-pick, .b-faction, .g-opt { transition: transform .15s, border-color .15s; }
+  .b-pick:hover:not(:disabled), .g-opt:hover:not(:disabled) { transform: translateY(-3px); }
+  .b-card .b-portrait { animation: aparecer .5s cubic-bezier(.2, 1.4, .4, 1) both; }
+  .g-icon .wow-icon { animation: aparecer .4s cubic-bezier(.2, 1.4, .4, 1) both; }
+  .g-icon.ko .wow-icon { animation: temblor .4s; }
+  @keyframes temblor { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+  .raid-people i { animation: aparecer .3s both; animation-delay: calc(var(--d, 0) * 1ms); }
+}
+
+/* ---------- Menú de secciones ---------- */
+.topnav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6;
+  background: rgba(11, 14, 26, .9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--linea);
+}
+.topnav-in { display: flex; align-items: center; gap: 10px; padding-block: 8px; }
+.nav-items { flex: 1; min-width: 0; display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; scroll-behavior: smooth; }
+.nav-items::-webkit-scrollbar { display: none; }
+.nav-item {
+  flex: none; display: grid; justify-items: center; gap: 4px; padding: 6px 8px; border-radius: 10px;
+  text-decoration: none; color: var(--suave); font-size: .7rem; border: 1px solid transparent;
+}
+.nav-item .wow-icon { width: 30px; height: 30px; filter: grayscale(.6) brightness(.8); transition: filter .2s, transform .2s; }
+.nav-item:hover { color: var(--texto); }
+.nav-item:hover .wow-icon, .nav-item.active .wow-icon { filter: none; }
+.nav-item.active { color: var(--oro-claro); background: rgba(214, 176, 106, .1); border-color: var(--oro-osc); }
+.nav-item.active .wow-icon { box-shadow: 0 0 0 1.5px var(--oro), 0 0 0 2.5px #000, 0 0 12px rgba(214, 176, 106, .6); }
+.search-btn {
+  flex: none; display: flex; align-items: center; gap: 6px; cursor: pointer;
+  font: inherit; font-weight: 700; font-size: .85rem; color: #1a1408; background: var(--oro);
+  border: none; border-radius: 99px; padding: 9px 14px;
+}
+.search-btn svg { width: 18px; height: 18px; }
+.search-btn:hover { background: var(--oro-claro); }
+@media (max-width: 520px) { .search-btn span { display: none; } .search-btn { padding: 10px; } }
+
+/* ---------- Buscador ---------- */
+.search-layer {
+  position: fixed; inset: 0; z-index: 20; background: rgba(4, 6, 14, .75); backdrop-filter: blur(4px);
+  display: grid; justify-items: center; align-content: start;
+  padding: max(60px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px));
+}
+.search-layer[hidden] { display: none; }
+.search-box { width: min(620px, 100%); background: var(--panel); border: 1px solid var(--oro-osc); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, .6); }
+.search-input { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--linea); }
+.search-input svg { width: 22px; height: 22px; color: var(--oro); flex: none; }
+.search-input input { flex: 1; min-width: 0; font: inherit; font-size: 1.1rem; color: var(--texto); background: none; border: none; outline: none; }
+.search-input button { font: inherit; font-size: .75rem; color: var(--suave); background: var(--noche-2); border: 1px solid var(--linea); border-radius: 6px; padding: 3px 8px; cursor: pointer; }
+.search-results { max-height: 60vh; overflow-y: auto; padding: 6px; display: grid; }
+.search-item {
+  display: flex; align-items: center; gap: 12px; text-align: left; padding: 10px; border-radius: 10px; cursor: pointer;
+  font: inherit; color: var(--texto); background: none; border: none;
+}
+.search-item:hover, .search-item:focus-visible { background: var(--noche-2); }
+.search-item .sigil { width: 26px; height: 26px; }
+.search-item .sigil-letter { font-size: .8rem; }
+.search-item span:last-child { display: grid; min-width: 0; }
+.search-item small { color: var(--suave); font-size: .78rem; }
+.search-tip { padding: 14px; color: var(--suave); font-size: .92rem; }
+
+/* ---------- Filtros de clases dentro de su sección ---------- */
+.class-filters { display: grid; gap: 8px; margin-bottom: 16px; }
+
+/* ---------- Escudos de facción ---------- */
+.faction-icon { border-radius: 6px; }
+.wow-icon.chip-icon { width: 22px; height: 22px; border-radius: 4px; margin-left: -6px; box-shadow: none; }
+.races strong { display: flex; align-items: center; gap: 6px; }
+.b-fac { display: flex; align-items: center; gap: 6px; justify-content: inherit; }
+.b-faction .wow-icon.lg { width: 52px; height: 52px; }
+.cmp-label .wow-icon.sm { width: 18px; height: 18px; vertical-align: middle; margin-right: 4px; box-shadow: none; }
+.race summary .faction-icon { width: 24px; height: 24px; }
+
+/* ---------- Mascotas: PvE / PvP ---------- */
+.pet-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.pet-sort { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--suave); }
+.pet-sort select { font: inherit; color: var(--texto); background: var(--panel); border: 1px solid var(--linea); border-radius: 8px; padding: 6px 10px; }
+.tag-pve, .tag-pvp { display: inline-block; font-size: .64rem; font-weight: 700; letter-spacing: .06em; padding: 1px 6px; border-radius: 4px; vertical-align: middle; margin-left: 4px; }
+.tag-pve { background: rgba(79, 179, 90, .2); color: #7fd88a; }
+.tag-pvp { background: rgba(217, 83, 79, .22); color: #f08a76; }
+.pet-ability { display: block; font-size: .82rem; color: var(--texto); margin-top: 4px; }
+.pet-main .tag-pve, .pet-main .tag-pvp, .family .tag-pve, .family .tag-pvp { font-size: .64rem; }

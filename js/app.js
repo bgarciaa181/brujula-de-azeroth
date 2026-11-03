@@ -9,7 +9,10 @@ function crearChips(contenedor, opciones, getActual, alPulsar) {
     const b = document.createElement("button");
     b.className = "chip";
     b.type = "button";
-    b.innerHTML = (ROLES[valor] ? iconoRol(valor) : "") + `<span>${texto}</span>`;
+    let icono = "";
+    if (ROLES[valor]) icono = iconoRol(valor);
+    if (valor === "alianza" || valor === "horda") icono = iconoFaccion(valor, "chip-icon");
+    b.innerHTML = icono + `<span>${texto}</span>`;
     b.setAttribute("aria-pressed", String(getActual() === valor));
     b.addEventListener("click", () => { alPulsar(valor); pintar(); });
     caja.appendChild(b);
@@ -88,8 +91,8 @@ function abrirFicha(id) {
       <div>
         <h3>Razas</h3>
         <div class="races">
-          <div><strong>Alianza</strong>${ali.join(", ") || "Ninguna"}</div>
-          <div><strong>Horda</strong>${hor.join(", ") || "Ninguna"}</div>
+          <div><strong>${iconoFaccion("alianza", "sm")} Alianza</strong>${ali.join(", ") || "Ninguna"}</div>
+          <div><strong>${iconoFaccion("horda", "sm")} Horda</strong>${hor.join(", ") || "Ninguna"}</div>
         </div>
       </div>
       <div>
@@ -169,6 +172,189 @@ function pintarTest() {
   }
 }
 
+// ---------- CREA TU PERSONAJE ----------
+const pj = { faccion: null, raza: null, clase: null, genero: "male" };
+
+function pintarPersonaje() {
+  // 1. Facción
+  const fac = document.getElementById("b-factions");
+  fac.innerHTML = "";
+  for (const [id, nombre] of [["alianza", "Alianza"], ["horda", "Horda"]]) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "b-faction " + id;
+    b.setAttribute("aria-pressed", String(pj.faccion === id));
+    b.innerHTML = `${iconoFaccion(id, "lg")}<span>${nombre}</span>`;
+    b.addEventListener("click", () => {
+      pj.faccion = id;
+      if (pj.raza && RACES[pj.raza].faccion !== id) { pj.raza = null; pj.clase = null; }
+      pintarPersonaje();
+    });
+    fac.appendChild(b);
+  }
+
+  // 2. Raza (solo las de la facción elegida)
+  const razas = document.getElementById("b-races");
+  razas.innerHTML = "";
+  for (const [id, r] of Object.entries(RACES)) {
+    if (pj.faccion && r.faccion !== pj.faccion) continue;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "b-pick";
+    b.setAttribute("aria-pressed", String(pj.raza === id));
+    b.innerHTML = `${iconoRaza(id, pj.genero, "lg")}<span>${r.nombre}</span>`;
+    b.addEventListener("click", () => {
+      pj.raza = id;
+      pj.faccion = r.faccion;
+      const c = CLASSES.find(x => x.id === pj.clase);
+      if (c && !c.razas.includes(id)) pj.clase = null;
+      pintarPersonaje();
+    });
+    razas.appendChild(b);
+  }
+
+  // 3. Clase (las que no puede esa raza salen apagadas)
+  const clases = document.getElementById("b-classes");
+  clases.innerHTML = "";
+  for (const c of CLASSES) {
+    const posible = !pj.raza || c.razas.includes(pj.raza);
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "b-pick";
+    b.style.setProperty("--cls", c.color);
+    b.disabled = !posible;
+    b.setAttribute("aria-pressed", String(pj.clase === c.id));
+    b.innerHTML = `${iconoClase(c)}<span>${c.nombre}</span>`;
+    b.addEventListener("click", () => {
+      pj.clase = c.id;
+      if (pj.raza && !c.razas.includes(pj.raza)) pj.raza = null;
+      pintarPersonaje();
+    });
+    clases.appendChild(b);
+  }
+
+  // Resultado
+  const res = document.getElementById("b-result");
+  if (!pj.raza || !pj.clase) {
+    res.innerHTML = `<p class="b-hint">${!pj.raza ? "Elige una raza" : "Ahora elige una clase"} para ver tu personaje.</p>`;
+    return;
+  }
+  const r = RACES[pj.raza];
+  const c = CLASSES.find(x => x.id === pj.clase);
+  const info = RACIALES[pj.raza];
+  res.innerHTML = `
+    <div class="b-card ${r.faccion}" style="--cls:${c.color}">
+      <div class="b-portrait">${iconoRaza(pj.raza, pj.genero, "xl")}${iconoClase(c)}</div>
+      <div class="b-info">
+        <span class="b-fac">${iconoFaccion(r.faccion, "sm")} ${r.faccion === "alianza" ? "Alianza" : "Horda"} · empieza en ${info.inicio}</span>
+        <h3>${r.nombre} <span style="color:${c.color}">${c.nombre}</span></h3>
+        <div class="roles">${c.roles.map(iconoRol).join("")}${c.arboles.map(a => `<span title="${a[0]}">${iconoWow(a[2], "sm")}</span>`).join("")}</div>
+        <ul class="b-racials">${info.habilidades.map(h => `<li${h[2] ? ' class="new"' : ""} title="${h[1]}">${h[0]}</li>`).join("")}</ul>
+        <a class="cta" href="talentos.html#${c.id}">Planear sus talentos →</a>
+      </div>
+    </div>`;
+}
+
+document.getElementById("b-gender").addEventListener("click", () => {
+  pj.genero = pj.genero === "male" ? "female" : "male";
+  pintarPersonaje();
+});
+
+// ---------- MINIJUEGO: ¿DE QUÉ CLASE ES? ----------
+const juego = { racha: 0, mejor: 0, actual: null, respondido: false };
+const TALENTOS_JUEGO = [];
+for (const [claseId, arboles] of Object.entries(TALENTOS)) {
+  for (const [arbol, lista] of Object.entries(arboles)) {
+    for (const t of lista) {
+      if (t[3]) TALENTOS_JUEGO.push({ clase: claseId, arbol, nombre: t[0], icono: t[3] });
+    }
+  }
+}
+
+function nuevaRonda() {
+  juego.actual = TALENTOS_JUEGO[Math.floor(Math.random() * TALENTOS_JUEGO.length)];
+  juego.respondido = false;
+  // 4 opciones: la buena y 3 al azar
+  const otras = CLASSES.filter(c => c.id !== juego.actual.clase).sort(() => Math.random() - .5).slice(0, 3);
+  juego.opciones = [CLASSES.find(c => c.id === juego.actual.clase), ...otras].sort(() => Math.random() - .5);
+  pintarJuego();
+}
+
+function pintarJuego(elegida) {
+  const t = juego.actual;
+  const caja = document.getElementById("game");
+  const buena = CLASSES.find(c => c.id === t.clase);
+  caja.innerHTML = `
+    <div class="g-score"><span>Racha <b>${juego.racha}</b></span><span>Récord <b>${juego.mejor}</b></span></div>
+    <div class="g-icon ${juego.respondido ? (elegida === t.clase ? "ok" : "ko") : ""}">${iconoWow(t.icono, "xxl")}</div>
+    <p class="g-name">${juego.respondido ? `<b>${t.nombre}</b> · ${buena.nombre}, ${t.arbol}` : "¿De qué clase es este talento?"}</p>
+    <div class="g-options"></div>
+    ${juego.respondido ? '<button type="button" class="cta" id="g-next">Siguiente →</button>' : ""}`;
+  const opts = caja.querySelector(".g-options");
+  for (const c of juego.opciones) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "g-opt";
+    b.style.setProperty("--cls", c.color);
+    if (juego.respondido) {
+      b.disabled = true;
+      if (c.id === t.clase) b.classList.add("right");
+      else if (c.id === elegida) b.classList.add("wrong");
+    }
+    b.innerHTML = `${iconoClase(c)}<span>${c.nombre}</span>`;
+    b.addEventListener("click", () => {
+      juego.respondido = true;
+      if (c.id === t.clase) {
+        juego.racha++;
+        juego.mejor = Math.max(juego.mejor, juego.racha);
+        try { localStorage.setItem("brujula-record", juego.mejor); } catch (e) {}
+      } else {
+        juego.racha = 0;
+      }
+      pintarJuego(c.id);
+    });
+    opts.appendChild(b);
+  }
+  const sig = document.getElementById("g-next");
+  if (sig) sig.addEventListener("click", nuevaRonda);
+}
+
+try { juego.mejor = parseInt(localStorage.getItem("brujula-record"), 10) || 0; } catch (e) {}
+
+// ---------- MASCOTAS POR NIVEL ----------
+function filtrarMascotas() {
+  const nivel = parseInt(document.getElementById("pet-lvl").value, 10);
+  document.getElementById("pet-lvl-out").textContent = nivel;
+  let n = 0;
+  const fichas = document.querySelectorAll("#pets .pet");
+  fichas.forEach(el => {
+    const puede = parseInt(el.dataset.nivel, 10) <= nivel;
+    el.classList.toggle("locked", !puede);
+    if (puede) n++;
+  });
+  document.getElementById("pet-count").textContent = `${n} de ${fichas.length} disponibles`;
+}
+document.getElementById("pet-lvl").addEventListener("input", filtrarMascotas);
+
+// ---------- RAIDS ----------
+function pintarRaids() {
+  const dias = Math.ceil((APERTURA_RAIDS - new Date()) / 86400000);
+  document.getElementById("raids-count").textContent = dias > 0
+    ? `Faltan ${dias} días. Las tres abren el mismo día.`
+    : "¡Ya están abiertas!";
+  document.getElementById("raids-list").innerHTML = RAIDS.map(r => `
+    <div class="raid">
+      ${r.icono ? iconoWow(r.icono, "xl") : '<span class="wow-icon xl unknown" aria-hidden="true">?</span>'}
+      <h3>${r.nombre}</h3>
+      <span class="raid-note">${r.nota}</span>
+      <div class="raid-stats">
+        <div><b>${r.jugadores}</b><span>jugadores</span></div>
+        <div><b>${r.jefes}</b><span>${r.jefes === 1 ? "jefe" : "jefes"}</span></div>
+      </div>
+      <div class="raid-people" aria-hidden="true">${"<i></i>".repeat(r.jugadores)}</div>
+    </div>`).join("");
+}
+
 // ---------- COMPARADOR ----------
 const selA = document.getElementById("cmp-a");
 const selB = document.getElementById("cmp-b");
@@ -207,8 +393,8 @@ function comparar() {
   const numeros = [
     ["Habilidades", a.habilidades, b.habilidades, 65],
     ["Nuevas en Forever", a.nuevas, b.nuevas, 8],
-    ["Razas de Alianza", contarRazas(a, "alianza"), contarRazas(b, "alianza"), 5],
-    ["Razas de Horda", contarRazas(a, "horda"), contarRazas(b, "horda"), 5]
+    [`${iconoFaccion("alianza", "sm")} Razas`, contarRazas(a, "alianza"), contarRazas(b, "alianza"), 5],
+    [`${iconoFaccion("horda", "sm")} Razas`, contarRazas(a, "horda"), contarRazas(b, "horda"), 5]
   ];
 
   let html = `<div class="cmp-row cmp-head">
@@ -244,25 +430,58 @@ function iconoFamilia(nombre) {
   return `<span class="pet-icon" aria-hidden="true"><span>${nombre[0]}</span>${icono}</span>`;
 }
 
+let modoMascotas = "todas";
+
+function familia(nombre) {
+  return FAMILIAS.find(f => f[0] === nombre);
+}
+
+function etiquetasUso(f) {
+  return (f[4] ? '<b class="tag-pve">PvE</b>' : "") + (f[5] ? '<b class="tag-pvp">PvP</b>' : "");
+}
+
 function pintarMascotas() {
+  // Botones PvE / PvP
+  crearChips("pet-mode",
+    [["todas", "Todas"], ["pve", "Mejores para PvE"], ["pvp", "Mejores para PvP"]],
+    () => modoMascotas, v => modoMascotas = v);
+  for (const b of document.querySelectorAll("#pet-mode .chip")) {
+    b.addEventListener("click", pintarMascotas);
+  }
+
   const estados = { nueva: "Nueva en Forever", vista: "Vista en la beta", classic: "Dato de Classic" };
-  document.getElementById("pets").innerHTML = MASCOTAS.map(m => `
-    <div class="pet ${m[5]}">
+  let lista = MASCOTAS.map((m, i) => ({ m, i, f: familia(m[1]) }));
+
+  if (modoMascotas === "pve") lista = lista.filter(x => x.f[4]);
+  if (modoMascotas === "pvp") lista = lista.filter(x => x.f[5]);
+
+  if (document.getElementById("pet-sort").value === "rapida") {
+    // Las que no tienen velocidad conocida van al final
+    lista.sort((a, b) => (a.m[4] || 99) - (b.m[4] || 99));
+  }
+
+  document.getElementById("pets").innerHTML = lista.map(({ m, f }) => `
+    <div class="pet ${m[5]}" data-nivel="${m[2]}">
       ${iconoFamilia(m[1])}
       <div class="pet-main">
         <b>${m[0]}</b>
         <span class="pet-meta">${m[1]} · nivel ${m[2]} · ${m[3]}</span>
+        <span class="pet-ability">${f[2]}: ${f[3].toLowerCase()} ${etiquetasUso(f)}</span>
         <p>${m[6]}</p>
       </div>
       <div class="pet-side">
         ${m[4] ? `<span class="pet-speed"><b>${m[4].toFixed(1)} s</b>por ataque</span>` : ""}
         <span class="pet-state" title="${estados[m[5]]}"><i class="dot ${m[5]}"></i></span>
       </div>
-    </div>`).join("");
+    </div>`).join("") || '<p class="empty">Ninguna mascota de la lista cumple ese filtro.</p>';
 
   document.getElementById("families").innerHTML = FAMILIAS.map(f => `
-    <div class="family">${iconoFamilia(f[0])}<div><b>${f[0]}</b><span>${f[2]} · ${f[3]}</span></div></div>`).join("");
+    <div class="family">${iconoFamilia(f[0])}<div><b>${f[0]} ${etiquetasUso(f)}</b><span>${f[2]} · ${f[3]}</span></div></div>`).join("");
+
+  filtrarMascotas();
 }
+
+document.getElementById("pet-sort").addEventListener("change", pintarMascotas);
 
 // ---------- RAZAS ----------
 let faccionRazas = "todas";
@@ -288,7 +507,7 @@ function pintarRazas() {
     det.innerHTML = `
       <summary>
         <span class="race-name">${raza.nombre}</span>
-        <span class="faction-badge">${raza.faccion === "alianza" ? "Alianza" : "Horda"}</span>
+        ${iconoFaccion(raza.faccion, "sm")}
         <span class="race-classes">${clases.map(c => `<span class="mini" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}</span>`).join("")}</span>
       </summary>
       <div class="race-body">
@@ -394,12 +613,164 @@ function cargarNoticias() {
     });
 }
 
+// ---------- MENÚ DE SECCIONES ----------
+const SECCIONES = [
+  ["clases", "Clases", "classicon_warrior"],
+  ["test", "Test", "inv_misc_dice_01"],
+  ["personaje", "Personaje", "achievement_character_human_male"],
+  ["talentos.html", "Talentos", "ability_marksmanship"],
+  ["comparador", "Comparar", "inv_misc_coin_01"],
+  ["juego", "Juego", "inv_misc_questionmark"],
+  ["mascotas", "Mascotas", "ability_hunter_beasttaming"],
+  ["razas", "Razas", "achievement_character_orc_male"],
+  ["profesiones", "Oficios", "trade_blacksmithing"],
+  ["raids", "Raids", "achievement_boss_onyxia"],
+  ["calendario", "Calendario", "inv_misc_pocketwatch_01"],
+  ["noticias", "Noticias", "inv_scroll_03"]
+];
+
+function pintarMenu() {
+  document.getElementById("nav-items").innerHTML = SECCIONES.map(([id, nombre, icono]) => {
+    const href = id.endsWith(".html") ? id : "#" + id;
+    return `<a href="${href}" class="nav-item" data-sec="${id}">${iconoWow(icono, "sm")}<span>${nombre}</span></a>`;
+  }).join("");
+}
+
+// Marca en el menú la sección que estás viendo
+function seguirScroll() {
+  const observador = new IntersectionObserver(entradas => {
+    for (const e of entradas) {
+      if (!e.isIntersecting) continue;
+      document.querySelectorAll(".nav-item").forEach(a => a.classList.toggle("active", a.dataset.sec === e.target.id));
+      const activo = document.querySelector(`.nav-item[data-sec="${e.target.id}"]`);
+      if (activo) activo.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+    }
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  document.querySelectorAll("main section[id]").forEach(sec => observador.observe(sec));
+}
+
+// ---------- BUSCADOR ----------
+function sinTildes(texto) {
+  return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+// Junta en una lista todo lo que se puede buscar
+const INDICE = [];
+for (const c of CLASSES) {
+  INDICE.push({ texto: c.nombre, tipo: "Clase", icono: iconoClase(c), ir: () => { location.hash = c.id; } });
+  for (const a of c.arboles) {
+    INDICE.push({ texto: `${a[0]} (${c.nombre})`, tipo: "Especialización", icono: iconoWow(a[2], "sm"), ir: () => { location.hash = c.id; } });
+  }
+}
+for (const [id, r] of Object.entries(RACES)) {
+  INDICE.push({ texto: r.nombre, tipo: r.faccion === "alianza" ? "Raza · Alianza" : "Raza · Horda", icono: iconoRaza(id, "male", "sm"), ir: () => abrirRaza(id) });
+  for (const h of RACIALES[id].habilidades) {
+    INDICE.push({ texto: h[0], tipo: `Racial de ${r.nombre}`, icono: iconoRaza(id, "male", "sm"), ir: () => abrirRaza(id) });
+  }
+}
+for (const m of MASCOTAS) {
+  INDICE.push({ texto: m[0], tipo: `Mascota · ${m[1]} nivel ${m[2]}`, icono: iconoFamilia(m[1]), ir: () => irA("mascotas") });
+}
+for (const f of FAMILIAS) {
+  INDICE.push({ texto: f[0], tipo: `Familia de mascota · ${f[2]}`, icono: iconoFamilia(f[0]), ir: () => irA("mascotas") });
+}
+for (const p of [...PROFESIONES.principales, ...PROFESIONES.secundarias]) {
+  INDICE.push({ texto: p[0], tipo: "Profesión", icono: iconoWow(p[4], "sm"), ir: () => irA("profesiones") });
+}
+for (const r of RAIDS) {
+  INDICE.push({ texto: r.nombre, tipo: `Raid de ${r.jugadores}`, icono: r.icono ? iconoWow(r.icono, "sm") : '<span class="wow-icon sm unknown">?</span>', ir: () => irA("raids") });
+}
+for (const [claseId, arboles] of Object.entries(TALENTOS)) {
+  const c = CLASSES.find(x => x.id === claseId);
+  for (const [arbol, lista] of Object.entries(arboles)) {
+    for (const t of lista) {
+      if (!t[3]) continue;
+      INDICE.push({ texto: t[0], tipo: `Talento · ${c.nombre}, ${arbol}`, icono: iconoWow(t[3], "sm"), ir: () => { location.href = "talentos.html#" + claseId; } });
+    }
+  }
+}
+
+function irA(id) {
+  document.getElementById(id).scrollIntoView({ behavior: "smooth" });
+}
+
+function abrirRaza(id) {
+  faccionRazas = "todas";
+  pintarRazas();
+  const det = document.querySelectorAll("#races-list details")[Object.keys(RACES).indexOf(id)];
+  det.open = true;
+  det.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+const capa = document.getElementById("search-layer");
+const caja = document.getElementById("search-input");
+
+function abrirBuscador() {
+  capa.hidden = false;
+  caja.value = "";
+  buscar();
+  caja.focus();
+}
+
+function cerrarBuscador() {
+  capa.hidden = true;
+}
+
+function buscar() {
+  const q = sinTildes(caja.value.trim());
+  const res = document.getElementById("search-results");
+  if (q.length < 2) {
+    res.innerHTML = `<p class="search-tip">Escribe al menos 2 letras. Prueba con <i>lobo</i>, <i>gnomo</i>, <i>herrería</i> o <i>shadow</i>.</p>`;
+    return;
+  }
+  // Primero lo que coincide en el nombre, luego lo que coincide en el tipo
+  const porNombre = INDICE.filter(x => sinTildes(x.texto).includes(q));
+  const porTipo = INDICE.filter(x => !sinTildes(x.texto).includes(q) && sinTildes(x.tipo).includes(q));
+  const encontrados = [...porNombre, ...porTipo].slice(0, 12);
+  if (encontrados.length === 0) {
+    res.innerHTML = `<p class="search-tip">No hay nada con "${caja.value}".</p>`;
+    return;
+  }
+  res.innerHTML = "";
+  for (const x of encontrados) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "search-item";
+    b.innerHTML = `${x.icono}<span><b>${x.texto}</b><small>${x.tipo}</small></span>`;
+    b.addEventListener("click", () => { cerrarBuscador(); x.ir(); });
+    res.appendChild(b);
+  }
+}
+
+document.getElementById("search-open").addEventListener("click", abrirBuscador);
+document.getElementById("search-close").addEventListener("click", cerrarBuscador);
+caja.addEventListener("input", buscar);
+caja.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const primero = document.querySelector(".search-item");
+    if (primero) primero.click();
+  }
+});
+capa.addEventListener("click", e => { if (e.target === capa) cerrarBuscador(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !capa.hidden) cerrarBuscador();
+  if (e.key === "/" && capa.hidden && !["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    abrirBuscador();
+  }
+});
+
 // ---------- TIRA DE CLASES DE LA CABECERA ----------
 document.getElementById("hero-classes").innerHTML = CLASSES.map(c =>
   `<a href="#${c.id}" class="hero-cls" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}<span>${c.nombre}</span></a>`).join("");
 
+pintarMenu();
+seguirScroll();
 pintar();
 pintarTest();
+pintarPersonaje();
+nuevaRonda();
+pintarRaids();
 prepararComparador();
 pintarMascotas();
 pintarRazas();
