@@ -763,3 +763,8 @@ section[id] { scroll-margin-top: 150px; }
   .mode-btn:hover { transform: translateY(-3px); }
   .dg-card, .bg-card { animation: subir .35s ease-out backwards; }
 }
+
+/* ---------- Ventana abierta: el fondo no se mueve ---------- */
+html.bloqueo, html.bloqueo body { overflow: hidden; }
+dialog, .search-results { overscroll-behavior: contain; }
+dialog { overflow-y: auto; }

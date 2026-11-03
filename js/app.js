@@ -59,6 +59,12 @@ function pintar() {
     : "Toca una clase para ver su ficha.";
 }
 
+// ---------- BLOQUEAR EL SCROLL DEL FONDO ----------
+// Mientras hay una ventana abierta, la página de detrás no se mueve
+function bloquearFondo(si) {
+  document.documentElement.classList.toggle("bloqueo", si);
+}
+
 // ---------- FICHA DE CLASE ----------
 const dialogo = document.getElementById("detail");
 
@@ -101,6 +107,7 @@ function abrirFicha(id) {
     </div>`;
   dialogo.querySelector(".close").addEventListener("click", cerrarFicha);
   if (!dialogo.open) dialogo.showModal();
+  bloquearFondo(true);
 }
 
 function cerrarFicha() {
@@ -108,6 +115,7 @@ function cerrarFicha() {
   if (dialogo.open) dialogo.close();
 }
 dialogo.addEventListener("cancel", e => { e.preventDefault(); cerrarFicha(); });
+dialogo.addEventListener("close", () => bloquearFondo(false));
 dialogo.addEventListener("click", e => { if (e.target === dialogo) cerrarFicha(); });
 window.addEventListener("hashchange", () => abrirFicha(location.hash.slice(1)));
 
@@ -776,6 +784,7 @@ const caja = document.getElementById("search-input");
 
 function abrirBuscador() {
   capa.hidden = false;
+  bloquearFondo(true);
   caja.value = "";
   buscar();
   caja.focus();
@@ -783,6 +792,7 @@ function abrirBuscador() {
 
 function cerrarBuscador() {
   capa.hidden = true;
+  bloquearFondo(false);
 }
 
 function buscar() {
