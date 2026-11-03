@@ -11,6 +11,9 @@ Pensada sobre todo para verla en el móvil.
 - Las 9 clases con filtros por rol y por facción.
 - Una ficha por clase con su icono oficial (se puede compartir con un enlace como `#mago`).
 - Comparador para ver dos clases lado a lado.
+- Calculadora de talentos (`talentos.html`) con el orden por nivel, enlace para compartir la build y modo segunda pantalla.
+- Mascotas raras de cazador con nivel, zona y velocidad de ataque.
+- Razas con sus habilidades raciales, profesiones y calendario oficial.
 - Noticias de WoW Forever que se actualizan solas cada 3 horas.
 - Lo básico de los talentos en 3 ideas.
 - Enlaces a calculadoras de talentos completas.
@@ -26,9 +29,13 @@ Los datos están en `js/datos.js`, así que es fácil corregirlos o añadir info
 
 ```
 brujula-de-azeroth/
-├── index.html        → la página
+├── index.html        → la página principal
+├── talentos.html     → la calculadora de talentos
 ├── css/estilos.css   → el diseño
-├── js/datos.js       → clases, razas y roles
+├── css/talentos.css  → el diseño de la calculadora
+├── js/datos.js       → clases, razas, profesiones, mascotas y calendario
+├── js/talentos-datos.js → árboles de talentos, builds y orden de habilidades
+├── js/talentos.js    → la calculadora
 ├── js/app.js         → filtros, fichas, comparador, noticias y cuenta atrás
 ├── data/noticias.json → noticias (las escribe el script)
 ├── scripts/noticias.py → script que busca las noticias
@@ -45,7 +52,7 @@ Descarga el repositorio y abre `index.html` con el navegador. No hace falta inst
 ¿Juegas una clase y sabes qué talentos van bien para subir de nivel? ¡Ayuda!
 
 1. Haz un *fork* del repositorio.
-2. Edita `js/datos.js` con la información que quieras añadir o corregir.
+2. Edita `js/datos.js` o `js/talentos-datos.js` con la información que quieras añadir o corregir. Las builds y el orden de habilidades van en `js/talentos-datos.js`.
 3. Abre un *pull request* explicando qué has cambiado y de dónde sale el dato.
 
 ## Autora

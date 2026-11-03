@@ -253,3 +253,115 @@ dialog::backdrop { background: rgba(4, 6, 14, .72); backdrop-filter: blur(3px); 
   .card:hover { transform: translateY(-3px); }
   @keyframes subir { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 }
+
+/* ---------- Saltos a secciones ---------- */
+.jump a {
+  flex: none; font-size: .85rem; text-decoration: none; color: var(--suave);
+  padding: 4px 2px; border-bottom: 1px solid transparent;
+}
+.jump { gap: 16px; }
+.jump a:hover { color: var(--oro-claro); border-bottom-color: var(--oro-osc); }
+section[id] { scroll-margin-top: 150px; }
+.sub { font-family: var(--font-body); font-size: .76rem; text-transform: uppercase; letter-spacing: .14em; color: var(--oro); margin: 0 0 10px; }
+.new-badge {
+  display: inline-block; font-family: var(--font-body); font-size: .66rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: #1a1408; background: var(--oro); padding: 1px 6px; border-radius: 4px; vertical-align: middle;
+}
+
+/* ---------- Razas ---------- */
+.race-filter { margin-bottom: 14px; }
+.races-list { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); align-items: start; }
+.race { --faccion: #4a78c8; background: var(--panel); border: 1px solid var(--linea); border-left: 3px solid var(--faccion); border-radius: 10px; }
+.race.horda { --faccion: #b8402f; }
+.race summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 14px 16px; }
+.race summary::-webkit-details-marker { display: none; }
+.race summary::after { content: "+"; margin-left: auto; color: var(--suave); font-size: 1.2rem; }
+.race[open] summary::after { content: "−"; }
+.race-name { font-family: var(--font-display); font-size: 1.2rem; }
+.faction-badge { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--faccion); filter: brightness(1.4); }
+.race-classes { display: flex; gap: 4px; flex-basis: 100%; }
+.mini .sigil { width: 26px; height: 26px; border-radius: 5px; box-shadow: 0 0 0 1px var(--oro-osc); }
+.mini .sigil-letter { font-size: .8rem; }
+.race-body { padding: 0 16px 16px; display: grid; gap: 10px; }
+.race-start { font-size: .9rem; color: var(--suave); }
+.race-start b { color: var(--texto); font-weight: 500; }
+.racials { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.racials li { background: var(--noche-2); border-radius: 8px; padding: 10px 12px; }
+.racials li span:last-child { display: block; color: var(--suave); font-size: .92rem; }
+
+/* ---------- Profesiones ---------- */
+.prof-ranks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+.prof-ranks div { display: grid; gap: 2px; padding: 10px; border-radius: 8px; background: var(--panel); border-bottom: 2px solid var(--oro-osc); text-align: center; }
+.prof-ranks b { font-family: var(--font-display); font-size: 1.4rem; color: var(--oro-claro); line-height: 1; }
+.prof-ranks span { font-size: .78rem; color: var(--suave); }
+.prof-grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.prof-grid > div { min-width: 0; }
+.prof-list { display: grid; margin-bottom: 20px; }
+.prof { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--linea); }
+.prof-name { font-weight: 500; display: grid; }
+.prof-name small, .prof-num small { font-size: .74rem; color: var(--suave); font-weight: 400; }
+.prof-num { display: grid; text-align: right; font-variant-numeric: tabular-nums; min-width: 56px; }
+.prof-num.new { color: var(--oro-claro); }
+.pairs { display: grid; gap: 8px; }
+.pair { background: var(--panel); border-radius: 8px; padding: 10px 12px; display: grid; gap: 2px; }
+.pair span { color: var(--suave); font-size: .9rem; }
+
+/* ---------- Calendario ---------- */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; }
+.step { position: relative; padding: 0 0 22px 28px; border-left: 2px solid var(--linea); margin-left: 7px; display: grid; gap: 2px; }
+.step:last-child { padding-bottom: 0; }
+.step::before {
+  content: ""; position: absolute; left: -9px; top: 2px; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--noche); border: 2px solid var(--linea);
+}
+.step.hecho::before { background: var(--oro-osc); border-color: var(--oro-osc); }
+.step.pronto::before { background: var(--oro); border-color: var(--oro-claro); box-shadow: 0 0 12px var(--oro); }
+.step.hecho { opacity: .6; }
+.step-date { font-size: .78rem; text-transform: uppercase; letter-spacing: .1em; color: var(--oro); }
+.step h3 { font-size: 1.2rem; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.step-state { font-family: var(--font-body); font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); border: 1px solid var(--linea); border-radius: 4px; padding: 1px 6px; }
+.step.pronto .step-state { color: #1a1408; background: var(--oro); border-color: var(--oro); }
+.step p { color: var(--suave); max-width: 40em; }
+
+@media (max-width: 520px) {
+  .races-list { grid-template-columns: 1fr; }
+  .prof-ranks b { font-size: 1.15rem; }
+}
+
+/* ---------- Botón a la calculadora ---------- */
+.cta {
+  display: inline-flex; width: fit-content; align-items: center; gap: 6px;
+  background: var(--oro); color: #1a1408; font-weight: 700; text-decoration: none;
+  padding: 10px 16px; border-radius: 8px; margin-top: 4px;
+}
+.cta:hover { background: var(--oro-claro); }
+
+/* ---------- Mascotas ---------- */
+.pet-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .85rem; color: var(--suave); margin-bottom: 14px; }
+.pet-legend span { display: flex; align-items: center; gap: 6px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--suave); }
+.dot.nueva { background: var(--oro); box-shadow: 0 0 6px var(--oro); }
+.dot.vista { background: #4fb35a; }
+.dot.classic { background: transparent; border: 1.5px solid var(--suave); }
+.pets { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.pet { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: start; background: var(--panel); border: 1px solid var(--linea); border-radius: 10px; padding: 12px 14px; }
+.pet.nueva { border-color: color-mix(in srgb, var(--oro) 45%, var(--linea)); }
+.pet-icon {
+  position: relative; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 6px; overflow: hidden;
+  background: var(--noche-2); color: var(--suave); font-family: var(--font-display);
+  box-shadow: 0 0 0 2px var(--oro-osc), 0 0 0 3px #000;
+}
+.pet-icon img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.pet-main b { font-size: 1.05rem; }
+.pet-meta { display: block; font-size: .82rem; color: var(--oro); }
+.pet-main p { font-size: .9rem; color: var(--suave); margin-top: 4px; }
+.pet-side { display: grid; justify-items: end; gap: 8px; }
+.pet-speed { display: grid; justify-items: end; font-size: .7rem; color: var(--suave); line-height: 1.2; }
+.pet-speed b { font-family: var(--font-display); font-size: 1.15rem; color: var(--oro-claro); }
+.families { margin-top: 16px; background: var(--panel); border: 1px solid var(--linea); border-radius: 10px; }
+.families summary { cursor: pointer; padding: 14px 16px; font-weight: 500; }
+.family-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); padding: 0 16px 16px; }
+.family { display: flex; gap: 10px; align-items: center; }
+.family b { display: block; }
+.family span { font-size: .84rem; color: var(--suave); }
+@media (max-width: 520px) { .pets { grid-template-columns: 1fr; } }

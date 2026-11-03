@@ -1,10 +1,3 @@
-// ---------- ICONOS ----------
-// Devuelve el HTML del icono de una clase. Si la imagen no carga, se ve la inicial.
-function iconoClase(c) {
-  return `<span class="sigil" aria-hidden="true"><span class="sigil-letter">${c.nombre[0]}</span>` +
-    `<img src="${ICONOS_URL}${c.icono}.jpg" alt="" loading="lazy" onerror="this.remove()"></span>`;
-}
-
 // ---------- ESTADO DE LOS FILTROS ----------
 let rolElegido = "todos";
 let faccionElegida = "todas";
@@ -101,7 +94,8 @@ function abrirFicha(id) {
       </div>
       <div>
         <h3>Talentos para subir de nivel</h3>
-        <p class="pending">Lo añadiremos cuando salga el juego y lo hayamos probado. Mientras tanto, puedes mirar una calculadora completa más abajo en la página.</p>
+        <p class="pending">Lo añadiremos cuando salga el juego y lo hayamos probado. Mientras tanto, puedes hacer tu propia build.</p>
+        <a class="cta" href="talentos.html#${c.id}">Abrir los talentos de ${c.nombre} →</a>
       </div>
     </div>`;
   dialogo.querySelector(".close").addEventListener("click", cerrarFicha);
@@ -173,6 +167,97 @@ function comparar() {
   document.getElementById("cmp-table").innerHTML = html;
 }
 
+// ---------- MASCOTAS ----------
+function iconoFamilia(nombre) {
+  const f = FAMILIAS.find(x => x[0] === nombre);
+  const icono = f && f[1] ? `<img src="${ICONOS_URL}${f[1]}.jpg" alt="" loading="lazy" onerror="this.remove()">` : "";
+  return `<span class="pet-icon" aria-hidden="true"><span>${nombre[0]}</span>${icono}</span>`;
+}
+
+function pintarMascotas() {
+  const estados = { nueva: "Nueva en Forever", vista: "Vista en la beta", classic: "Dato de Classic" };
+  document.getElementById("pets").innerHTML = MASCOTAS.map(m => `
+    <div class="pet ${m[5]}">
+      ${iconoFamilia(m[1])}
+      <div class="pet-main">
+        <b>${m[0]}</b>
+        <span class="pet-meta">${m[1]} · nivel ${m[2]} · ${m[3]}</span>
+        <p>${m[6]}</p>
+      </div>
+      <div class="pet-side">
+        ${m[4] ? `<span class="pet-speed"><b>${m[4].toFixed(1)} s</b>por ataque</span>` : ""}
+        <span class="pet-state" title="${estados[m[5]]}"><i class="dot ${m[5]}"></i></span>
+      </div>
+    </div>`).join("");
+
+  document.getElementById("families").innerHTML = FAMILIAS.map(f => `
+    <div class="family">${iconoFamilia(f[0])}<div><b>${f[0]}</b><span>${f[2]} · ${f[3]}</span></div></div>`).join("");
+}
+
+// ---------- RAZAS ----------
+let faccionRazas = "todas";
+
+function pintarRazas() {
+  crearChips("race-filter",
+    [["todas", "Todas"], ["alianza", "Alianza"], ["horda", "Horda"]],
+    () => faccionRazas, v => faccionRazas = v);
+  // crearChips llama a pintar(); aquí volvemos a pintar las razas
+  for (const b of document.querySelectorAll("#race-filter .chip")) {
+    b.addEventListener("click", pintarRazas);
+  }
+
+  const lista = document.getElementById("races-list");
+  lista.innerHTML = "";
+  for (const [id, raza] of Object.entries(RACES)) {
+    if (faccionRazas !== "todas" && raza.faccion !== faccionRazas) continue;
+    const info = RACIALES[id];
+    const clases = CLASSES.filter(c => c.razas.includes(id));
+
+    const det = document.createElement("details");
+    det.className = "race " + raza.faccion;
+    det.innerHTML = `
+      <summary>
+        <span class="race-name">${raza.nombre}</span>
+        <span class="faction-badge">${raza.faccion === "alianza" ? "Alianza" : "Horda"}</span>
+        <span class="race-classes">${clases.map(c => `<span class="mini" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}</span>`).join("")}</span>
+      </summary>
+      <div class="race-body">
+        <p class="race-start">Empieza en: <b>${info.inicio}</b> · ${clases.length} clases</p>
+        <ul class="racials">
+          ${info.habilidades.map(h => `<li><b>${h[0]}</b>${h[2] ? ' <span class="new-badge">Nueva</span>' : ""}<span>${h[1]}</span></li>`).join("")}
+        </ul>
+      </div>`;
+    lista.appendChild(det);
+  }
+}
+
+// ---------- PROFESIONES ----------
+function filaProfesion(p) {
+  return `<div class="prof">
+      <span class="prof-name">${p[0]}<small>${p[1]}</small></span>
+      <span class="prof-num">${p[2]}<small>recetas</small></span>
+      <span class="prof-num new">+${p[3]}<small>nuevas</small></span>
+    </div>`;
+}
+
+function pintarProfesiones() {
+  document.getElementById("prof-main").innerHTML = PROFESIONES.principales.map(filaProfesion).join("");
+  document.getElementById("prof-sec").innerHTML = PROFESIONES.secundarias.map(filaProfesion).join("");
+  document.getElementById("prof-pairs").innerHTML = PAREJAS.map(p =>
+    `<div class="pair"><b>${p[0]} + ${p[1]}</b><span>${p[2]}</span></div>`).join("");
+}
+
+// ---------- CALENDARIO ----------
+function pintarCalendario() {
+  const etiquetas = { hecho: "Hecho", pronto: "Ya llega", futuro: "Próximamente" };
+  document.getElementById("timeline").innerHTML = CALENDARIO.map(e => `
+    <li class="step ${e.estado}">
+      <span class="step-date">${e.fecha}</span>
+      <h3>${e.titulo} <span class="step-state">${etiquetas[e.estado]}</span></h3>
+      <p>${e.texto}</p>
+    </li>`).join("");
+}
+
 // ---------- CUENTA ATRÁS ----------
 // 4 nov 2026 a las 15:00 PST = 23:00 UTC = 5 nov 00:00 en España
 const LANZAMIENTO = new Date("2026-11-04T23:00:00Z");
@@ -231,5 +316,9 @@ function cargarNoticias() {
 
 pintar();
 prepararComparador();
+pintarMascotas();
+pintarRazas();
+pintarProfesiones();
+pintarCalendario();
 cargarNoticias();
 if (location.hash) abrirFicha(location.hash.slice(1));

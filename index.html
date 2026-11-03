@@ -33,6 +33,7 @@
       <p class="eyebrow">Guía en español para empezar</p>
       <h1>Elige tu clase <span>sin perderte en Azeroth</span></h1>
       <p class="lead">Las 9 clases de World of Warcraft: Forever explicadas en corto: qué hace cada una, qué rol cumple y con qué razas puedes jugarla.</p>
+      <a class="cta" href="talentos.html">Abrir la calculadora de talentos →</a>
     </div>
     <div class="count" id="count">
       <span class="count-label">Lanzamiento en España</span>
@@ -44,6 +45,9 @@
 
 <nav class="filters" aria-label="Filtros">
   <div class="wrap">
+    <div class="row jump" aria-label="Secciones">
+      <a href="#clases">Clases</a><a href="talentos.html">Talentos</a><a href="#comparador">Comparador</a><a href="#mascotas">Mascotas</a><a href="#razas">Razas</a><a href="#profesiones">Profesiones</a><a href="#calendario">Calendario</a><a href="#noticias">Noticias</a>
+    </div>
     <div class="row" id="role-filter" role="group" aria-label="Rol"></div>
     <div class="row" id="faction-filter" role="group" aria-label="Facción"></div>
   </div>
@@ -51,7 +55,7 @@
 
 <main>
   <div class="wrap">
-    <section>
+    <section id="clases">
       <div class="section-head">
         <h2>Las clases</h2>
         <p id="result-count">Toca una clase para ver su ficha.</p>
@@ -70,6 +74,65 @@
         <label for="cmp-b">Clase 2<select id="cmp-b"></select></label>
       </div>
       <div class="cmp-table" id="cmp-table"></div>
+    </section>
+
+    <section id="mascotas">
+      <div class="section-head">
+        <h2>Mascotas de cazador</h2>
+        <p>Mascotas raras que merece la pena domar, ordenadas por nivel. Solo puedes domar bestias de tu nivel o menos, a partir del nivel 10.</p>
+      </div>
+      <div class="pet-legend">
+        <span><i class="dot nueva"></i>Nueva en Forever</span>
+        <span><i class="dot vista"></i>Vista en la beta</span>
+        <span><i class="dot classic"></i>Dato de Classic, sin confirmar</span>
+      </div>
+      <div class="pets" id="pets"></div>
+      <details class="families">
+        <summary>Las 19 familias y su habilidad especial</summary>
+        <div class="family-grid" id="families"></div>
+      </details>
+    </section>
+
+    <section id="razas">
+      <div class="section-head">
+        <h2>Razas</h2>
+        <p>Toca una raza para ver sus habilidades raciales. Las marcadas como <span class="new-badge">Nueva</span> no existían en Classic.</p>
+      </div>
+      <div class="row race-filter" id="race-filter" role="group" aria-label="Facción de las razas"></div>
+      <div class="races-list" id="races-list"></div>
+    </section>
+
+    <section id="profesiones">
+      <div class="section-head">
+        <h2>Profesiones</h2>
+        <p>Puedes tener dos principales y todas las secundarias. Todas llegan a 300 puntos.</p>
+      </div>
+      <div class="prof-ranks" aria-label="Rangos de profesión">
+        <div><b>75</b><span>Aprendiz</span></div>
+        <div><b>150</b><span>Oficial</span></div>
+        <div><b>225</b><span>Experto</span></div>
+        <div><b>300</b><span>Artesano</span></div>
+      </div>
+      <div class="prof-grid">
+        <div>
+          <h3 class="sub">Principales</h3>
+          <div class="prof-list" id="prof-main"></div>
+        </div>
+        <div>
+          <h3 class="sub">Secundarias</h3>
+          <div class="prof-list" id="prof-sec"></div>
+          <h3 class="sub">Parejas que van bien juntas</h3>
+          <div class="pairs" id="prof-pairs"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="calendario">
+      <div class="section-head">
+        <h2>Calendario</h2>
+        <p>La hoja de ruta que ha anunciado Blizzard.</p>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
     </section>
 
     <section id="noticias">
@@ -121,7 +184,7 @@
 <footer>
   <div class="wrap">
     <p>Brújula de Azeroth es un fansite no oficial y sin ánimo de lucro. No está afiliado ni respaldado por Blizzard Entertainment. World of Warcraft y Warcraft son marcas de Blizzard Entertainment.</p>
-    <p>Datos de clases, razas y habilidades del cliente 1.60.1. Iconos de clase © Blizzard Entertainment. Última revisión: 3 de noviembre de 2026.</p>
+    <p>Datos de clases, razas, habilidades y profesiones del cliente 1.60.1. Mascotas según foreverdb.net y mmonster.co. Calendario según la hoja de ruta oficial de Blizzard. Iconos de clase © Blizzard Entertainment. Última revisión: 3 de noviembre de 2026.</p>
     <p class="credit">Creado por <strong>Bea García</strong> · <a href="https://github.com/bgarciaa181" target="_blank" rel="noopener">github.com/bgarciaa181</a></p>
   </div>
 </footer>

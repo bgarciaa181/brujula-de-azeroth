@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talentos · Brújula de Azeroth</title>
+<meta name="description" content="Calculadora de talentos de WoW Forever en español. Elige tus talentos, mira el orden por nivel y comparte tu build.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
+<link rel="stylesheet" href="css/estilos.css">
+<link rel="stylesheet" href="css/talentos.css">
+</head>
+<body class="pagina-talentos">
+
+<header class="t-top">
+  <div class="wrap">
+    <a class="back" href="index.html">← Brújula de Azeroth</a>
+    <h1>Calculadora de talentos</h1>
+    <p class="lead">Toca un talento para ponerle un punto. Abajo verás en qué orden ponerlos según tu nivel, y podrás copiar la build para compartirla.</p>
+    <div class="class-pick" id="class-pick" role="group" aria-label="Elige clase"></div>
+  </div>
+</header>
+
+<div class="t-bar">
+  <div class="wrap">
+    <div class="t-sum" id="t-sum"></div>
+    <div class="t-actions">
+      <button type="button" class="btn" id="btn-undo">Quitar último</button>
+      <button type="button" class="btn" id="btn-reset">Empezar de cero</button>
+      <button type="button" class="btn gold" id="btn-link">Copiar enlace</button>
+      <button type="button" class="btn" id="btn-text">Copiar lista</button>
+      <button type="button" class="btn" id="btn-screen" aria-pressed="false">Modo segunda pantalla</button>
+    </div>
+    <p class="toast" id="toast" role="status" aria-live="polite"></p>
+  </div>
+</div>
+
+<main>
+  <div class="wrap t-main">
+    <section class="t-trees-wrap" id="trees-wrap">
+      <div class="tree-tabs" id="tree-tabs" role="tablist" aria-label="Árboles"></div>
+      <div class="trees" id="trees"></div>
+      <div class="t-info" id="t-info">Toca un talento para ver qué hace.</div>
+    </section>
+
+    <section class="t-order">
+      <div class="order-head">
+        <h2>Orden por nivel</h2>
+        <label for="my-level">Tu nivel <input type="number" id="my-level" min="10" max="60" value="10" inputmode="numeric"></label>
+      </div>
+      <div class="next-pick" id="next-pick"></div>
+      <ol class="order-list" id="order-list"></ol>
+    </section>
+
+    <section class="t-extra">
+      <h2>Builds recomendadas</h2>
+      <div id="builds"></div>
+      <h2>Orden de habilidades</h2>
+      <div id="rotation"></div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Árboles de talentos del cliente 1.60.1, según la calculadora de <a href="https://metabot.gg/en/wow-forever/talent-calculator" target="_blank">MetaBot.GG</a>. Los talentos con "?" se conocerán tras el lanzamiento. Descripciones en inglés.</p>
+    <p>Brújula de Azeroth es un fansite no oficial y sin ánimo de lucro. No está afiliado ni respaldado por Blizzard Entertainment. Iconos © Blizzard Entertainment.</p>
+    <p class="credit">Creado por <strong>Bea García</strong> · <a href="https://github.com/bgarciaa181" target="_blank" rel="noopener">github.com/bgarciaa181</a></p>
+  </div>
+</footer>
+
+<script src="js/datos.js"></script>
+<script src="js/talentos-datos.js"></script>
+<script src="js/talentos.js"></script>
+</body>
+</html>
