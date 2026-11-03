@@ -301,6 +301,16 @@ document.getElementById("btn-text").addEventListener("click", () => {
   copiar(`${c.nombre} - Brújula de Azeroth\n${lineas.join("\n")}\n${location.href}`, "Lista copiada.");
 });
 
+// Copia el enlace de la build y abre el foro para crear un tema nuevo
+document.getElementById("btn-forum").addEventListener("click", () => {
+  if (orden.length === 0) {
+    avisar("Primero pon algunos puntos en los árboles.");
+    return;
+  }
+  copiar(location.href, "Enlace copiado. Pégalo en el tema nuevo del foro.");
+  window.open("https://github.com/bgarciaa181/brujula-de-azeroth/discussions/new/choose", "_blank", "noopener");
+});
+
 document.getElementById("btn-screen").addEventListener("click", e => {
   const activo = document.body.classList.toggle("segunda-pantalla");
   e.currentTarget.setAttribute("aria-pressed", String(activo));

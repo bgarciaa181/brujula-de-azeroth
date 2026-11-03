@@ -148,3 +148,9 @@
   .t-icon { width: 40px; height: 40px; }
   .rank { top: 28px; right: 2px; }
 }
+
+/* Builds de la comunidad */
+.t-community { grid-column: 1 / -1; display: grid; gap: 10px; background: var(--panel); border: 1px solid var(--linea); border-radius: 14px; padding: 16px; }
+.t-community h2 { font-size: 1.4rem; color: var(--oro-claro); }
+.forum-link { width: fit-content; text-decoration: none; }
+.segunda-pantalla .t-community { display: none; }

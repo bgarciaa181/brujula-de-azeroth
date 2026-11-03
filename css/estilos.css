@@ -768,3 +768,20 @@ section[id] { scroll-margin-top: 150px; }
 html.bloqueo, html.bloqueo body { overflow: hidden; }
 dialog, .search-results { overscroll-behavior: contain; }
 dialog { overflow-y: auto; }
+
+/* ---------- Comunidad ---------- */
+.community-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.community-card {
+  display: grid; justify-items: center; text-align: center; gap: 6px; padding: 20px 12px;
+  border-radius: 14px; border: 1px solid var(--oro-osc); text-decoration: none; color: var(--texto);
+  background: radial-gradient(circle at 50% 0%, rgba(214, 176, 106, .16), transparent 65%), var(--panel);
+}
+.community-card b { font-family: var(--font-display); font-size: 1.4rem; color: var(--oro-claro); }
+.community-card small { color: var(--suave); }
+.community-card .wow-icon.xl { width: 60px; height: 60px; }
+.comments { background: var(--panel); border: 1px solid var(--linea); border-radius: 14px; padding: 16px; }
+.comments-note { font-size: .85rem; color: var(--suave); margin-bottom: 10px; }
+@media (prefers-reduced-motion: no-preference) {
+  .community-card { transition: transform .15s; }
+  .community-card:hover { transform: translateY(-3px); }
+}

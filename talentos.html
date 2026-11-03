@@ -17,8 +17,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=10">
-<link rel="stylesheet" href="css/talentos.css?v=10">
+<link rel="stylesheet" href="css/estilos.css?v=11">
+<link rel="stylesheet" href="css/talentos.css?v=11">
 </head>
 <body class="pagina-talentos">
 
@@ -40,6 +40,7 @@
       <button type="button" class="btn gold" id="btn-link">Copiar enlace</button>
       <button type="button" class="btn" id="btn-text">Copiar lista</button>
       <button type="button" class="btn" id="btn-screen" aria-pressed="false">Modo segunda pantalla</button>
+      <button type="button" class="btn" id="btn-forum">Compartir en el foro</button>
     </div>
     <p class="toast" id="toast" role="status" aria-live="polite"></p>
   </div>
@@ -68,6 +69,27 @@
       <h2>Orden de habilidades</h2>
       <div id="rotation"></div>
     </section>
+
+    <section class="t-community">
+      <h2>Builds de la comunidad</h2>
+      <p class="comments-note">Comparte tu build con "Compartir en el foro" o pega aquí el enlace. Para comentar necesitas una cuenta de GitHub (es gratis).</p>
+      <a class="btn gold forum-link" href="https://github.com/bgarciaa181/brujula-de-azeroth/discussions" target="_blank" rel="noopener">Ver el foro →</a>
+      <script src="https://giscus.app/client.js"
+        data-repo="bgarciaa181/brujula-de-azeroth"
+        data-repo-id="R_kgDOVhVyoQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOVhVyoc4DKULv"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark"
+        data-lang="es"
+        crossorigin="anonymous"
+        async>
+</script>
+    </section>
   </div>
 </main>
 
@@ -79,8 +101,8 @@
   </div>
 </footer>
 
-<script src="js/datos.js?v=10"></script>
-<script src="js/talentos-datos.js?v=10"></script>
-<script src="js/talentos.js?v=10"></script>
+<script src="js/datos.js?v=11"></script>
+<script src="js/talentos-datos.js?v=11"></script>
+<script src="js/talentos.js?v=11"></script>
 </body>
 </html>

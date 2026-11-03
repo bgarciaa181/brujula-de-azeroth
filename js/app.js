@@ -697,7 +697,8 @@ const SECCIONES = [
   ["profesiones", "Oficios", "trade_blacksmithing"],
   ["raids", "Raids", "achievement_boss_onyxia"],
   ["calendario", "Calendario", "inv_misc_pocketwatch_01"],
-  ["noticias", "Noticias", "inv_scroll_03"]
+  ["noticias", "Noticias", "inv_scroll_03"],
+  ["comunidad", "Comunidad", "inv_misc_note_01"]
 ];
 
 function pintarMenu() {
