@@ -981,3 +981,7 @@ dialog { overflow-y: auto; }
   .achievement:not([hidden]) { animation: logro .5s cubic-bezier(.2, 1.4, .4, 1); }
   @keyframes logro { from { transform: translate(-50%, 40px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 }
+/* El nombre de la zona va debajo del minimapa para no tapar puntos */
+.mm-wrap { display: grid; gap: 6px; justify-items: center; align-content: start; }
+.mm-wrap .mm-zone { position: static; transform: none; background: none; padding: 0; font-size: .85rem; }
+@media (max-width: 520px) { .mm-wrap .minimap { max-width: 220px; } }

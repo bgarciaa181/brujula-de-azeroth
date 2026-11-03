@@ -774,10 +774,12 @@ function abrirMascota(boton) {
   const aprende = [...datos.aprende, f[2]].filter((h, i, a) => a.indexOf(h) === i);
 
   panel.innerHTML = `
-    <div class="minimap" aria-label="Mapa de ${m[3]} con los sitios donde aparece ${m[0]}">
+    <div class="mm-wrap">
+      <div class="minimap" aria-label="Mapa de ${m[3]} con los sitios donde aparece ${m[0]}">
+        <span class="mm-n">N</span>
+        ${datos.puntos.map(p => `<i class="mm-spot" style="left:${p[0]}%;top:${p[1]}%" title="${p[0]}, ${p[1]}"></i>`).join("")}
+      </div>
       <span class="mm-zone">${m[3]}</span>
-      <span class="mm-n">N</span>
-      ${datos.puntos.map(p => `<i class="mm-spot" style="left:${p[0]}%;top:${p[1]}%" title="${p[0]}, ${p[1]}"></i>`).join("")}
     </div>
     <div class="pet-info">
       <p class="mm-coords"><b>Coordenadas:</b> ${datos.puntos.map(p => `${p[0]}, ${p[1]}`).join(" · ")}</p>
