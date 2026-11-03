@@ -9,7 +9,9 @@ Pensada sobre todo para verla en el móvil.
 
 - Cuenta atrás para el lanzamiento en España.
 - Las 9 clases con filtros por rol y por facción.
-- Una ficha por clase (se puede compartir con un enlace como `#mago`).
+- Una ficha por clase con su icono oficial (se puede compartir con un enlace como `#mago`).
+- Comparador para ver dos clases lado a lado.
+- Noticias de WoW Forever que se actualizan solas cada 3 horas.
 - Lo básico de los talentos en 3 ideas.
 - Enlaces a calculadoras de talentos completas.
 
@@ -27,7 +29,10 @@ brujula-de-azeroth/
 ├── index.html        → la página
 ├── css/estilos.css   → el diseño
 ├── js/datos.js       → clases, razas y roles
-├── js/app.js         → filtros, fichas y cuenta atrás
+├── js/app.js         → filtros, fichas, comparador, noticias y cuenta atrás
+├── data/noticias.json → noticias (las escribe el script)
+├── scripts/noticias.py → script que busca las noticias
+├── .github/workflows/ → GitHub Action que lanza el script cada 3 horas
 └── README.md
 ```
 

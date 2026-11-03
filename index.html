@@ -15,10 +15,14 @@
 <header class="top">
   <div class="wrap">
     <div class="brand">
-      <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-        <circle cx="18" cy="18" r="16" fill="none" stroke="#e6c27a" stroke-width="2"/>
-        <path d="M18 5 L22 18 L18 31 L14 18 Z" fill="#e6c27a"/>
-        <path d="M18 5 L22 18 L14 18 Z" fill="#fff3d6"/>
+      <svg class="compass" width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+        <circle cx="22" cy="22" r="20" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
+        <circle cx="22" cy="22" r="15" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 3.2" opacity=".5"/>
+        <g class="needle">
+          <path d="M22 4 L26.5 22 L22 40 L17.5 22 Z" fill="currentColor"/>
+          <path d="M22 4 L26.5 22 L17.5 22 Z" fill="#fff4d8"/>
+        </g>
+        <circle cx="22" cy="22" r="2" fill="#0c0f1c"/>
       </svg>
       <div>
         <div class="brand-name">Brújula de Azeroth</div>
@@ -26,8 +30,9 @@
       </div>
     </div>
     <div class="hero">
-      <h1>¿Empiezas en WoW Forever? Elige tu clase sin volverte loco</h1>
-      <p>Las 9 clases explicadas en español y en corto: qué hace cada una, qué rol puede cumplir y con qué razas puedes jugarla.</p>
+      <p class="eyebrow">Guía en español para empezar</p>
+      <h1>Elige tu clase <span>sin perderte en Azeroth</span></h1>
+      <p class="lead">Las 9 clases de World of Warcraft: Forever explicadas en corto: qué hace cada una, qué rol cumple y con qué razas puedes jugarla.</p>
     </div>
     <div class="count" id="count">
       <span class="count-label">Lanzamiento en España</span>
@@ -52,6 +57,27 @@
         <p id="result-count">Toca una clase para ver su ficha.</p>
       </div>
       <div class="grid" id="grid"></div>
+    </section>
+
+    <section id="comparador">
+      <div class="section-head">
+        <h2>Comparador de clases</h2>
+        <p>Elige dos clases y míralas lado a lado.</p>
+      </div>
+      <div class="cmp-pick">
+        <label for="cmp-a">Clase 1<select id="cmp-a"></select></label>
+        <span class="cmp-vs" aria-hidden="true">vs</span>
+        <label for="cmp-b">Clase 2<select id="cmp-b"></select></label>
+      </div>
+      <div class="cmp-table" id="cmp-table"></div>
+    </section>
+
+    <section id="noticias">
+      <div class="section-head">
+        <h2>Últimas noticias</h2>
+        <p id="news-info">Se actualizan solas cada pocas horas. Los artículos están en inglés.</p>
+      </div>
+      <div class="news" id="news-list"></div>
     </section>
 
     <section>
@@ -95,7 +121,7 @@
 <footer>
   <div class="wrap">
     <p>Brújula de Azeroth es un fansite no oficial y sin ánimo de lucro. No está afiliado ni respaldado por Blizzard Entertainment. World of Warcraft y Warcraft son marcas de Blizzard Entertainment.</p>
-    <p>Datos de clases y razas del cliente 1.60.1. Última revisión: 3 de noviembre de 2026.</p>
+    <p>Datos de clases, razas y habilidades del cliente 1.60.1. Iconos de clase © Blizzard Entertainment. Última revisión: 3 de noviembre de 2026.</p>
     <p class="credit">Creado por <strong>Bea García</strong> · <a href="https://github.com/bgarciaa181" target="_blank" rel="noopener">github.com/bgarciaa181</a></p>
   </div>
 </footer>
