@@ -244,3 +244,33 @@ const MASCOTAS = [
   ["Ravage", "Hiena", 51, "Las Tierras Devastadas", 1.3, "classic", "Hiena rápida para el final del juego."],
   ["Deathmaw", "Lobo", 53, "Las Estepas Ardientes", 1.2, "classic", "Lobo rápido para el final del juego."]
 ];
+
+// ---------- TEST: ¿QUÉ CLASE VA CONTIGO? ----------
+// Cada respuesta suma puntos a unas clases. Gana la que más tenga.
+const TEST = [
+  { pregunta: "En grupo, ¿qué te gusta hacer?", opciones: [
+    { texto: "Proteger al grupo", rol: "tanque", puntos: { guerrero: 3, paladin: 2, druida: 2 } },
+    { texto: "Curar a los demás", rol: "sanador", puntos: { sacerdote: 3, paladin: 2, chaman: 2, druida: 2 } },
+    { texto: "Hacer mucho daño", rol: "melee", puntos: { picaro: 2, mago: 2, brujo: 2, cazador: 2, guerrero: 1 } }
+  ] },
+  { pregunta: "¿Cerca o lejos del enemigo?", opciones: [
+    { texto: "Cuerpo a cuerpo", rol: "melee", puntos: { guerrero: 2, picaro: 2, paladin: 2, chaman: 1, druida: 1 } },
+    { texto: "Desde lejos", rol: "distancia", puntos: { mago: 2, brujo: 2, cazador: 2, sacerdote: 1, chaman: 1, druida: 1 } },
+    { texto: "Me da igual", icono: "inv_misc_coin_01", puntos: { druida: 2, chaman: 2, paladin: 1 } }
+  ] },
+  { pregunta: "¿Quieres un compañero que luche contigo?", opciones: [
+    { texto: "Sí, una bestia", icono: "ability_hunter_beasttaming", puntos: { cazador: 4 } },
+    { texto: "Sí, un demonio", icono: "spell_shadow_metamorphosis", puntos: { brujo: 4 } },
+    { texto: "No, voy por libre", icono: "ability_stealth", puntos: { picaro: 1, guerrero: 1, mago: 1, sacerdote: 1 } }
+  ] },
+  { pregunta: "¿Qué te mola más?", opciones: [
+    { texto: "Sigilo y emboscadas", icono: "ability_stealth", puntos: { picaro: 3, druida: 1 } },
+    { texto: "Armadura pesada", icono: "ability_warrior_defensivestance", puntos: { guerrero: 3, paladin: 3 } },
+    { texto: "Fuego, hielo y rayos", icono: "spell_fire_firebolt02", puntos: { mago: 3, chaman: 2 } },
+    { texto: "Cambiar de forma", icono: "ability_racial_bearform", puntos: { druida: 4 } }
+  ] },
+  { pregunta: "¿Es tu primera vez en WoW?", opciones: [
+    { texto: "Sí, soy nuevo", icono: "inv_misc_map_01", puntos: { cazador: 2, paladin: 2 } },
+    { texto: "No, ya he jugado", icono: "inv_misc_book_09", puntos: {} }
+  ] }
+];

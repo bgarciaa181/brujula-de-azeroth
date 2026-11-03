@@ -108,6 +108,67 @@ dialogo.addEventListener("cancel", e => { e.preventDefault(); cerrarFicha(); });
 dialogo.addEventListener("click", e => { if (e.target === dialogo) cerrarFicha(); });
 window.addEventListener("hashchange", () => abrirFicha(location.hash.slice(1)));
 
+// ---------- TEST ----------
+let pasoTest = 0;
+let puntosTest = {};
+
+function iconoOpcion(op) {
+  return op.rol ? iconoRol(op.rol) : iconoWow(op.icono, "lg");
+}
+
+function pintarTest() {
+  const caja = document.getElementById("quiz");
+
+  // Resultado final
+  if (pasoTest >= TEST.length) {
+    const orden = CLASSES.slice().sort((a, b) => (puntosTest[b.id] || 0) - (puntosTest[a.id] || 0));
+    const c = orden[0];
+    const otras = orden.slice(1, 3);
+    caja.innerHTML = `
+      <div class="quiz-result" style="--cls:${c.color}">
+        <span class="quiz-label">Tu clase es</span>
+        ${iconoClase(c)}
+        <h3>${c.nombre}</h3>
+        <p class="pitch">${c.pitch}</p>
+        <div class="roles">${c.roles.map(iconoRol).join("")}</div>
+        <div class="quiz-actions">
+          <a class="cta" href="#${c.id}">Ver ficha</a>
+          <a class="cta ghost" href="talentos.html#${c.id}">Sus talentos</a>
+          <button type="button" class="cta ghost" id="quiz-again">Repetir</button>
+        </div>
+        <p class="quiz-also">También te pegan: ${otras.map(o => `<a href="#${o.id}" style="color:${o.color}">${o.nombre}</a>`).join(" y ")}</p>
+      </div>`;
+    document.getElementById("quiz-again").addEventListener("click", () => {
+      pasoTest = 0;
+      puntosTest = {};
+      pintarTest();
+    });
+    return;
+  }
+
+  // Pregunta actual
+  const q = TEST[pasoTest];
+  caja.innerHTML = `
+    <div class="quiz-progress">${TEST.map((_, i) => `<span class="${i < pasoTest ? "done" : i === pasoTest ? "now" : ""}"></span>`).join("")}</div>
+    <h3 class="quiz-q">${q.pregunta}</h3>
+    <div class="quiz-options"></div>`;
+  const opciones = caja.querySelector(".quiz-options");
+  for (const op of q.opciones) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "quiz-opt";
+    b.innerHTML = `${iconoOpcion(op)}<span>${op.texto}</span>`;
+    b.addEventListener("click", () => {
+      for (const [id, n] of Object.entries(op.puntos)) {
+        puntosTest[id] = (puntosTest[id] || 0) + n;
+      }
+      pasoTest++;
+      pintarTest();
+    });
+    opciones.appendChild(b);
+  }
+}
+
 // ---------- COMPARADOR ----------
 const selA = document.getElementById("cmp-a");
 const selB = document.getElementById("cmp-b");
@@ -338,6 +399,7 @@ document.getElementById("hero-classes").innerHTML = CLASSES.map(c =>
   `<a href="#${c.id}" class="hero-cls" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}<span>${c.nombre}</span></a>`).join("");
 
 pintar();
+pintarTest();
 prepararComparador();
 pintarMascotas();
 pintarRazas();
