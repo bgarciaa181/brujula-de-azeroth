@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=13">
+<link rel="stylesheet" href="css/estilos.css?v=15">
 
 </head>
 <body>
@@ -62,6 +62,8 @@
   </div>
 </nav>
 
+<div class="achievement" id="achievement" hidden></div>
+
 <div class="search-layer" id="search-layer" hidden>
   <div class="search-box" role="dialog" aria-label="Buscar en la web">
     <div class="search-input">
@@ -96,6 +98,27 @@
           <div class="j-page j-right" id="j-route"></div>
         </div>
       </div>
+    </section>
+
+    <section id="mapa">
+      <div class="section-head">
+        <h2>Mapa de Azeroth</h2>
+        <p>Las zonas con el color de dificultad del juego según tu nivel.</p>
+      </div>
+      <div class="con-legend">
+        <span class="con gris">Muy fácil</span><span class="con verde">Fácil</span><span class="con amarillo">Tu nivel</span><span class="con naranja">Difícil</span><span class="con rojo">Peligrosa</span>
+      </div>
+      <p class="map-sync">Usa la facción y el nivel del Diario de aventuras: <b id="map-info"></b></p>
+      <div class="continents" id="continents"></div>
+    </section>
+
+    <section id="checklist">
+      <div class="section-head">
+        <h2>Checklist del día 1</h2>
+        <p>Marca lo que vayas haciendo. Se guarda en tu navegador.</p>
+      </div>
+      <div class="check-progress"><span id="check-bar"></span></div>
+      <ul class="checklist" id="check-list"></ul>
     </section>
 
     <section id="clases">
@@ -370,8 +393,8 @@
 
 <dialog id="detail" aria-labelledby="d-name"></dialog>
 
-<script src="js/datos.js?v=13"></script>
-<script src="js/talentos-datos.js?v=13"></script>
-<script src="js/app.js?v=13"></script>
+<script src="js/datos.js?v=15"></script>
+<script src="js/talentos-datos.js?v=15"></script>
+<script src="js/app.js?v=15"></script>
 </body>
 </html>

@@ -879,3 +879,105 @@ dialog { overflow-y: auto; }
 @media (prefers-reduced-motion: no-preference) {
   .j-goal { animation: subir .3s ease-out backwards; }
 }
+
+/* ---------- Mascotas: minimapa y habilidades ---------- */
+.pet { grid-template-columns: auto minmax(0, 1fr) auto; }
+.pet-where {
+  margin-top: 8px; font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer;
+  color: var(--oro-claro); background: rgba(214, 176, 106, .1); border: 1px solid var(--oro-osc); border-radius: 8px; padding: 5px 10px;
+}
+.pet-where:hover { background: rgba(214, 176, 106, .2); }
+.pet-detail { grid-column: 1 / -1; display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 14px; margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.pet-detail[hidden] { display: none; }
+.minimap {
+  position: relative; width: 100%; aspect-ratio: 1; border-radius: 50%; overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px) 0 0 / 20% 20%,
+    linear-gradient(90deg, rgba(255, 255, 255, .05) 1px, transparent 1px) 0 0 / 20% 20%,
+    radial-gradient(circle at 40% 35%, #3b4a2a, #24301c 70%, #182012);
+  box-shadow: 0 0 0 3px #6b5328, 0 0 0 5px #1a1206, 0 0 0 6px var(--oro-osc), inset 0 0 30px rgba(0, 0, 0, .6);
+}
+.mm-zone { position: absolute; left: 0; right: 0; top: 8%; text-align: center; font-family: var(--font-display); font-size: .78rem; color: #ffd100; text-shadow: 0 1px 2px #000; }
+.mm-n { position: absolute; top: 2px; left: 50%; transform: translateX(-50%); font-size: .7rem; font-weight: 700; color: #fff; text-shadow: 0 1px 2px #000; }
+.mm-spot {
+  position: absolute; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%;
+  border: 2px solid #ff2a2a; background: rgba(255, 42, 42, .25); box-shadow: 0 0 8px #ff2a2a;
+}
+.pet-info { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.pet-info h4 { font-size: .74rem; text-transform: uppercase; letter-spacing: .12em; color: var(--oro); margin-top: 4px; }
+.mm-coords { font-size: .78rem; color: var(--suave); overflow-wrap: anywhere; }
+.mm-coords b { color: var(--texto); }
+.mm-note { font-size: .76rem; color: var(--suave); font-style: italic; }
+.ab-list { display: grid; gap: 6px; }
+.ab-chip { display: grid; gap: 1px; padding: 6px 10px; border-radius: 8px; background: var(--noche-2); border-left: 3px solid #5b8def; }
+.ab-chip.pasiva { border-left-color: #b07ce8; }
+.ab-chip > b { font-size: .88rem; }
+.ab-chip small { font-size: .76rem; color: var(--suave); }
+.ab-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+.ab-tags .tag-pve, .ab-tags .tag-pvp { margin-left: 0; font-size: .62rem; }
+.tag-act, .tag-pas { font-style: normal; font-size: .62rem; font-weight: 700; letter-spacing: .06em; padding: 1px 6px; border-radius: 4px; }
+.tag-act { background: rgba(91, 141, 239, .2); color: #8fb0f5; }
+.tag-pas { background: rgba(176, 124, 232, .2); color: #c39cf0; }
+@media (max-width: 520px) { .pet-detail { grid-template-columns: 1fr; } .minimap { max-width: 220px; justify-self: center; } }
+@media (prefers-reduced-motion: no-preference) {
+  .mm-spot { animation: radar 1.6s ease-in-out infinite; }
+  @keyframes radar { 50% { box-shadow: 0 0 16px #ff2a2a; transform: scale(1.25); } }
+}
+/* Mapa cuadrado para que no se corten los puntos de las esquinas */
+.minimap { border-radius: 14px; }
+.mm-zone { top: auto; bottom: 6px; left: 50%; right: auto; transform: translateX(-50%); white-space: nowrap; background: rgba(0, 0, 0, .55); padding: 2px 8px; border-radius: 99px; }
+
+/* ---------- Mapa de Azeroth: colores de dificultad del juego ---------- */
+.con-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.con { font-size: .76rem; font-weight: 700; padding: 3px 10px; border-radius: 99px; background: var(--noche-2); }
+.con.gris, .zone-tile.gris { --c: #9d9d9d; }
+.con.verde, .zone-tile.verde { --c: #40bf40; }
+.con.amarillo, .zone-tile.amarillo { --c: #ffff00; }
+.con.naranja, .zone-tile.naranja { --c: #ff8040; }
+.con.rojo, .zone-tile.rojo { --c: #ff2020; }
+.con { color: var(--c); border: 1px solid var(--c); }
+.map-sync { font-size: .85rem; color: var(--suave); margin-bottom: 12px; }
+.map-sync b { color: var(--texto); }
+.continents { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+.continent:last-child { grid-column: 1 / -1; }
+.continent h3 { font-size: 1.2rem; color: var(--oro-claro); margin-bottom: 8px; }
+.zone-tiles { display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+.zone-tile {
+  position: relative; display: grid; gap: 2px; text-align: left; padding: 8px 10px; cursor: pointer;
+  font: inherit; color: var(--c); background: color-mix(in srgb, var(--c) 9%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); border-left: 4px solid var(--c); border-radius: 8px;
+}
+.zone-tile b { font-size: .86rem; line-height: 1.2; }
+.zone-tile span { font-size: .74rem; opacity: .85; font-variant-numeric: tabular-nums; }
+.zone-tile.enemy { opacity: .55; }
+.zone-tile .faction-icon { position: absolute; right: 6px; bottom: 6px; width: 18px; height: 18px; box-shadow: none; }
+.zone-tile .new-dot { position: absolute; top: 4px; right: 8px; font-style: normal; color: var(--oro-claro); }
+.zone-tile:hover { background: color-mix(in srgb, var(--c) 18%, var(--panel)); }
+@media (max-width: 760px) { .continents { grid-template-columns: 1fr; } }
+
+/* ---------- Checklist ---------- */
+.check-progress { height: 22px; border-radius: 99px; background: var(--noche-2); border: 1px solid var(--linea); overflow: hidden; margin-bottom: 12px; }
+.check-progress span { display: grid; place-items: center; height: 100%; min-width: 34px; font-size: .74rem; font-weight: 700; color: #1a1408; background: linear-gradient(90deg, var(--oro-osc), var(--oro)); transition: width .4s; }
+.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.check-item label { display: flex; align-items: center; gap: 12px; padding: 10px 12px; cursor: pointer; background: var(--panel); border: 1px solid var(--linea); border-radius: 10px; }
+.check-item input { width: 20px; height: 20px; accent-color: var(--oro); flex: none; }
+.check-item span { display: grid; min-width: 0; }
+.check-item small { font-size: .78rem; color: var(--suave); }
+.check-item.done label { border-color: var(--oro-osc); background: color-mix(in srgb, var(--oro) 8%, var(--panel)); }
+.check-item.done b { color: var(--suave); text-decoration: line-through; }
+
+/* Aviso de logro, como el del juego */
+.achievement {
+  position: fixed; z-index: 40; left: 50%; bottom: max(20px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px; padding: 10px 22px 10px 10px; min-width: 260px; max-width: calc(100% - 32px);
+  background: linear-gradient(180deg, #2b2416, #15110a); border: 2px solid var(--oro); border-radius: 12px;
+  box-shadow: 0 0 0 1px #000, 0 10px 30px rgba(0, 0, 0, .7), 0 0 24px rgba(214, 176, 106, .35);
+}
+.achievement[hidden] { display: none; }
+.achievement div { display: grid; }
+.achievement small { font-size: .72rem; text-transform: uppercase; letter-spacing: .14em; color: var(--oro); }
+.achievement b { font-family: var(--font-display); font-size: 1.1rem; color: #fff; }
+@media (prefers-reduced-motion: no-preference) {
+  .achievement:not([hidden]) { animation: logro .5s cubic-bezier(.2, 1.4, .4, 1); }
+  @keyframes logro { from { transform: translate(-50%, 40px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+}

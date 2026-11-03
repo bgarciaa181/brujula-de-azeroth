@@ -217,6 +217,8 @@ function pintarDiario() {
     fac.appendChild(b);
   }
 
+  if (document.getElementById("continents")) pintarMapa();
+
   // Página izquierda: qué hacer ahora
   const zonas = zonasDeFaccion().filter(z => z[1] <= n && n <= z[2]);
   const mazmorras = MAZMORRAS.filter(m => m[1] <= n && n <= m[2]);
@@ -295,6 +297,80 @@ function cambiarNivelDiario(delta) {
 document.getElementById("j-lvl").addEventListener("input", e => { diario.nivel = parseInt(e.target.value, 10); pintarDiario(); });
 document.getElementById("j-minus").addEventListener("click", () => cambiarNivelDiario(-1));
 document.getElementById("j-plus").addEventListener("click", () => cambiarNivelDiario(1));
+
+// ---------- MAPA DE AZEROTH (colores de dificultad del juego) ----------
+// Gris, verde, amarillo, naranja o rojo según la diferencia entre tu nivel y el de la zona
+function colorDificultad(nivelZona, nivel) {
+  const d = nivelZona - nivel;
+  if (d >= 5) return "rojo";
+  if (d >= 3) return "naranja";
+  if (d >= -2) return "amarillo";
+  if (d >= -8) return "verde";
+  return "gris";
+}
+
+function pintarMapa() {
+  const n = diario.nivel;
+  document.getElementById("map-info").textContent = `${diario.faccion === "alianza" ? "Alianza" : "Horda"}, nivel ${n}`;
+  const continentes = ["Reinos del Este", "Kalimdor", "Solo Skyborne"];
+  document.getElementById("continents").innerHTML = continentes.map(c => {
+    const zonas = ZONAS.filter(z => z[5] === c).sort((a, b) => a[1] - b[1]);
+    return `<div class="continent">
+      <h3>${c === "Solo Skyborne" ? "Isla Zephras (Skyborne)" : c}</h3>
+      <div class="zone-tiles">${zonas.map(z => {
+        const media = Math.round((z[1] + z[2]) / 2);
+        const enemiga = z[3] !== "ambas" && z[3] !== diario.faccion;
+        const color = colorDificultad(media, n);
+        return `<button type="button" class="zone-tile ${color}${enemiga ? " enemy" : ""}" data-lvl="${z[1]}" title="${z[0]}: niveles ${z[1]}–${z[2]}">
+          <b>${z[0]}</b><span>${z[1]}–${z[2]}</span>
+          ${enemiga ? iconoFaccion(z[3], "sm") : ""}
+          ${ZONAS_NUEVAS.includes(z[0]) ? '<i class="new-dot">★</i>' : ""}
+        </button>`;
+      }).join("")}</div>
+    </div>`;
+  }).join("");
+  document.querySelectorAll(".zone-tile").forEach(b => b.addEventListener("click", () => {
+    diario.nivel = parseInt(b.dataset.lvl, 10);
+    pintarDiario();
+    irA("diario");
+  }));
+}
+
+// ---------- CHECKLIST DEL DÍA 1 ----------
+let hechos = [];
+try { hechos = JSON.parse(localStorage.getItem("checklist") || "[]"); } catch (e) {}
+
+function mostrarLogro(texto) {
+  const caja = document.getElementById("achievement");
+  caja.innerHTML = `${iconoWow("inv_misc_note_01", "lg")}<div><small>¡Logro conseguido!</small><b>${texto}</b></div>`;
+  caja.hidden = false;
+  clearTimeout(mostrarLogro.t);
+  mostrarLogro.t = setTimeout(() => { caja.hidden = true; }, 3500);
+}
+
+function pintarChecklist() {
+  const ul = document.getElementById("check-list");
+  ul.innerHTML = "";
+  for (const [id, icono, texto, detalle] of CHECKLIST) {
+    const li = document.createElement("li");
+    const hecho = hechos.includes(id);
+    li.className = "check-item" + (hecho ? " done" : "");
+    li.innerHTML = `<label>
+      <input type="checkbox" id="chk-${id}" ${hecho ? "checked" : ""}>
+      ${iconoWow(icono)}
+      <span><b>${texto}</b><small>${detalle}</small></span>
+    </label>`;
+    li.querySelector("input").addEventListener("change", e => {
+      hechos = e.target.checked ? [...hechos, id] : hechos.filter(x => x !== id);
+      try { localStorage.setItem("checklist", JSON.stringify(hechos)); } catch (err) {}
+      if (e.target.checked) mostrarLogro(hechos.length === CHECKLIST.length ? "¡Día 1 completado!" : texto);
+      pintarChecklist();
+    });
+    ul.appendChild(li);
+  }
+  document.getElementById("check-bar").style.width = `${hechos.length / CHECKLIST.length * 100}%`;
+  document.getElementById("check-bar").textContent = `${hechos.length}/${CHECKLIST.length}`;
+}
 
 // ---------- PvE / PvP ----------
 let modoJuego = "pve";
@@ -654,12 +730,16 @@ function pintarMascotas() {
         <span class="pet-meta">${m[1]} · nivel ${m[2]} · ${m[3]}</span>
         <span class="pet-ability">${f[2]}: ${f[3].toLowerCase()} ${etiquetasUso(f)}</span>
         <p>${m[6]}</p>
+        <button type="button" class="pet-where" data-pet="${m[0]}" aria-expanded="false">Dónde está y habilidades</button>
       </div>
       <div class="pet-side">
         ${m[4] ? `<span class="pet-speed"><b>${m[4].toFixed(1)} s</b>por ataque</span>` : ""}
         <span class="pet-state" title="${estados[m[5]]}"><i class="dot ${m[5]}"></i></span>
       </div>
+      <div class="pet-detail" hidden></div>
     </div>`).join("") || '<p class="empty">Ninguna mascota de la lista cumple ese filtro.</p>';
+
+  document.querySelectorAll(".pet-where").forEach(b => b.addEventListener("click", () => abrirMascota(b)));
 
   document.getElementById("families").innerHTML = FAMILIAS.map(f => `
     <div class="family">${iconoFamilia(f[0])}<div><b>${f[0]} ${etiquetasUso(f)}</b><span>${f[2]} · ${f[3]}</span></div></div>`).join("");
@@ -668,6 +748,45 @@ function pintarMascotas() {
 }
 
 document.getElementById("pet-sort").addEventListener("change", pintarMascotas);
+
+// Minimapa con los sitios donde aparece la mascota y sus habilidades
+function chipHabilidad(texto, f) {
+  const base = texto.replace(/ \d+$/, "");
+  const info = HABILIDADES_MASCOTA[base] || (f && f[2] === base ? [f[3], "activa", f[4], f[5]] : null);
+  if (!info) return `<span class="ab-chip">${texto}</span>`;
+  return `<span class="ab-chip ${info[1]}" title="${info[0]}"><b>${texto}</b><small>${info[0]}</small>
+    <span class="ab-tags">${info[1] === "pasiva" ? '<i class="tag-pas">Pasiva</i>' : '<i class="tag-act">Activa</i>'}${info[2] ? '<b class="tag-pve">PvE</b>' : ""}${info[3] ? '<b class="tag-pvp">PvP</b>' : ""}</span></span>`;
+}
+
+function abrirMascota(boton) {
+  const ficha = boton.closest(".pet");
+  const panel = ficha.querySelector(".pet-detail");
+  const abierto = !panel.hidden;
+  panel.hidden = abierto;
+  boton.setAttribute("aria-expanded", String(!abierto));
+  boton.textContent = abierto ? "Dónde está y habilidades" : "Ocultar";
+  if (abierto) return;
+
+  const m = MASCOTAS.find(x => x[0] === boton.dataset.pet);
+  const f = familia(m[1]);
+  const datos = MASCOTAS_MAPA[m[0]];
+  const conoce = datos.conoce.length ? datos.conoce : [];
+  const aprende = [...datos.aprende, f[2]].filter((h, i, a) => a.indexOf(h) === i);
+
+  panel.innerHTML = `
+    <div class="minimap" aria-label="Mapa de ${m[3]} con los sitios donde aparece ${m[0]}">
+      <span class="mm-zone">${m[3]}</span>
+      <span class="mm-n">N</span>
+      ${datos.puntos.map(p => `<i class="mm-spot" style="left:${p[0]}%;top:${p[1]}%" title="${p[0]}, ${p[1]}"></i>`).join("")}
+    </div>
+    <div class="pet-info">
+      <p class="mm-coords"><b>Coordenadas:</b> ${datos.puntos.map(p => `${p[0]}, ${p[1]}`).join(" · ")}</p>
+      ${conoce.length ? `<h4>Viene con</h4><div class="ab-list">${conoce.map(h => chipHabilidad(h, f)).join("")}</div>` : ""}
+      <h4>Puede aprender</h4>
+      <div class="ab-list">${aprende.map(h => chipHabilidad(h, f)).join("")}</div>
+      <p class="mm-note">Los círculos rojos son los sitios donde suele aparecer. Al ser rara, puede tardar en salir.</p>
+    </div>`;
+}
 
 // ---------- RAZAS ----------
 let faccionRazas = "todas";
@@ -802,6 +921,8 @@ function cargarNoticias() {
 // ---------- MENÚ DE SECCIONES ----------
 const SECCIONES = [
   ["diario", "Diario", "inv_misc_map_01"],
+  ["mapa", "Mapa", "inv_misc_spyglass_02"],
+  ["checklist", "Día 1", "inv_misc_note_01"],
   ["clases", "Clases", "classicon_warrior"],
   ["modo", "PvE / PvP", "achievement_pvp_p_250k"],
   ["test", "Test", "inv_misc_dice_01"],
@@ -972,6 +1093,7 @@ document.getElementById("hero-classes").innerHTML = CLASSES.map(c =>
 pintarMenu();
 seguirScroll();
 pintarDiario();
+pintarChecklist();
 pintar();
 pintarTest();
 pintarPersonaje();

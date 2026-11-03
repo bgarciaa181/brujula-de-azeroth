@@ -234,15 +234,15 @@ const MASCOTAS = [
   ["Nightscreech", "Ave rapaz", 10, "Teldrassil", null, "nueva", "Ave rapaz nueva de Forever."],
   ["Fernfeather", "Zancaalta", 10, "Isla Zephras", null, "nueva", "Nueva, en la zona de inicio de los Skyborne."],
   ["The Rake", "Felino", 10, "Mulgore", 1.2, "vista", "Ataca muy rápido para su nivel. Ideal para empezar en la Horda."],
-  ["Timber", "Lobo", 10, "Dun Morogh", null, "vista", "Lobo de nivel 10 que ya viene con Bite 2."],
+  ["Timber", "Lobo", 10, "Dun Morogh", 2.0, "vista", "Lobo de nivel 10 que ya viene con Bite 2."],
   ["Mother Fang", "Araña", 10, "Bosque de Elwynn", null, "vista", "Araña rara para empezar en la Alianza."],
   ["Coldrasp", "Lobo", 12, "Claros de Tirisfal", 1.5, "nueva", "Lobo nuevo de Forever que ya trae Furious Howl."],
-  ["Mystmane", "Oso", 13, "Isla Zephras", 1.6, "nueva", "Oso nuevo de Forever que trae Savage Rend, la habilidad de los raptores."],
+  ["Mystmane", "Oso", 13, "Isla Zephras", 1.6, "nueva", "Oso nuevo de Forever que ataca bastante rápido para ser un oso."],
   ["Humar the Pridelord", "Felino", 23, "Los Baldíos", 1.3, "vista", "Élite rara. Felino rápido y muy buscado."],
   ["Mist Howler", "Lobo", 22, "Vallefresno", 1.3, "classic", "Lobo rápido con Furious Howl."],
-  ["Lupos", "Lobo", 23, "Bosque del Ocaso", null, "classic", "Lobo raro muy conocido de Classic, con Bite 3."],
+  ["Lupos", "Lobo", 23, "Bosque del Ocaso", 2.0, "classic", "Lobo raro muy conocido de Classic, con Bite 3."],
   ["Broken Tooth", "Felino", 37, "Tierras Inhóspitas", 1.0, "classic", "El más rápido de la lista: un ataque por segundo."],
-  ["Snarler", "Lobo", 42, "Feralas", null, "classic", "Lobo con Bite 6 y Furious Howl 3."],
+  ["Snarler", "Lobo", 42, "Feralas", 2.0, "classic", "Lobo con Bite 6 y Furious Howl 3."],
   ["Ravage", "Hiena", 51, "Las Tierras Devastadas", 1.3, "classic", "Hiena rápida para el final del juego."],
   ["Deathmaw", "Lobo", 53, "Las Estepas Ardientes", 1.2, "classic", "Lobo rápido para el final del juego."]
 ];
@@ -406,3 +406,53 @@ const ZONAS = [
 ];
 // Zonas completamente nuevas de Forever (para marcarlas aparte)
 const ZONAS_NUEVAS = ["Isla Zephras", "Riverglades", "Monte Hyjal"];
+
+// ---------- DÓNDE ESTÁ CADA MASCOTA ----------
+// Fuente: wowforeverpets.com (datos sincronizados de Forever). Coordenadas en % del mapa de la zona.
+// conoce = habilidades con las que viene al domarla · aprende = las que puede aprender después
+const MASCOTAS_MAPA = {
+  "Shal'ma": { puntos: [[59.8, 89.2], [60.4, 89.6], [60.8, 89.8], [61.4, 90.6], [62.8, 96.8], [63.6, 95.6], [69, 71.6], [69.8, 71.4]], conoce: [], aprende: ["Bite", "Claw", "Dash"] },
+  "Ghostfang": { puntos: [[74.2, 63.2], [74.8, 63.4], [79.4, 42.8], [79.8, 43], [80.4, 46.6], [80.8, 46.8], [81.6, 55.4], [82, 55.8]], conoce: [], aprende: ["Bite", "Claw", "Dash"] },
+  "Matriarch Bristlefur": { puntos: [[51, 80.6], [51.8, 79.2], [59, 80.6], [59.6, 80.8], [63.2, 77], [64.8, 77], [65.2, 77.8], [67.4, 76.8]], conoce: [], aprende: ["Bite", "Claw", "Dash"] },
+  "Nightscreech": { puntos: [[38.2, 28.2], [40, 55.6], [40.2, 54.8], [46.4, 33.6], [46.8, 32]], conoce: [], aprende: ["Claw", "Dive"] },
+  "Fernfeather": { puntos: [[48, 85.4], [51.4, 82.4], [51.4, 83], [53.6, 80], [54, 79.4]], conoce: [], aprende: ["Bite", "Dash"] },
+  "The Rake": { puntos: [[47, 19.4], [48.6, 17.8], [49.4, 24.6], [50.2, 22.6], [51.4, 18.4], [52.4, 13.4], [52.8, 19.4], [54.2, 23.2]], conoce: [], aprende: ["Bite", "Claw", "Dash"] },
+  "Timber": { puntos: [[33.2, 40.4], [33.4, 40.8], [33.6, 40.2], [34, 39], [34.2, 41.8], [34.4, 43], [34.6, 41.6], [36.4, 41.8]], conoce: ["Bite 2"], aprende: ["Bite", "Dash"] },
+  "Mother Fang": { puntos: [[60.4, 47], [60.8, 47], [61.4, 48], [61.4, 48.8], [61.6, 47.4], [61.8, 47.8]], conoce: [], aprende: ["Bite", "Dash"] },
+  "Coldrasp": { puntos: [[19.8, 65]], conoce: ["Furious Howl 1", "Faster Attack 3"], aprende: ["Bite", "Dash"] },
+  "Mystmane": { puntos: [[57.6, 37], [57.8, 38.2], [58.8, 37.6], [60.2, 34.6], [60.2, 36.8], [60.4, 36.2], [60.8, 35.4]], conoce: ["Increased Attackspeed 2"], aprende: ["Bite", "Claw", "Dash"] },
+  "Humar the Pridelord": { puntos: [[62, 33.4], [62, 34.8]], conoce: [], aprende: ["Bite", "Claw", "Dash"] },
+  "Mist Howler": { puntos: [[17, 30.2], [19.6, 29.6], [22.2, 29.4], [22.4, 33.4], [22.8, 35.4], [23.8, 37.2], [26.4, 18.8], [29.2, 17.8]], conoce: ["Furious Howl 1"], aprende: ["Bite", "Dash"] },
+  "Lupos": { puntos: [[19.8, 29.6], [22.2, 25.8], [23.8, 31.2], [25.6, 27.8], [28, 27.6], [29.6, 29], [34, 28.2], [36.2, 27.2]], conoce: ["Bite 3"], aprende: ["Bite", "Dash"] },
+  "Broken Tooth": { puntos: [[25.8, 48.6], [43.4, 36.8], [45, 34.4], [46.8, 37], [51.6, 14], [53.4, 19], [54.8, 15.4], [60.4, 30.2]], conoce: ["Dash 1"], aprende: ["Bite", "Claw", "Dash"] },
+  "Snarler": { puntos: [[74.8, 35.4], [75.8, 37.8], [76.6, 38.4], [77.6, 39.8], [79.6, 41.6], [81.2, 39.2], [82.8, 38.8], [85.4, 37]], conoce: ["Bite 6", "Furious Howl 3"], aprende: ["Bite", "Dash"] },
+  "Ravage": { puntos: [[44.2, 34.8], [47.4, 35], [48.6, 35.6], [49.8, 35.2], [58.2, 36.6], [59.4, 37.6], [60.6, 37.2], [63, 36.4]], conoce: ["Dash 3"], aprende: ["Bite", "Dash"] },
+  "Deathmaw": { puntos: [[70.8, 29], [75, 32.4], [79.4, 58.6], [81, 59], [81.8, 29.8], [82.6, 30.4], [86.4, 51.4], [88, 50.2]], conoce: [], aprende: ["Bite", "Dash"] }
+};
+
+// Qué hace cada habilidad de mascota, si es activa o pasiva, y para qué sirve
+// [qué hace, "activa" o "pasiva", sirve en PvE, sirve en PvP]
+const HABILIDADES_MASCOTA = {
+  "Bite": ["Mordisco: daño directo", "activa", true, true],
+  "Claw": ["Zarpazo: daño directo", "activa", true, true],
+  "Dash": ["Acelerón: corre más rápido un momento", "activa", false, true],
+  "Dive": ["Picado: vuela más rápido un momento", "activa", false, true],
+  "Furious Howl": ["Aullido: sube el ataque del grupo", "activa", true, false],
+  "Faster Attack": ["Ataca más rápido siempre", "pasiva", true, true],
+  "Increased Attackspeed": ["Ataca más rápido siempre", "pasiva", true, true]
+};
+
+// ---------- CHECKLIST DEL DÍA 1 ----------
+// [id, icono, texto, detalle]
+const CHECKLIST = [
+  ["test", "inv_misc_dice_01", "Elige tu clase", "Haz el test si dudas"],
+  ["pj", "achievement_character_human_male", "Crea tu personaje", "Facción, raza y clase"],
+  ["entrenador", "inv_misc_book_09", "Visita a tu entrenador al subir de nivel", "Ahí aprendes las habilidades nuevas"],
+  ["profes", "trade_mining", "Elige dos profesiones", "Las de recolección dan oro desde el principio"],
+  ["secundarias", "spell_holy_sealofsacrifice", "Aprende Primeros auxilios y Cocina", "Son secundarias, puedes tener todas"],
+  ["talento", "ability_marksmanship", "Nivel 10: tu primer punto de talento", "Planéalo en la calculadora"],
+  ["cazador", "ability_hunter_beasttaming", "Cazador: misión de domar a nivel 10", "Te la da tu entrenador de clase"],
+  ["mazmorra", "achievement_dungeon_classicdungeonmaster", "Tu primera mazmorra", "Mira cuál te toca en el Diario"],
+  ["hermandad", "inv_misc_tournaments_banner_troll", "Únete a una hermandad", "Subir en grupo es más rápido y divertido"],
+  ["comunidad", "inv_misc_note_01", "Deja tu build o tu duda en la web", "Ayudas a los que vienen detrás"]
+];
