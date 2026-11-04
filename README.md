@@ -29,13 +29,15 @@ Los datos están en `js/datos.js`, así que es fácil corregirlos o añadir info
 
 ```
 brujula-de-azeroth/
-├── index.html          → inicio: portada, explorar, minijuego y noticias
+├── index.html          → inicio: tu personaje, qué te toca ahora y accesos
 ├── aventura.html       → diario de aventuras, mapa de Azeroth y checklist del día 1
 ├── clases.html         → clases, test, crea tu personaje, comparador y razas
+├── clase.html          → la página de cada clase (clase.html?c=mago)
 ├── talentos.html       → calculadora de talentos
 ├── mascotas.html       → mascotas de cazador con minimapa
 ├── pve-pvp.html        → mazmorras, campos de batalla, raids y calendario
 ├── oficios.html        → profesiones
+├── juegos.html         → ruleta de personaje, nombres por raza y minijuego
 ├── comunidad.html      → foro, comentarios y noticias
 ├── css/estilos.css     → el diseño de toda la web
 ├── css/talentos.css    → el diseño de la calculadora

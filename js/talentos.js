@@ -372,6 +372,8 @@ document.getElementById("btn-screen").addEventListener("click", async e => {
 function cambiarNivel(delta) {
   nivelJugador = Math.min(60, Math.max(10, nivelJugador + delta));
   document.getElementById("my-level").value = nivelJugador;
+  const p = leerPerfil();
+  if (p && p.clase === clase) cambiarPerfil({ nivel: nivelJugador });
   pintarOrden();
 }
 document.getElementById("lvl-minus").addEventListener("click", () => cambiarNivel(-1));
@@ -391,6 +393,12 @@ window.addEventListener("hashchange", () => {
 });
 
 // ---------- Inicio ----------
-cargarClase("guerrero");
+// Si has guardado tu personaje, empezamos con su clase y su nivel
+const miPerfil = leerPerfil();
+cargarClase(miPerfil && TALENTOS[miPerfil.clase] ? miPerfil.clase : "guerrero");
+if (miPerfil && miPerfil.nivel >= 10) {
+  nivelJugador = Math.min(60, miPerfil.nivel);
+  document.getElementById("my-level").value = nivelJugador;
+}
 leerEnlace();
 pintarTodo();

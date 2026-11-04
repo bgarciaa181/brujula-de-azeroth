@@ -11,6 +11,7 @@ const PAGINAS = [
   ["mascotas.html", "Mascotas", "ability_hunter_beasttaming"],
   ["pve-pvp.html", "PvE y PvP", "achievement_pvp_p_250k"],
   ["oficios.html", "Oficios", "trade_blacksmithing"],
+  ["juegos.html", "Juegos", "inv_misc_dice_01"],
   ["comunidad.html", "Comunidad", "inv_misc_note_01"]
 ];
 
@@ -22,12 +23,31 @@ const SECCION_PAGINA = {
   modo: "pve-pvp.html", raids: "pve-pvp.html", calendario: "pve-pvp.html",
   profesiones: "oficios.html",
   comunidad: "comunidad.html", noticias: "comunidad.html",
-  juego: "index.html"
+  juego: "juegos.html", ruleta: "juegos.html", nombres: "juegos.html"
 };
 
 function paginaActual() {
   const archivo = location.pathname.split("/").pop();
-  return archivo === "" ? "index.html" : archivo;
+  if (archivo === "") return "index.html";
+  if (archivo === "clase.html") return "clases.html";   // la página de una clase cuenta como "Clases"
+  return archivo;
+}
+
+// ---------- MI PERSONAJE ----------
+// Se guarda en el navegador y lo usan todas las páginas
+// { nombre, faccion, raza, clase, nivel, genero }
+function leerPerfil() {
+  try { return JSON.parse(localStorage.getItem("mi-personaje")); } catch (e) { return null; }
+}
+
+function guardarPerfil(perfil) {
+  try { localStorage.setItem("mi-personaje", JSON.stringify(perfil)); } catch (e) {}
+}
+
+// Cambia solo una cosa del perfil (por ejemplo el nivel)
+function cambiarPerfil(cambios) {
+  const p = leerPerfil();
+  if (p) guardarPerfil({ ...p, ...cambios });
 }
 
 // ---------- BLOQUEAR EL SCROLL DEL FONDO ----------
@@ -144,9 +164,9 @@ function sinTildes(texto) {
 const INDICE = [];
 function prepararIndice() {
   for (const c of CLASSES) {
-    INDICE.push({ texto: c.nombre, tipo: "Clase", icono: iconoClase(c), url: `clases.html#${c.id}` });
+    INDICE.push({ texto: c.nombre, tipo: "Clase", icono: iconoClase(c), url: `clase.html?c=${c.id}` });
     for (const a of c.arboles) {
-      INDICE.push({ texto: `${a[0]} (${c.nombre})`, tipo: "Especialización", icono: iconoWow(a[2], "sm"), url: `clases.html#${c.id}` });
+      INDICE.push({ texto: `${a[0]} (${c.nombre})`, tipo: "Especialización", icono: iconoWow(a[2], "sm"), url: `clase.html?c=${c.id}` });
     }
   }
   for (const [id, r] of Object.entries(RACES)) {
@@ -196,7 +216,7 @@ function irAResultado(x) {
     if (x.modo) localStorage.setItem("modo-juego", x.modo);
   } catch (e) {}
   const [pagina, hash] = x.url.split("#");
-  if (pagina === paginaActual()) {
+  if (pagina === location.pathname.split("/").pop() && hash) {
     location.hash = hash || "";
     location.reload();
   } else {

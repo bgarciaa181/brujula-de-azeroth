@@ -63,7 +63,7 @@ function pintar() {
       <div class="specs">${c.arboles.map(a => `<span class="spec" title="${a[0]}">${iconoWow(a[2])}<small>${a[0]}</small></span>`).join("")}</div>
       ${c.facil ? '<span class="easy">Fácil</span>' : ""}`;
     card.style.setProperty("--i", i);
-    card.addEventListener("click", () => { location.hash = c.id; });
+    card.addEventListener("click", () => { location.href = `clase.html?c=${c.id}`; });
     grid.appendChild(card);
   });
   document.getElementById("result-count").textContent =
@@ -130,9 +130,9 @@ if (dialogo) {
 
 function abrirFichaDesdeEnlace() {
   const id = location.hash.slice(1);
+  // Los enlaces antiguos tipo clases.html#mago llevan ahora a la página de la clase
   if (CLASSES.some(c => c.id === id)) {
-    mostrarSeccion("clases", false);
-    abrirFicha(id);
+    location.replace(`clase.html?c=${id}`);
   } else if (dialogo && dialogo.open) {
     dialogo.close();
   }
@@ -162,7 +162,7 @@ function pintarTest() {
         <p class="pitch">${c.pitch}</p>
         <div class="roles">${c.roles.map(iconoRol).join("")}</div>
         <div class="quiz-actions">
-          <a class="cta" href="#${c.id}">Ver ficha</a>
+          <a class="cta" href="clase.html?c=${c.id}">Ver su página</a>
           <a class="cta ghost" href="talentos.html#${c.id}">Sus talentos</a>
           <button type="button" class="cta ghost" id="quiz-again">Repetir</button>
         </div>
@@ -205,6 +205,11 @@ try {
   diario.faccion = localStorage.getItem("diario-faccion") || "alianza";
   diario.nivel = parseInt(localStorage.getItem("diario-nivel"), 10) || 1;
 } catch (e) {}
+// Si tienes personaje guardado, el diario empieza con su facción y su nivel
+if (leerPerfil()) {
+  diario.faccion = leerPerfil().faccion;
+  diario.nivel = leerPerfil().nivel || diario.nivel;
+}
 
 function zonasDeFaccion() {
   return ZONAS.filter(z => z[3] === "ambas" || z[3] === diario.faccion);
@@ -222,6 +227,7 @@ function pintarDiario() {
     localStorage.setItem("diario-faccion", diario.faccion);
     localStorage.setItem("diario-nivel", n);
   } catch (e) {}
+  if (leerPerfil() && leerPerfil().faccion === diario.faccion) cambiarPerfil({ nivel: n });
 
   // Facciones
   const fac = document.getElementById("j-factions");
@@ -530,9 +536,23 @@ function pintarPersonaje() {
         <h3>${r.nombre} <span style="color:${c.color}">${c.nombre}</span></h3>
         <div class="roles">${c.roles.map(iconoRol).join("")}${c.arboles.map(a => `<span title="${a[0]}">${iconoWow(a[2], "sm")}</span>`).join("")}</div>
         <ul class="b-racials">${info.habilidades.map(h => `<li${h[2] ? ' class="new"' : ""} title="${h[1]}">${h[0]}</li>`).join("")}</ul>
-        <a class="cta" href="talentos.html#${c.id}">Planear sus talentos →</a>
+        <div class="b-save">
+          <label for="b-name">Nombre</label>
+          <input type="text" id="b-name" maxlength="12" placeholder="Tu nombre" value="${(leerPerfil() && leerPerfil().nombre) || ""}">
+          <button type="button" class="cta" id="b-save">Guardar como mi personaje</button>
+        </div>
+        <a class="b-link" href="clase.html?c=${c.id}">Ver la página del ${c.nombre} →</a>
       </div>
     </div>`;
+  $("b-save").addEventListener("click", () => {
+    const anterior = leerPerfil();
+    guardarPerfil({
+      nombre: $("b-name").value.trim() || "Aventurero",
+      faccion: r.faccion, raza: pj.raza, clase: pj.clase, genero: pj.genero,
+      nivel: anterior && anterior.clase === pj.clase ? anterior.nivel : 1
+    });
+    mostrarLogro("¡Personaje guardado! La web se adapta a él");
+  });
 }
 
 on("b-gender", "click", () => {
@@ -650,6 +670,10 @@ function prepararComparador() {
   }
   selA.value = "guerrero";
   selB.value = "mago";
+  try {
+    if (localStorage.getItem("cmp-a")) { selA.value = localStorage.getItem("cmp-a"); localStorage.removeItem("cmp-a"); }
+    if (localStorage.getItem("cmp-b")) { selB.value = localStorage.getItem("cmp-b"); localStorage.removeItem("cmp-b"); }
+  } catch (e) {}
   selA.addEventListener("change", comparar);
   selB.addEventListener("change", comparar);
   comparar();
@@ -940,6 +964,335 @@ function cargarNoticias() {
     });
 }
 
+// ---------- PÁGINA DE UNA CLASE (clase.html?c=mago) ----------
+function nombreTalento(claseId, t) {
+  const es = (TALENTOS_ES[claseId] || {})[t[0]];
+  return es ? es[0] : t[0];
+}
+
+function pintarClase() {
+  const pedida = new URLSearchParams(location.search).get("c");
+  const perfil = leerPerfil();
+  const c = CLASSES.find(x => x.id === pedida) || CLASSES.find(x => perfil && x.id === perfil.clase) || CLASSES[0];
+  document.title = `${c.nombre} · Brújula de Azeroth`;
+  document.documentElement.style.setProperty("--cls", c.color);
+
+  // Cambiar de clase sin volver atrás
+  $("class-switch").innerHTML = CLASSES.map(x => `
+    <a href="clase.html?c=${x.id}" class="cs-item${x.id === c.id ? " active" : ""}" style="--cls:${x.color}" title="${x.nombre}">${iconoClase(x)}<span>${x.nombre}</span></a>`).join("");
+
+  const arboles = TALENTOS[c.id];
+  const ali = c.razas.filter(r => RACES[r].faccion === "alianza");
+  const hor = c.razas.filter(r => RACES[r].faccion === "horda");
+  const esMia = perfil && perfil.clase === c.id;
+
+  let html = `
+    <section class="cp-hero">
+      <div class="cp-portrait">${iconoClase(c)}</div>
+      <div class="cp-info">
+        <h1>${c.nombre}</h1>
+        <p class="pitch">${c.pitch}</p>
+        <div class="roles">${c.roles.map(r => `${iconoRol(r)}<span class="cp-role">${ROLES[r]}</span>`).join("")}</div>
+        <div class="cp-stats">
+          <div><b>${c.recurso}</b><span>recurso</span></div>
+          <div><b>${c.habilidades}</b><span>habilidades</span></div>
+          <div><b>${c.nuevas}</b><span>nuevas en Forever</span></div>
+          <div><b>${c.razas.length}</b><span>razas</span></div>
+        </div>
+        <div class="cp-actions">
+          <a class="cta" href="talentos.html#${c.id}">Calculadora de talentos</a>
+          ${esMia ? '<span class="cp-mine">★ Es tu clase</span>' : `<button type="button" class="cta ghost" id="cp-pick">Crear personaje ${c.nombre}</button>`}
+        </div>
+      </div>
+    </section>
+
+    <section class="cp-block">
+      <h2>Especializaciones</h2>
+      <div class="cp-specs">
+        ${c.arboles.map(a => {
+          const lista = arboles[a[0]] || [];
+          const final = lista.filter(t => t[3]).sort((a, b) => b[1] - a[1])[0];
+          return `<div class="cp-spec">
+            ${iconoWow(a[2], "xl")}
+            <h3>${a[0]}</h3>
+            <span class="cp-spec-role">${a[1]}</span>
+            ${final ? `<div class="cp-final">${iconoWow(final[3], "sm")}<span><small>Talento final</small><b>${nombreTalento(c.id, final)}</b></span></div>` : ""}
+          </div>`;
+        }).join("")}
+      </div>
+    </section>
+
+    <section class="cp-block">
+      <h2>Talentos especiales</h2>
+      <p class="cp-sub">Los de un solo punto. Suelen ser los que cambian tu forma de jugar.</p>
+      <div class="cp-key">
+        ${Object.entries(arboles).map(([arbol, lista]) => `
+          <div class="cp-key-tree">
+            <h3>${arbol}</h3>
+            <div class="cp-key-icons">
+              ${lista.filter(t => t[2] === 1 && t[3]).map(t => `
+                <a class="cp-key-item" href="talentos.html#${c.id}" title="${t[5]}">
+                  ${iconoWow(t[3], "lg")}<span>${nombreTalento(c.id, t)}</span><small>fila ${t[1]}</small>
+                </a>`).join("")}
+            </div>
+          </div>`).join("")}
+      </div>
+    </section>
+
+    <section class="cp-block">
+      <h2>Razas</h2>
+      <div class="cp-races">
+        ${[["alianza", ali], ["horda", hor]].map(([f, lista]) => `
+          <div class="cp-fac ${f}">
+            <h3>${iconoFaccion(f, "sm")} ${f === "alianza" ? "Alianza" : "Horda"}</h3>
+            <div class="cp-race-list">
+              ${lista.length ? lista.map(r => `<a class="cp-race" href="clases.html#razas">${iconoRaza(r, "male", "lg")}<span>${RACES[r].nombre}</span></a>`).join("") : '<p class="empty">Ninguna raza</p>'}
+            </div>
+          </div>`).join("")}
+      </div>
+    </section>`;
+
+  if (c.id === "cazador") {
+    const pets = MASCOTAS.slice().sort((a, b) => a[2] - b[2]).slice(0, 4);
+    html += `
+    <section class="cp-block">
+      <h2>Mascotas para empezar</h2>
+      <div class="mode-pets">${pets.map(m => `<a class="mini-pet" href="mascotas.html">${iconoFamilia(m[1])}<span><b>${m[0]}</b><small>${m[1]} · nv ${m[2]} · ${m[3]}</small></span></a>`).join("")}</div>
+      <a class="b-link" href="mascotas.html">Ver todas las mascotas con su mapa →</a>
+    </section>`;
+  }
+
+  const otras = CLASSES.filter(x => x.id !== c.id && x.roles.some(r => c.roles.includes(r))).slice(0, 4);
+  html += `
+    <section class="cp-block">
+      <h2>Compárala con</h2>
+      <div class="cp-compare">
+        ${otras.map(x => `<button type="button" class="cp-cmp" data-otra="${x.id}" style="--cls:${x.color}">${iconoClase(x)}<span>${c.nombre} vs ${x.nombre}</span></button>`).join("")}
+      </div>
+    </section>`;
+
+  $("clase-page").innerHTML = html;
+
+  const elegir = $("cp-pick");
+  if (elegir) elegir.addEventListener("click", () => {
+    try { localStorage.setItem("pj-clase", c.id); } catch (e) {}
+    location.href = "clases.html#personaje";
+  });
+  document.querySelectorAll(".cp-cmp").forEach(b => b.addEventListener("click", () => {
+    try { localStorage.setItem("cmp-a", c.id); localStorage.setItem("cmp-b", b.dataset.otra); } catch (e) {}
+    location.href = "clases.html#comparador";
+  }));
+}
+
+// ---------- PORTADA: TU PERSONAJE ----------
+// Si guardaste tu personaje, la portada te dice qué hacer a tu nivel
+function pintarMiPersonaje() {
+  const caja = $("mi-pj");
+  const p = leerPerfil();
+  const c = p && CLASSES.find(x => x.id === p.clase);
+  if (!p || !c || !RACES[p.raza]) {
+    caja.className = "mi-pj vacio";
+    caja.innerHTML = `
+      <div class="mp-empty">
+        ${iconoWow("achievement_character_human_male", "xl")}
+        <div>
+          <h2>Crea tu personaje</h2>
+          <p>Y la web se adapta a ti: tus talentos, tus zonas y tus mazmorras.</p>
+        </div>
+      </div>
+      <div class="mp-ctas">
+        <a class="cta" href="clases.html#personaje">Crear personaje</a>
+        <a class="cta ghost" href="clases.html#test">No sé qué clase</a>
+        <a class="cta ghost" href="juegos.html#ruleta">Que decida la ruleta</a>
+      </div>`;
+    return;
+  }
+
+  const n = p.nivel || 1;
+  const zonas = ZONAS.filter(z => (z[3] === "ambas" || z[3] === p.faccion) && z[1] <= n && n <= z[2]).slice(0, 2);
+  const mazmorra = MAZMORRAS.find(m => m[1] <= n && n <= m[2] && (n >= m[1] + 2 || m[2] - m[1] < 4)) || MAZMORRAS.find(m => m[1] > n);
+  const objetivos = [];
+  for (const z of zonas) objetivos.push([iconoWow("inv_misc_map_01", "sm"), z[0], `zona ${z[1]}–${z[2]}`, "aventura.html#diario"]);
+  if (mazmorra) objetivos.push([iconoWow("achievement_dungeon_gloryofthehero", "sm"), mazmorra[0], mazmorra[1] > n ? `mazmorra desde nivel ${mazmorra[1]}` : `mazmorra ${mazmorra[1]}–${mazmorra[2]}`, "pve-pvp.html#modo"]);
+  if (c.id === "cazador") {
+    const pet = MASCOTAS.filter(m => m[2] <= n + 2).sort((a, b) => b[2] - a[2])[0];
+    if (pet) objetivos.push([iconoFamilia(pet[1]), pet[0], `mascota nv ${pet[2]} · ${pet[3]}`, "mascotas.html"]);
+  }
+  if (n >= 10) objetivos.push([iconoWow("ability_marksmanship", "sm"), "Tu próximo talento", "en la calculadora", `talentos.html#${c.id}`]);
+
+  caja.className = "mi-pj";
+  caja.style.setProperty("--cls", c.color);
+  caja.innerHTML = `
+    <div class="mp-head">
+      <div class="mp-icons">${iconoRaza(p.raza, p.genero || "male", "xl")}${iconoClase(c)}</div>
+      <div class="mp-who">
+        <small>Tu personaje</small>
+        <h2>${p.nombre || "Sin nombre"}</h2>
+        <span>${RACES[p.raza].nombre} · <b style="color:${c.color}">${c.nombre}</b> · ${iconoFaccion(p.faccion, "sm")}</span>
+      </div>
+      <div class="mp-lvl" aria-label="Tu nivel">
+        <button type="button" id="mp-minus" aria-label="Bajar nivel">−</button>
+        <span><small>nivel</small><b>${n}</b></span>
+        <button type="button" id="mp-plus" aria-label="Subir nivel">+</button>
+      </div>
+    </div>
+    <div class="mp-bar" aria-hidden="true"><i style="width:${(n / 60) * 100}%"></i></div>
+    <h3 class="mp-now">Ahora te toca</h3>
+    <div class="mp-goals">
+      ${objetivos.map(([icono, t, d, url]) => `<a class="mp-goal" href="${url}">${icono}<span><b>${t}</b><small>${d}</small></span></a>`).join("")}
+    </div>
+    <div class="mp-links">
+      <a href="clase.html?c=${c.id}">Mi clase</a>
+      <a href="talentos.html#${c.id}">Mis talentos</a>
+      <a href="aventura.html#diario">Mi diario</a>
+      <a href="clases.html#personaje" class="mp-change">Cambiar</a>
+    </div>`;
+
+  const subir = d => {
+    cambiarPerfil({ nivel: Math.min(60, Math.max(1, n + d)) });
+    try { localStorage.setItem("diario-nivel", Math.min(60, Math.max(1, n + d))); localStorage.setItem("diario-faccion", p.faccion); } catch (e) {}
+    if (n + d === 60) mostrarLogro("¡Nivel 60! Ya puedes ir a las raids");
+    pintarMiPersonaje();
+  };
+  $("mp-minus").addEventListener("click", () => subir(-1));
+  $("mp-plus").addEventListener("click", () => subir(1));
+}
+
+// ---------- JUEGOS: RULETA DE PERSONAJE ----------
+const ruleta = { faccion: "todas", rol: "todos", girando: false, resultado: null };
+
+function combinacionesValidas() {
+  const lista = [];
+  for (const c of CLASSES) {
+    if (ruleta.rol !== "todos" && !c.roles.includes(ruleta.rol)) continue;
+    for (const r of c.razas) {
+      if (ruleta.faccion !== "todas" && RACES[r].faccion !== ruleta.faccion) continue;
+      lista.push([r, c.id]);
+    }
+  }
+  return lista;
+}
+
+function pintarRuletaFiltros() {
+  const fac = [["todas", "Cualquiera"], ["alianza", "Alianza"], ["horda", "Horda"]];
+  $("rl-faction").innerHTML = fac.map(([id, t]) =>
+    `<button type="button" class="chip" data-f="${id}" aria-pressed="${ruleta.faccion === id}">${id !== "todas" ? iconoFaccion(id, "sm") : ""}${t}</button>`).join("");
+  const roles = [["todos", "Cualquier rol"], ...Object.entries(ROLES)];
+  $("rl-role").innerHTML = roles.map(([id, t]) =>
+    `<button type="button" class="chip" data-r="${id}" aria-pressed="${ruleta.rol === id}">${id !== "todos" ? iconoRol(id) : ""}${t}</button>`).join("");
+  $("rl-faction").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { ruleta.faccion = b.dataset.f; pintarRuletaFiltros(); }));
+  $("rl-role").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { ruleta.rol = b.dataset.r; pintarRuletaFiltros(); }));
+}
+
+function pintarRuletaCara(raza, claseId, final) {
+  const c = CLASSES.find(x => x.id === claseId);
+  $("rl-wheel").innerHTML = `
+    <div class="rl-slot">${iconoRaza(raza, "male", "xl")}<span>${RACES[raza].nombre}</span></div>
+    <div class="rl-plus">+</div>
+    <div class="rl-slot" style="--cls:${c.color}">${iconoClase(c)}<span style="color:${c.color}">${c.nombre}</span></div>`;
+  $("rl-wheel").classList.toggle("final", !!final);
+}
+
+function girarRuleta() {
+  if (ruleta.girando) return;
+  const lista = combinacionesValidas();
+  if (!lista.length) { $("rl-result").innerHTML = '<p class="empty">No hay ninguna combinación con esos filtros.</p>'; return; }
+  ruleta.girando = true;
+  $("rl-result").innerHTML = "";
+  $("rl-spin").disabled = true;
+  const elegido = lista[Math.floor(Math.random() * lista.length)];
+  const lento = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let paso = 0;
+  const pasos = lento ? 1 : 22;
+  const tick = () => {
+    paso++;
+    if (paso >= pasos) {
+      pintarRuletaCara(elegido[0], elegido[1], true);
+      terminarRuleta(elegido);
+      return;
+    }
+    const x = lista[Math.floor(Math.random() * lista.length)];
+    pintarRuletaCara(x[0], x[1], false);
+    setTimeout(tick, 40 + paso * paso * 0.7);
+  };
+  tick();
+}
+
+function terminarRuleta([raza, claseId]) {
+  ruleta.girando = false;
+  ruleta.resultado = [raza, claseId];
+  $("rl-spin").disabled = false;
+  $("rl-spin").textContent = "Girar otra vez";
+  const c = CLASSES.find(x => x.id === claseId);
+  $("rl-result").innerHTML = `
+    <p class="rl-text">Te toca ser <b>${RACES[raza].nombre}</b> <b style="color:${c.color}">${c.nombre}</b> de la ${RACES[raza].faccion === "alianza" ? "Alianza" : "Horda"}.</p>
+    <p class="rl-pitch">${c.pitch}</p>
+    <div class="rl-actions">
+      <button type="button" class="cta" id="rl-create">Crear este personaje</button>
+      <a class="cta ghost" href="clase.html?c=${c.id}">Ver la clase</a>
+      <a class="cta ghost" href="#nombres" id="rl-name">Buscarle nombre</a>
+    </div>`;
+  $("rl-create").addEventListener("click", () => {
+    try { localStorage.setItem("pj-raza", raza); localStorage.setItem("pj-clase", claseId); } catch (e) {}
+    location.href = "clases.html#personaje";
+  });
+  $("rl-name").addEventListener("click", () => { nombres.raza = raza; pintarNombres(); });
+}
+
+// ---------- JUEGOS: GENERADOR DE NOMBRES ----------
+// Sílabas inventadas con el "sonido" de cada raza. Los nombres salen al azar.
+const SILABAS = {
+  humano:   [["Al", "Ber", "Ced", "Dor", "El", "Gar", "Hal", "Mar", "Ro", "Wil", "Ed", "Ser", "Lia", "Ka"], ["", "a", "e", "i", "o", "ri", "de", "la"], ["ric", "win", "dan", "eth", "mond", "ton", "ra", "na", "lyn", "sa", "bel"]],
+  enano:    [["Bru", "Dur", "Gor", "Thor", "Mag", "Bal", "Kra", "Hur", "Grim", "Dol", "Bel", "Hil"], ["", "", "a", "i", "o"], ["din", "grim", "nar", "bek", "dur", "rik", "li", "da", "dis", "gar", "mok"]],
+  elfo:     [["Ae", "Ly", "Sha", "Ty", "El", "Ara", "Ily", "Fa", "Na", "Mal", "Ze", "Sy"], ["la", "ri", "the", "ra", "dri", "ne", "", "va"], ["ndris", "nore", "lia", "ras", "thas", "vel", "riel", "wyn", "sae", "dor"]],
+  gnomo:    [["Fiz", "Tin", "Bin", "Wiz", "Gim", "Nob", "Pip", "Zip", "Kli", "Spro", "Mek"], ["", "a", "i", "le", "zle", "ble"], ["wick", "bolt", "gear", "nik", "cket", "fuse", "zy", "tok", "spin", "ket"]],
+  skyHO:    [["Aer", "Ky", "Zeph", "Sil", "Ori", "Cae", "Nim", "Vey", "Ala", "Ser"], ["a", "i", "e", "ri", "", "lo"], ["lis", "wen", "ros", "ra", "dor", "eth", "ys", "phae", "nor"]],
+  orco:     [["Gru", "Kro", "Thra", "Zug", "Mog", "Gor", "Dra", "Ur", "Kar", "Rok", "Gar", "Naz"], ["", "", "a", "o", "u"], ["gash", "nak", "mok", "thar", "rok", "gul", "rash", "dra", "ka", "grim", "tok"]],
+  nomuerto: [["Mor", "Vel", "Ske", "Cor", "Gri", "Nec", "Sar", "Lur", "Dre", "Ash", "Vor"], ["a", "e", "o", "i", "va", ""], ["vane", "mor", "dred", "sius", "rin", "ghast", "ith", "na", "lis", "goth"]],
+  tauren:   [["Ha", "Ka", "Ma", "Ta", "Ba", "Mu", "Ko", "Ne", "Ru", "Tah", "Ho"], ["", "ka", "no", "wa", "ra", "ma"], ["hoof", "ruk", "tah", "ne", "wa", "mu", "sha", "kan", "tor", "li"]],
+  trol:     [["Zul", "Jin", "Vol", "Ra", "Ze", "Sen", "Ka", "Mal", "Tak", "Zan", "Ji"], ["'", "a", "i", "ja", "'"], ["jin", "zu", "ka", "tal", "ji", "rak", "zin", "ma", "kal", "do"]],
+  skyWS:    [["Vey", "Sha", "Kae", "Zir", "Tal", "Ryn", "Sae", "Ori", "Fen", "Ves"], ["a", "e", "i", "ra", "", "wi"], ["sha", "rin", "wynd", "kai", "ros", "ael", "rys", "tha", "len"]]
+};
+const nombres = { raza: "humano", lista: [], copiado: null };
+
+function nombreAlAzar(raza) {
+  const [a, b, c] = SILABAS[raza];
+  const al = l => l[Math.floor(Math.random() * l.length)];
+  let n = al(a) + al(b) + al(c);
+  n = n.replace(/'+$/, "").replace(/''/g, "'").replace(/([aeiou])\1+/gi, "$1");
+  return n.charAt(0).toUpperCase() + n.slice(1).toLowerCase().replace(/'(.)/, (m, x) => "'" + x.toUpperCase());
+}
+
+function nuevosNombres() {
+  const vistos = new Set();
+  let intentos = 0;
+  while (vistos.size < 8 && intentos++ < 80) {
+    const n = nombreAlAzar(nombres.raza);
+    if (n.length >= 4 && n.length <= 12) vistos.add(n);
+  }
+  nombres.lista = [...vistos];
+}
+
+function pintarNombres() {
+  if (!$("nm-races")) return;
+  $("nm-races").innerHTML = Object.keys(SILABAS).map(r =>
+    `<button type="button" class="nm-race ${RACES[r].faccion}" data-r="${r}" aria-pressed="${nombres.raza === r}" title="${RACES[r].nombre}">${iconoRaza(r, "male", "lg")}<span>${RACES[r].nombre}</span></button>`).join("");
+  $("nm-races").querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    nombres.raza = b.dataset.r; nuevosNombres(); pintarNombres();
+  }));
+  if (!nombres.lista.length) nuevosNombres();
+  const p = leerPerfil();
+  $("nm-list").innerHTML = nombres.lista.map(n => `
+    <button type="button" class="nm-name" data-n="${n}">${n}<small>${nombres.copiado === n ? "¡Copiado!" : "copiar"}</small></button>`).join("");
+  $("nm-list").querySelectorAll(".nm-name").forEach(b => b.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(b.dataset.n); } catch (e) {}
+    nombres.copiado = b.dataset.n;
+    if (p) { cambiarPerfil({ nombre: b.dataset.n }); mostrarLogro(`${b.dataset.n} es ahora el nombre de tu personaje`); }
+    pintarNombres();
+  }));
+  $("nm-tip").textContent = p ? "Toca un nombre para copiarlo y ponérselo a tu personaje." : "Toca un nombre para copiarlo.";
+}
+
 // ---------- PORTADA: TARJETAS PARA EXPLORAR ----------
 const EXPLORA = [
   ["aventura.html", "Aventura", "inv_misc_spyglass_02", "Qué hacer a tu nivel, mapa y checklist", "#5b8def"],
@@ -948,6 +1301,7 @@ const EXPLORA = [
   ["mascotas.html", "Mascotas", "ability_hunter_beasttaming", "Raras con minimapa y habilidades", "#AAD372"],
   ["pve-pvp.html", "PvE y PvP", "achievement_pvp_p_250k", "Mazmorras, raids y campos de batalla", "#e0634f"],
   ["oficios.html", "Oficios", "trade_blacksmithing", "Las 13 profesiones y cuáles combinar", "#b07ce8"],
+  ["juegos.html", "Juegos", "inv_misc_dice_01", "Minijuego, ruleta y nombres", "#f0a04b"],
   ["comunidad.html", "Comunidad", "inv_misc_note_01", "Foro, comentarios y noticias", "#3FC7EB"]
 ];
 
@@ -966,15 +1320,34 @@ function pintarExplora() {
 
 if ($("hero-classes")) {
   $("hero-classes").innerHTML = CLASSES.map(c =>
-    `<a href="clases.html#${c.id}" class="hero-cls" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}<span>${c.nombre}</span></a>`).join("");
+    `<a href="clase.html?c=${c.id}" class="hero-cls" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}<span>${c.nombre}</span></a>`).join("");
 }
 if ($("explore")) pintarExplora();
-if ($("count-time")) { cuentaAtras(); setInterval(cuentaAtras, 1000); }
+if ($("mi-pj")) pintarMiPersonaje();
+if ($("rl-wheel")) {
+  pintarRuletaFiltros();
+  pintarRuletaCara("humano", "guerrero", false);
+  $("rl-spin").addEventListener("click", girarRuleta);
+}
+if ($("nm-list")) {
+  $("nm-again").addEventListener("click", () => { nuevosNombres(); nombres.copiado = null; pintarNombres(); });
+  pintarNombres();
+}
 if ($("j-book")) pintarDiario();
 if ($("check-list")) pintarChecklist();
 if ($("grid")) pintar();
 if ($("quiz")) pintarTest();
-if ($("b-factions")) pintarPersonaje();
+if ($("b-factions")) {
+  // Si vienes desde la página de una clase, ya llega elegida
+  try {
+    const pre = localStorage.getItem("pj-clase");
+    const raza = localStorage.getItem("pj-raza");
+    if (raza && RACES[raza]) { pj.raza = raza; pj.faccion = RACES[raza].faccion; localStorage.removeItem("pj-raza"); }
+    if (pre) { pj.clase = pre; localStorage.removeItem("pj-clase"); }
+  } catch (e) {}
+  pintarPersonaje();
+}
+if ($("clase-page")) pintarClase();
 if ($("game")) nuevaRonda();
 if ($("raids-list")) pintarRaids();
 if ($("cmp-a")) prepararComparador();

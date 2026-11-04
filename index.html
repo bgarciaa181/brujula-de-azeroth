@@ -17,52 +17,37 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=18">
+<link rel="stylesheet" href="css/estilos.css?v=19">
 </head>
 <body>
 <header id="site-header"></header>
 
-<div class="top">
-  <div class="wrap">
+<div class="top home-top">
+  <div class="wrap home-grid">
     <div class="hero">
       <p class="eyebrow">WoW Forever · en español</p>
-      <h1>Brújula de Azeroth <span>todo lo que necesitas para empezar</span></h1>
-      <div class="hero-classes" id="hero-classes"></div>
+      <h1>Brújula de Azeroth <span>tu guía para empezar con buen pie</span></h1>
+      <div class="count" id="count">
+        <span class="count-label" id="count-label">Lanzamiento en España</span>
+        <span class="count-time" id="count-time">—</span>
+        <span class="count-note">Jueves 5 nov · 00:00</span>
+      </div>
     </div>
-    <div class="count" id="count">
-      <span class="count-label" id="count-label">Lanzamiento en España</span>
-      <span class="count-time" id="count-time">—</span>
-      <span class="count-note">Jueves 5 nov · 00:00</span>
-    </div>
+    <div class="mi-pj" id="mi-pj"></div>
   </div>
 </div>
 
 <main>
   <div class="wrap">
-    <section id="explora">
-      <div class="section-head">
-        <h2>Explora</h2>
-        <p>Elige por dónde empezar.</p>
-      </div>
+    <section class="home-block">
+      <h2 class="home-h">¿Qué buscas?</h2>
       <div class="explore" id="explore"></div>
     </section>
 
-    <section id="juego">
-      <div class="section-head">
-        <h2>¿De qué clase es?</h2>
-        <p>Mira el talento y adivina la clase. ¿Cuántos aciertas seguidos?</p>
-      </div>
-      <div class="game" id="game"></div>
+    <section class="home-block">
+      <h2 class="home-h">Las 9 clases</h2>
+      <div class="hero-classes home-classes" id="hero-classes"></div>
     </section>
-
-    <section id="noticias">
-      <div class="section-head">
-        <h2>Últimas noticias</h2>
-        <p id="news-info">Se actualizan solas. Artículos en inglés.</p>
-      </div>
-      <div class="news" id="news-list"></div>
-    </section>
-
   </div>
 </main>
 
@@ -70,10 +55,10 @@
 
 <div class="achievement" id="achievement" hidden></div>
 
-<script src="js/datos.js?v=18"></script>
-<script src="js/talentos-datos.js?v=18"></script>
-<script src="js/talentos-es.js?v=18"></script>
-<script src="js/layout.js?v=18"></script>
-<script src="js/app.js?v=18"></script>
+<script src="js/datos.js?v=19"></script>
+<script src="js/talentos-datos.js?v=19"></script>
+<script src="js/talentos-es.js?v=19"></script>
+<script src="js/layout.js?v=19"></script>
+<script src="js/app.js?v=19"></script>
 </body>
 </html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Juegos · Brújula de Azeroth</title>
+<meta name="description" content="Minijuegos de WoW Forever: adivina la clase por el talento, ruleta de raza y clase y generador de nombres por raza.">
+<link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/juegos.html">
+<meta property="og:title" content="Juegos · Brújula de Azeroth">
+<meta property="og:description" content="Minijuegos de WoW Forever: adivina la clase por el talento, ruleta de raza y clase y generador de nombres por raza.">
+<meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
+<meta property="og:url" content="https://bgarciaa181.github.io/brujula-de-azeroth/juegos.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="img/icono.svg">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
+<link rel="stylesheet" href="css/estilos.css?v=19">
+</head>
+<body>
+<header id="site-header"></header>
+
+<div class="page-hero">
+  <div class="wrap page-hero-in">
+    <span class="wow-icon xl page-hero-icon" aria-hidden="true"><img src="https://render.worldofwarcraft.com/us/icons/56/inv_misc_dice_01.jpg" alt="" onerror="this.remove()"></span>
+    <div>
+      <h1>Juegos</h1>
+      <p>Para matar la espera… o para decidirte de una vez.</p>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <section id="ruleta" data-tab="Ruleta" data-icon="inv_misc_coin_01">
+      <div class="section-head">
+        <h2>Ruleta de personaje</h2>
+        <p>¿No te decides? Gira y que Azeroth elija por ti.</p>
+      </div>
+      <div class="rl-filters">
+        <div class="chips" id="rl-faction" role="group" aria-label="Facción"></div>
+        <div class="chips" id="rl-role" role="group" aria-label="Rol"></div>
+      </div>
+      <div class="rl-box">
+        <div class="rl-wheel" id="rl-wheel" aria-live="polite"></div>
+        <button type="button" class="cta rl-spin" id="rl-spin">¡Girar!</button>
+        <div class="rl-result" id="rl-result"></div>
+      </div>
+    </section>
+
+    <section id="nombres" data-tab="Nombres" data-icon="inv_misc_note_01">
+      <div class="section-head">
+        <h2>Generador de nombres</h2>
+        <p>Elige tu raza y te damos nombres que suenan a ella.</p>
+      </div>
+      <div class="nm-races" id="nm-races" role="group" aria-label="Raza"></div>
+      <div class="nm-list" id="nm-list"></div>
+      <div class="nm-foot">
+        <p class="nm-tip" id="nm-tip"></p>
+        <button type="button" class="cta ghost" id="nm-again">Otros nombres</button>
+      </div>
+    </section>
+
+    <section id="juego" data-tab="Adivina la clase" data-icon="ability_marksmanship">
+      <div class="section-head">
+        <h2>¿De qué clase es?</h2>
+        <p>Mira el talento y adivina la clase. ¿Cuántos aciertas seguidos?</p>
+      </div>
+      <div class="game" id="game"></div>
+    </section>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+<div class="achievement" id="achievement" hidden></div>
+
+<script src="js/datos.js?v=19"></script>
+<script src="js/talentos-datos.js?v=19"></script>
+<script src="js/talentos-es.js?v=19"></script>
+<script src="js/layout.js?v=19"></script>
+<script src="js/app.js?v=19"></script>
+</body>
+</html>
