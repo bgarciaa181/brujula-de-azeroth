@@ -202,3 +202,53 @@ const POBLACION = {
   normal: { alianza: 46.3, horda: 53.7 },
   pvp: { alianza: 50.9, horda: 49.1 }
 };
+
+// ---------- MEJORES MASCOTAS A NIVEL 60 ----------
+// M = MmonsteR (daño y aguante de cada familia), L = Leprestore (tier list de familias)
+const MASCOTA_FUENTES = {
+  M: ["MmonsteR", "https://mmonster.co/wow-forever/guides/hunter-pets/best-pets", "3 oct"],
+  L: ["Leprestore", "https://leprestore.com/guides/world-of-warcraft-forever/forever-best-hunter-pet-tier-list/", "27 oct"]
+};
+// [familia, notas, para qué sirve (corto)]
+const MASCOTA_META = {
+  raid: [
+    ["Felino", { M: "S", L: "S" }, "+10% de daño"],
+    ["Raptor", { M: "S", L: "S" }, "+10% de daño y sangrado"],
+    ["Lobo", { M: "B", L: "S" }, "Más ataque para tu grupo"],
+    ["Zancaalta", { M: "B", L: "S" }, "Baja la armadura del jefe"],
+    ["Carroñero", { M: "B", L: "S" }, "El jefe pega más flojo"],
+    ["Serpiente alada", { M: "A", L: "A" }, "+7% de daño, ataque a distancia"],
+    ["Murciélago", { M: "A", L: "A" }, "+7% de daño"],
+    ["Araña", { M: "A", L: "A" }, "+7% de daño"],
+    ["Ave rapaz", { M: "A", L: "B" }, "+7% de daño"],
+    ["Crocolisco", { M: "B", L: "A" }, "Normal"],
+    ["Hiena", { M: "B", L: "A" }, "Normal"],
+    ["Gorila", { M: "B", L: "B" }, "Daño en área"],
+    ["Zorro", { M: "B", L: "B" }, "Nueva, pico de daño cada 3 min"],
+    ["Escórpido", { M: "C", L: "B" }, "Veneno en peleas largas"],
+    ["Cangrejo", { M: "C", L: "A" }, "Aguanta, pega poco"],
+    ["Oso", { M: "C", L: "A" }, "Aguanta, pega poco"],
+    ["Jabalí", { M: "C", L: "B" }, "Aguanta, pega poco"],
+    ["Tortuga", { M: "C", L: "C" }, "Aguanta, pega poco"]
+  ],
+  pvp: [
+    ["Felino", { L: "S" }, "Embosca en sigilo"],
+    ["Araña", { L: "A" }, "Inmoviliza 4 s"],
+    ["Crocolisco", { L: "A" }, "−25% de curación al rival"],
+    ["Murciélago", { L: "A" }, "Frena a los magos y curanderos"],
+    ["Cangrejo", { L: "A" }, "Ralentiza un 50%"],
+    ["Hiena", { L: "A" }, "Ralentiza y desangra"],
+    ["Ave rapaz", { L: "B" }, "Desarma 3 s"],
+    ["Raptor", { L: "S" }, "Mucho daño"]
+  ],
+  solo: [
+    ["Oso", { M: "S" }, "Aguanta los golpes por ti"],
+    ["Jabalí", { M: "S" }, "Aguanta y carga al enemigo"],
+    ["Tortuga", { M: "S" }, "La que más aguanta"],
+    ["Escórpido", { M: "A" }, "Aguanta bien"],
+    ["Cangrejo", { M: "A" }, "Aguanta bien"],
+    ["Lobo", { M: "B" }, "Equilibrado"],
+    ["Felino", { M: "C" }, "Pega mucho, aguanta poco"],
+    ["Raptor", { M: "C" }, "Pega mucho, aguanta poco"]
+  ]
+};

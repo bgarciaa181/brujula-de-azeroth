@@ -536,22 +536,41 @@ function pintarPersonaje() {
         <h3>${r.nombre} <span style="color:${c.color}">${c.nombre}</span></h3>
         <div class="roles">${c.roles.map(iconoRol).join("")}${c.arboles.map(a => `<span title="${a[0]}">${iconoWow(a[2], "sm")}</span>`).join("")}</div>
         <ul class="b-racials">${info.habilidades.map(h => `<li${h[2] ? ' class="new"' : ""} title="${h[1]}">${h[0]}</li>`).join("")}</ul>
-        <div class="b-save">
-          <label for="b-name">Nombre</label>
-          <input type="text" id="b-name" maxlength="25" placeholder="Tu nombre" value="${(leerPerfil() && leerPerfil().nombre) || ""}">
-          <button type="button" class="cta" id="b-save">Guardar como mi personaje</button>
-        </div>
+        ${lineaMeta({ clase: pj.clase, raza: pj.raza, faccion: r.faccion })}
+        <form class="b-save" id="b-save-form">
+          <div class="b-names">
+            <label>Nombre <input type="text" id="b-name" maxlength="12" placeholder="Obligatorio" autocomplete="off" required></label>
+            <label>Apellido <input type="text" id="b-last" maxlength="12" placeholder="Obligatorio" autocomplete="off" required></label>
+          </div>
+          <small class="b-err" id="b-err">En Forever el nombre y el apellido son obligatorios. ¿Sin ideas? <a href="juegos.html#nombres">Generador de nombres</a></small>
+          <button type="submit" class="cta" id="b-save" disabled>Guardar personaje</button>
+        </form>
         <a class="b-link" href="clase.html?c=${c.id}">Ver la página del ${c.nombre} →</a>
       </div>
     </div>`;
-  $("b-save").addEventListener("click", () => {
-    const anterior = leerPerfil();
+  // El botón solo se activa con nombre y apellido válidos
+  const comprobar = () => {
+    const okN = nombreValido($("b-name").value), okA = nombreValido($("b-last").value);
+    $("b-save").disabled = !(okN && okA);
+    const algo = $("b-name").value || $("b-last").value;
+    $("b-err").classList.toggle("mal", !!algo && !(okN && okA));
+    if (algo && !(okN && okA)) $("b-err").textContent = "Solo letras, sin espacios ni números, de 2 a 12 cada uno.";
+  };
+  $("b-name").addEventListener("input", comprobar);
+  $("b-last").addEventListener("input", comprobar);
+  $("b-save-form").addEventListener("submit", e => {
+    e.preventDefault();
+    if ($("b-save").disabled) return;
+    const nombre = limpiarNombre($("b-name").value), apellido = limpiarNombre($("b-last").value);
+    const repetido = leerPersonajes().find(x => x.nombre === nombre && x.apellido === apellido);
     guardarPerfil({
-      nombre: $("b-name").value.trim() || "Aventurero",
+      id: repetido ? repetido.id : undefined,
+      nombre, apellido,
       faccion: r.faccion, raza: pj.raza, clase: pj.clase, genero: pj.genero,
-      nivel: anterior && anterior.clase === pj.clase ? anterior.nivel : 1
+      nivel: repetido ? repetido.nivel : 1
     });
-    mostrarLogro("¡Personaje guardado! La web se adapta a él");
+    $("b-save-form").outerHTML = `<div class="b-saved">✓ <b>${nombre} ${apellido}</b> guardado. Lo tienes arriba en el menú y en <a href="index.html">Inicio</a>.</div>`;
+    mostrarLogro(`¡${nombre} ${apellido} está listo para la aventura!`);
   });
 }
 
@@ -736,6 +755,7 @@ function etiquetasUso(f) {
   return (f[4] ? '<b class="tag-pve">PvE</b>' : "") + (f[5] ? '<b class="tag-pvp">PvP</b>' : "");
 }
 
+let familiaFiltro = null;
 function pintarMascotas() {
   // Botones PvE / PvP
   crearChips("pet-mode",
@@ -750,6 +770,13 @@ function pintarMascotas() {
 
   if (modoMascotas === "pve") lista = lista.filter(x => x.f[4]);
   if (modoMascotas === "pvp") lista = lista.filter(x => x.f[5]);
+  // Si vienes de "Las mejores", solo esa familia
+  const filtro = document.getElementById("pet-fam");
+  if (familiaFiltro) lista = lista.filter(x => x.m[1] === familiaFiltro);
+  if (filtro) {
+    filtro.hidden = !familiaFiltro;
+    filtro.innerHTML = familiaFiltro ? `Solo ${familiaFiltro} <b>✕</b>` : "";
+  }
 
   if (document.getElementById("pet-sort").value === "rapida") {
     // Las que no tienen velocidad conocida van al final
@@ -1195,6 +1222,48 @@ function pintarElige() {
   $("el-sources").innerHTML = Object.values(RAZA_FUENTES).map(([n, u, f]) => `<a href="${u}" target="_blank" rel="noopener">${n}</a> (${f})`).join(" · ");
 }
 
+// ---------- MASCOTAS: LAS MEJORES A NIVEL 60 ----------
+const MODOS_MASCOTA = [
+  ["raid", "Raids", "achievement_boss_onyxia", "Para hacer daño contra jefes"],
+  ["pvp", "PvP", "achievement_pvp_p_250k", "Para pelear contra jugadores"],
+  ["solo", "Subir solo", "ability_hunter_beasttaming", "Que aguante mientras disparas"]
+];
+let modoMascota = "raid";
+
+function pintarMejoresMascotas() {
+  $("bp-modes").innerHTML = MODOS_MASCOTA.map(([id, t, ic, d]) =>
+    `<button type="button" class="bp-mode" data-m="${id}" aria-pressed="${modoMascota === id}">${iconoWow(ic, "lg")}<span><b>${t}</b><small>${d}</small></span></button>`).join("");
+  $("bp-modes").querySelectorAll("button").forEach(b => b.onclick = () => { modoMascota = b.dataset.m; pintarMejoresMascotas(); });
+
+  const lista = MASCOTA_META[modoMascota].slice().sort((a, b) => puntosMeta(b[1]) - puntosMeta(a[1]));
+  const raras = fam => MASCOTAS.filter(m => m[1] === fam).length;
+  const tarjeta = ([fam, notas, txt], puesto) => {
+    const f = FAMILIAS.find(x => x[0] === fam);
+    const letra = letraMedia(notas);
+    return `<a class="bp-card p${puesto}" href="#mascotas" data-fam="${fam}">
+      ${puesto <= 3 ? `<span class="bp-medal">${["🥇", "🥈", "🥉"][puesto - 1]}</span>` : ""}
+      ${iconoFamilia(fam)}
+      <b>${fam}</b>
+      <span class="bp-what">${txt}</span>
+      <span class="bp-tier t-${letra}">${letra}</span>
+      ${f ? `<small class="bp-skill">${f[2]}</small>` : ""}
+      ${raras(fam) ? `<small class="bp-where">${raras(fam)} rara${raras(fam) > 1 ? "s" : ""} en el mapa →</small>` : ""}
+    </a>`;
+  };
+  $("bp-podium").innerHTML = lista.slice(0, 3).map((x, i) => tarjeta(x, i + 1)).join("");
+  $("bp-rest").innerHTML = lista.slice(3).map((x, i) => tarjeta(x, i + 4)).join("");
+  document.querySelectorAll(".bp-card").forEach(a => a.addEventListener("click", () => {
+    familiaFiltro = a.dataset.fam;
+    if ($("pets")) pintarMascotas();
+on("pet-fam", "click", () => { familiaFiltro = null; pintarMascotas(); });
+  }));
+
+  const usadas = new Set(MASCOTA_META[modoMascota].flatMap(x => Object.keys(x[1])));
+  $("bp-note").innerHTML = (modoMascota === "raid"
+    ? "Las raids abren el 9 de diciembre: cuando se prueben, pondremos la mejor para cada jefe. "
+    : "") + "Notas de: " + [...usadas].map(k => `<a href="${MASCOTA_FUENTES[k][1]}" target="_blank" rel="noopener">${MASCOTA_FUENTES[k][0]}</a>`).join(" · ") + ". Datos de la beta.";
+}
+
 // ---------- PORTADA: TU PERSONAJE ----------
 // Si guardaste tu personaje, la portada te dice qué hacer a tu nivel
 function pintarMiPersonaje() {
@@ -1238,7 +1307,7 @@ function pintarMiPersonaje() {
       <div class="mp-icons">${iconoRaza(p.raza, p.genero || "male", "xl")}${iconoClase(c)}</div>
       <div class="mp-who">
         <small>Tu personaje</small>
-        <h2>${p.nombre || "Sin nombre"}</h2>
+        <h2>${nombreCompleto(p)}</h2>
         <span>${RACES[p.raza].nombre} · <b style="color:${c.color}">${c.nombre}</b> · ${iconoFaccion(p.faccion, "sm")}</span>
       </div>
       <div class="mp-lvl" aria-label="Tu nivel">
@@ -1257,7 +1326,7 @@ function pintarMiPersonaje() {
       <a href="clase.html?c=${c.id}">Mi clase</a>
       <a href="talentos.html#${c.id}">Mis talentos</a>
       <a href="aventura.html#diario">Mi diario</a>
-      <a href="clases.html#personaje" class="mp-change">Cambiar</a>
+      <button type="button" class="mp-change" onclick="abrirPersonajes()">Mis personajes (${leerPersonajes().length})</button>
     </div>`;
 
   const subir = d => {
@@ -1426,7 +1495,11 @@ function pintarNombres() {
   $("nm-list").querySelectorAll(".nm-name").forEach(b => b.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(b.dataset.n); } catch (e) {}
     nombres.copiado = b.dataset.n;
-    if (p) { cambiarPerfil({ nombre: b.dataset.n }); mostrarLogro(`${b.dataset.n} es ahora el nombre de tu personaje`); }
+    if (p) {
+      const [nombre, apellido] = b.dataset.n.split(" ");
+      cambiarPerfil({ nombre, apellido });
+      mostrarLogro(`${b.dataset.n} es ahora el nombre de ${RACES[p.raza].nombre} ${CLASSES.find(x => x.id === p.clase).nombre}`);
+    }
     pintarNombres();
   }));
   $("nm-tip").textContent = p ? "Toca un nombre para copiarlo y ponérselo a tu personaje." : "Toca un nombre para copiarlo.";
@@ -1493,6 +1566,7 @@ if ($("clase-page")) pintarClase();
 if ($("game")) nuevaRonda();
 if ($("raids-list")) pintarRaids();
 if ($("cmp-a")) prepararComparador();
+if ($("bp-podium")) pintarMejoresMascotas();
 if ($("pets")) pintarMascotas();
 if ($("dg-chart")) {
   try {

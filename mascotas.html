@@ -34,7 +34,18 @@
 
 <main>
   <div class="wrap">
-    <section id="mascotas">
+    <section id="mejores" data-tab="Las mejores" data-icon="ability_hunter_beasttaming">
+      <div class="section-head">
+        <h2>La mejor mascota a nivel 60</h2>
+        <p>Toca para qué la quieres.</p>
+      </div>
+      <div class="bp-modes" id="bp-modes" role="group" aria-label="Para qué la quieres"></div>
+      <div class="bp-podium" id="bp-podium"></div>
+      <div class="bp-rest" id="bp-rest"></div>
+      <p class="bp-note" id="bp-note"></p>
+    </section>
+
+    <section id="mascotas" data-tab="Dónde domarlas" data-icon="inv_misc_map_01">
       <div class="section-head">
         <h2>Mascotas de cazador</h2>
         <p>Las raras que merece la pena domar. Desde nivel 10, y solo bestias de tu nivel o menos.</p>
@@ -46,6 +57,7 @@
         <span><b class="tag-pve">PvE</b> mazmorras y raids</span>
         <span><b class="tag-pvp">PvP</b> contra jugadores</span>
       </div>
+      <button type="button" class="pet-fam" id="pet-fam" hidden></button>
       <div class="pet-tools">
         <div class="row" id="pet-mode" role="group" aria-label="Para qué la quieres"></div>
         <label class="pet-sort" for="pet-sort">Ordenar
