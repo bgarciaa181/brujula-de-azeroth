@@ -36,7 +36,11 @@ function cargarClase(id) {
   const arboles = TALENTOS[clase];
   Object.keys(arboles).forEach((nombreArbol, a) => {
     for (const t of arboles[nombreArbol]) {
-      lista.push({ arbol: a, nombreArbol, nombre: t[0], fila: t[1], rangos: t[2], icono: t[3], req: t[4], desc: t[5] });
+      const es = (TALENTOS_ES[clase] || {})[t[0]];
+      lista.push({
+        arbol: a, nombreArbol, nombre: es ? es[0] : t[0], original: t[0],
+        fila: t[1], rangos: t[2], icono: t[3], req: t[4], desc: es ? es[1] : t[5], traducido: !!es
+      });
     }
   });
   orden = [];
@@ -61,8 +65,8 @@ function motivoBloqueo(indice) {
   const necesarios = (t.fila - 1) * 5;
   if (puntosArbol(t.arbol) < necesarios) return `Necesitas ${necesarios} puntos en ${t.nombreArbol} para esta fila.`;
   if (t.req && t.req !== "?") {
-    const r = lista.findIndex(x => x.arbol === t.arbol && x.nombre === t.req);
-    if (r >= 0 && puntosEn(r) < lista[r].rangos) return `Antes tienes que completar ${t.req}.`;
+    const r = lista.findIndex(x => x.arbol === t.arbol && x.original === t.req);
+    if (r >= 0 && puntosEn(r) < lista[r].rangos) return `Antes tienes que completar ${lista[r].nombre}.`;
   }
   return "";
 }
@@ -192,15 +196,15 @@ function textoTooltip(indice) {
   const t = lista[indice];
   const p = puntosEn(indice);
   const motivo = motivoBloqueo(indice);
-  let html = `<div class="tip-head">${iconoTalento(t)}<div><b class="tip-name">${t.nombre}</b><span class="tip-rank">Rango ${p}/${t.rangos}</span></div></div>`;
+  let html = `<div class="tip-head">${iconoTalento(t)}<div><b class="tip-name">${t.nombre}</b>${t.traducido ? `<span class="tip-en">${t.original}</span>` : ""}<span class="tip-rank">Rango ${p}/${t.rangos}</span></div></div>`;
   const necesarios = (t.fila - 1) * 5;
   if (necesarios > 0 && puntosArbol(t.arbol) < necesarios) {
     html += `<p class="tip-red">Requiere ${necesarios} puntos en ${t.nombreArbol}</p>`;
   }
   if (t.req) {
-    const r = lista.findIndex(x => x.arbol === t.arbol && x.nombre === t.req);
+    const r = lista.findIndex(x => x.arbol === t.arbol && x.original === t.req);
     const hecho = r >= 0 && puntosEn(r) >= lista[r].rangos;
-    if (!hecho) html += `<p class="tip-red">Requiere ${t.req === "?" ? "un talento oculto" : t.req}</p>`;
+    if (!hecho) html += `<p class="tip-red">Requiere ${t.req === "?" ? "un talento oculto" : (r >= 0 ? lista[r].nombre : t.req)}</p>`;
   }
   if (t.desc) html += `<p class="tip-desc">${t.desc}</p>`;
   if (t.nombre === "?") html += `<p class="tip-desc">Se conocerá cuando salga el juego.</p>`;

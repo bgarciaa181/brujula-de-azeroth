@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PvE y PvP · Brújula de Azeroth</title>
+<meta name="description" content="Mazmorras de WoW Forever según tu nivel, campos de batalla, raids del 9 de diciembre y calendario oficial.">
+<link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/pve-pvp.html">
+<meta property="og:title" content="PvE y PvP · Brújula de Azeroth">
+<meta property="og:description" content="Mazmorras de WoW Forever según tu nivel, campos de batalla, raids del 9 de diciembre y calendario oficial.">
+<meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
+<meta property="og:url" content="https://bgarciaa181.github.io/brujula-de-azeroth/pve-pvp.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="img/icono.svg">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
+<link rel="stylesheet" href="css/estilos.css?v=18">
+</head>
+<body>
+<header id="site-header"></header>
+
+<div class="page-hero">
+  <div class="wrap page-hero-in">
+    <span class="wow-icon xl page-hero-icon" aria-hidden="true"><img src="https://render.worldofwarcraft.com/us/icons/56/achievement_pvp_p_250k.jpg" alt="" onerror="this.remove()"></span>
+    <div>
+      <h1>PvE y PvP</h1>
+      <p>Mazmorras, campos de batalla, raids y lo que viene.</p>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <section id="modo" data-tab="Mazmorras y PvP" data-icon="achievement_dungeon_classicdungeonmaster">
+      <div class="section-head">
+        <h2>¿PvE o PvP?</h2>
+        <p>Elige cómo quieres jugar.</p>
+      </div>
+      <div class="mode-switch" role="tablist" aria-label="Modo de juego">
+        <button type="button" class="mode-btn pve" id="mode-pve" role="tab" aria-selected="true">
+          <span class="wow-icon xl"><img src="https://render.worldofwarcraft.com/us/icons/56/achievement_dungeon_classicdungeonmaster.jpg" alt="" onerror="this.remove()"></span>
+          <b>PvE</b><small>Mazmorras y raids</small>
+        </button>
+        <button type="button" class="mode-btn pvp" id="mode-pvp" role="tab" aria-selected="false">
+          <span class="wow-icon xl"><img src="https://render.worldofwarcraft.com/us/icons/56/achievement_pvp_p_250k.jpg" alt="" onerror="this.remove()"></span>
+          <b>PvP</b><small>Contra jugadores</small>
+        </button>
+      </div>
+
+      <div class="mode-panel" id="panel-pve">
+        <div class="dg-level">
+          <label for="dg-lvl">Mi nivel</label>
+          <input type="range" id="dg-lvl" min="10" max="60" value="20">
+          <output id="dg-lvl-out" for="dg-lvl">20</output>
+        </div>
+        <div class="dg-now" id="dg-now"></div>
+        <details class="dg-all">
+          <summary>Ver las 35 mazmorras</summary>
+          <div class="dg-chart" id="dg-chart"></div>
+        </details>
+        <p class="dg-note"><span class="new-badge">Nueva</span> = nueva en Forever. Los niveles de las clásicas son los de Classic, pueden cambiar.</p>
+      </div>
+
+      <div class="mode-panel" id="panel-pvp" hidden>
+        <div class="bg-list" id="bg-list"></div>
+        <h3 class="sub">Mascotas de cazador para PvP</h3>
+        <div class="mode-pets" id="pvp-pets"></div>
+        <p class="dg-note">Nueva temporada de PvP en primavera de 2027.</p>
+      </div>
+    </section>
+
+    <section id="raids" data-tab="Raids" data-icon="achievement_boss_onyxia">
+      <div class="section-head">
+        <h2>Raids del 9 de diciembre</h2>
+        <p id="raids-count">Las tres primeras raids abren el mismo día.</p>
+      </div>
+      <div class="raids" id="raids-list"></div>
+    </section>
+
+    <section id="calendario" data-tab="Calendario" data-icon="inv_misc_pocketwatch_01">
+      <div class="section-head">
+        <h2>Calendario</h2>
+        <p>Lo que ha anunciado Blizzard.</p>
+      </div>
+      <ol class="timeline" id="timeline"></ol>
+    </section>
+
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<div class="achievement" id="achievement" hidden></div>
+
+<script src="js/datos.js?v=18"></script>
+<script src="js/talentos-datos.js?v=18"></script>
+<script src="js/talentos-es.js?v=18"></script>
+<script src="js/layout.js?v=18"></script>
+<script src="js/app.js?v=18"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aventura · Brújula de Azeroth</title>
+<meta name="description" content="Diario de aventuras de WoW Forever: a qué zonas ir según tu nivel, mapa de Azeroth por dificultad y checklist para el primer día.">
+<link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/aventura.html">
+<meta property="og:title" content="Aventura · Brújula de Azeroth">
+<meta property="og:description" content="Diario de aventuras de WoW Forever: a qué zonas ir según tu nivel, mapa de Azeroth por dificultad y checklist para el primer día.">
+<meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
+<meta property="og:url" content="https://bgarciaa181.github.io/brujula-de-azeroth/aventura.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="img/icono.svg">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
+<link rel="stylesheet" href="css/estilos.css?v=18">
+</head>
+<body>
+<header id="site-header"></header>
+
+<div class="page-hero">
+  <div class="wrap page-hero-in">
+    <span class="wow-icon xl page-hero-icon" aria-hidden="true"><img src="https://render.worldofwarcraft.com/us/icons/56/inv_misc_spyglass_02.jpg" alt="" onerror="this.remove()"></span>
+    <div>
+      <h1>Aventura</h1>
+      <p>Qué hacer según tu nivel, a dónde ir y qué no olvidar.</p>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <section id="diario" data-tab="Diario" data-icon="inv_misc_book_09">
+      <div class="section-head">
+        <h2>Diario de aventuras</h2>
+        <p>Dime tu facción y tu nivel. Te digo qué hacer.</p>
+      </div>
+      <div class="journal">
+        <div class="j-controls">
+          <div class="j-factions" id="j-factions"></div>
+          <div class="j-level">
+            <label for="j-lvl">Nivel</label>
+            <button type="button" class="j-step" id="j-minus" aria-label="Bajar nivel">−</button>
+            <input type="range" id="j-lvl" min="1" max="60" value="1">
+            <button type="button" class="j-step" id="j-plus" aria-label="Subir nivel">+</button>
+            <output id="j-lvl-out" for="j-lvl">1</output>
+          </div>
+        </div>
+        <div class="j-book" id="j-book">
+          <div class="j-page j-left" id="j-now"></div>
+          <div class="j-page j-right" id="j-route"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mapa" data-tab="Mapa" data-icon="inv_misc_map_01">
+      <div class="section-head">
+        <h2>Mapa de Azeroth</h2>
+        <p>Las zonas con el color de dificultad del juego según tu nivel.</p>
+      </div>
+      <div class="con-legend">
+        <span class="con gris">Muy fácil</span><span class="con verde">Fácil</span><span class="con amarillo">Tu nivel</span><span class="con naranja">Difícil</span><span class="con rojo">Peligrosa</span>
+      </div>
+      <p class="map-sync">Usa la facción y el nivel del Diario de aventuras: <b id="map-info"></b></p>
+      <div class="continents" id="continents"></div>
+    </section>
+
+    <section id="checklist" data-tab="Día 1" data-icon="inv_misc_note_01">
+      <div class="section-head">
+        <h2>Checklist del día 1</h2>
+        <p>Marca lo que vayas haciendo. Se guarda en tu navegador.</p>
+      </div>
+      <div class="check-progress"><span id="check-bar"></span></div>
+      <ul class="checklist" id="check-list"></ul>
+    </section>
+
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<div class="achievement" id="achievement" hidden></div>
+
+<script src="js/datos.js?v=18"></script>
+<script src="js/talentos-datos.js?v=18"></script>
+<script src="js/talentos-es.js?v=18"></script>
+<script src="js/layout.js?v=18"></script>
+<script src="js/app.js?v=18"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mascotas de cazador · Brújula de Azeroth</title>
+<meta name="description" content="Mascotas raras de cazador en WoW Forever: dónde están con minimapa, habilidades, velocidad de ataque y filtros PvE y PvP.">
+<link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/mascotas.html">
+<meta property="og:title" content="Mascotas de cazador · Brújula de Azeroth">
+<meta property="og:description" content="Mascotas raras de cazador en WoW Forever: dónde están con minimapa, habilidades, velocidad de ataque y filtros PvE y PvP.">
+<meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
+<meta property="og:url" content="https://bgarciaa181.github.io/brujula-de-azeroth/mascotas.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="img/icono.svg">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
+<link rel="stylesheet" href="css/estilos.css?v=18">
+</head>
+<body>
+<header id="site-header"></header>
+
+<div class="page-hero">
+  <div class="wrap page-hero-in">
+    <span class="wow-icon xl page-hero-icon" aria-hidden="true"><img src="https://render.worldofwarcraft.com/us/icons/56/ability_hunter_beasttaming.jpg" alt="" onerror="this.remove()"></span>
+    <div>
+      <h1>Mascotas de cazador</h1>
+      <p>Las raras que merecen la pena: dónde están y qué hacen.</p>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <section id="mascotas">
+      <div class="section-head">
+        <h2>Mascotas de cazador</h2>
+        <p>Las raras que merece la pena domar. Desde nivel 10, y solo bestias de tu nivel o menos.</p>
+      </div>
+      <div class="pet-legend">
+        <span><i class="dot nueva"></i>Nueva en Forever</span>
+        <span><i class="dot vista"></i>Vista en la beta</span>
+        <span><i class="dot classic"></i>Dato de Classic, sin confirmar</span>
+        <span><b class="tag-pve">PvE</b> mazmorras y raids</span>
+        <span><b class="tag-pvp">PvP</b> contra jugadores</span>
+      </div>
+      <div class="pet-tools">
+        <div class="row" id="pet-mode" role="group" aria-label="Para qué la quieres"></div>
+        <label class="pet-sort" for="pet-sort">Ordenar
+          <select id="pet-sort">
+            <option value="nivel">Por nivel</option>
+            <option value="rapida">Más rápidas primero</option>
+          </select>
+        </label>
+      </div>
+      <div class="pet-level">
+        <label for="pet-lvl">Mi nivel</label>
+        <input type="range" id="pet-lvl" min="10" max="60" value="60">
+        <output id="pet-lvl-out" for="pet-lvl">60</output>
+        <span id="pet-count"></span>
+      </div>
+      <div class="pets" id="pets"></div>
+      <details class="families">
+        <summary>Las 19 familias: su habilidad y para qué sirve</summary>
+        <div class="family-grid" id="families"></div>
+      </details>
+    </section>
+
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+
+<div class="achievement" id="achievement" hidden></div>
+
+<script src="js/datos.js?v=18"></script>
+<script src="js/talentos-datos.js?v=18"></script>
+<script src="js/talentos-es.js?v=18"></script>
+<script src="js/layout.js?v=18"></script>
+<script src="js/app.js?v=18"></script>
+</body>
+</html>

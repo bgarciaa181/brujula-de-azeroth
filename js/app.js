@@ -1,3 +1,15 @@
+// app.js: lo de cada página. Cada parte solo se pone en marcha si su página la tiene.
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+// Añade un evento solo si el elemento existe en esta página
+function on(id, evento, funcion) {
+  const el = $(id);
+  if (el) el.addEventListener(evento, funcion);
+}
+
 // ---------- ESTADO DE LOS FILTROS ----------
 let rolElegido = "todos";
 let faccionElegida = "todas";
@@ -59,12 +71,6 @@ function pintar() {
     : "Toca una clase para ver su ficha.";
 }
 
-// ---------- BLOQUEAR EL SCROLL DEL FONDO ----------
-// Mientras hay una ventana abierta, la página de detrás no se mueve
-function bloquearFondo(si) {
-  document.documentElement.classList.toggle("bloqueo", si);
-}
-
 // ---------- FICHA DE CLASE ----------
 const dialogo = document.getElementById("detail");
 
@@ -111,13 +117,26 @@ function abrirFicha(id) {
 }
 
 function cerrarFicha() {
-  history.replaceState(null, "", location.pathname + location.search);
+  history.replaceState(null, "", location.pathname + location.search + "#clases");
   if (dialogo.open) dialogo.close();
 }
-dialogo.addEventListener("cancel", e => { e.preventDefault(); cerrarFicha(); });
-dialogo.addEventListener("close", () => bloquearFondo(false));
-dialogo.addEventListener("click", e => { if (e.target === dialogo) cerrarFicha(); });
-window.addEventListener("hashchange", () => abrirFicha(location.hash.slice(1)));
+if (dialogo) {
+  dialogo.addEventListener("cancel", e => { e.preventDefault(); cerrarFicha(); });
+  dialogo.addEventListener("close", () => bloquearFondo(false));
+  dialogo.addEventListener("click", e => { if (e.target === dialogo) cerrarFicha(); });
+  // Si la dirección termina en #mago, #cazador... se abre la ficha de esa clase
+  window.addEventListener("hashchange", () => abrirFichaDesdeEnlace());
+}
+
+function abrirFichaDesdeEnlace() {
+  const id = location.hash.slice(1);
+  if (CLASSES.some(c => c.id === id)) {
+    mostrarSeccion("clases", false);
+    abrirFicha(id);
+  } else if (dialogo && dialogo.open) {
+    dialogo.close();
+  }
+}
 
 // ---------- TEST ----------
 let pasoTest = 0;
@@ -149,7 +168,7 @@ function pintarTest() {
         </div>
         <p class="quiz-also">También te pegan: ${otras.map(o => `<a href="#${o.id}" style="color:${o.color}">${o.nombre}</a>`).join(" y ")}</p>
       </div>`;
-    document.getElementById("quiz-again").addEventListener("click", () => {
+    on("quiz-again", "click", () => {
       pasoTest = 0;
       puntosTest = {};
       pintarTest();
@@ -294,9 +313,9 @@ function cambiarNivelDiario(delta) {
   diario.nivel = Math.min(60, Math.max(1, diario.nivel + delta));
   pintarDiario();
 }
-document.getElementById("j-lvl").addEventListener("input", e => { diario.nivel = parseInt(e.target.value, 10); pintarDiario(); });
-document.getElementById("j-minus").addEventListener("click", () => cambiarNivelDiario(-1));
-document.getElementById("j-plus").addEventListener("click", () => cambiarNivelDiario(1));
+on("j-lvl", "input", e => { diario.nivel = parseInt(e.target.value, 10); pintarDiario(); });
+on("j-minus", "click", () => cambiarNivelDiario(-1));
+on("j-plus", "click", () => cambiarNivelDiario(1));
 
 // ---------- MAPA DE AZEROTH (colores de dificultad del juego) ----------
 // Gris, verde, amarillo, naranja o rojo según la diferencia entre tu nivel y el de la zona
@@ -377,13 +396,12 @@ let modoJuego = "pve";
 
 function cambiarModo(modo) {
   modoJuego = modo;
-  document.getElementById("mode-pve").setAttribute("aria-selected", String(modo === "pve"));
+  $("mode-pve").setAttribute("aria-selected", String(modo === "pve"));
   document.getElementById("mode-pvp").setAttribute("aria-selected", String(modo === "pvp"));
   document.getElementById("panel-pve").hidden = modo !== "pve";
   document.getElementById("panel-pvp").hidden = modo !== "pvp";
   // Las mascotas de más abajo también se filtran igual
-  modoMascotas = modo;
-  pintarMascotas();
+  try { localStorage.setItem("modo-juego", modo); } catch (e) {}
 }
 
 function pintarMazmorras() {
@@ -430,9 +448,9 @@ function pintarPvP() {
     <div class="mini-pet">${iconoFamilia(m[1])}<span><b>${m[0]}</b><small>${m[1]} · nv ${m[2]}${m[4] ? ` · ${m[4].toFixed(1)} s` : ""}</small></span></div>`).join("");
 }
 
-document.getElementById("mode-pve").addEventListener("click", () => cambiarModo("pve"));
-document.getElementById("mode-pvp").addEventListener("click", () => cambiarModo("pvp"));
-document.getElementById("dg-lvl").addEventListener("input", pintarMazmorras);
+on("mode-pve", "click", () => cambiarModo("pve"));
+on("mode-pvp", "click", () => cambiarModo("pvp"));
+on("dg-lvl", "input", pintarMazmorras);
 
 // ---------- CREA TU PERSONAJE ----------
 const pj = { faccion: null, raza: null, clase: null, genero: "male" };
@@ -517,7 +535,7 @@ function pintarPersonaje() {
     </div>`;
 }
 
-document.getElementById("b-gender").addEventListener("click", () => {
+on("b-gender", "click", () => {
   pj.genero = pj.genero === "male" ? "female" : "male";
   pintarPersonaje();
 });
@@ -596,7 +614,7 @@ function filtrarMascotas() {
   });
   document.getElementById("pet-count").textContent = `${n} de ${fichas.length} disponibles`;
 }
-document.getElementById("pet-lvl").addEventListener("input", filtrarMascotas);
+on("pet-lvl", "input", filtrarMascotas);
 
 // ---------- RAIDS ----------
 function pintarRaids() {
@@ -686,17 +704,9 @@ function comparar() {
 }
 
 // ---------- MASCOTAS ----------
-function iconoFamilia(nombre) {
-  const f = FAMILIAS.find(x => x[0] === nombre);
-  const icono = f && f[1] ? `<img src="${ICONOS_URL}${f[1]}.jpg" alt="" loading="lazy" onerror="this.remove()">` : "";
-  return `<span class="pet-icon" aria-hidden="true"><span>${nombre[0]}</span>${icono}</span>`;
-}
 
 let modoMascotas = "todas";
 
-function familia(nombre) {
-  return FAMILIAS.find(f => f[0] === nombre);
-}
 
 function etiquetasUso(f) {
   return (f[4] ? '<b class="tag-pve">PvE</b>' : "") + (f[5] ? '<b class="tag-pvp">PvP</b>' : "");
@@ -747,7 +757,7 @@ function pintarMascotas() {
   filtrarMascotas();
 }
 
-document.getElementById("pet-sort").addEventListener("change", pintarMascotas);
+on("pet-sort", "change", pintarMascotas);
 
 // Minimapa con los sitios donde aparece la mascota y sus habilidades
 function chipHabilidad(texto, f) {
@@ -855,6 +865,14 @@ function pintarProfesiones() {
 // ---------- CALENDARIO ----------
 function pintarCalendario() {
   const etiquetas = { hecho: "Hecho", pronto: "Ya llega", futuro: "Próximamente" };
+  // Cuando ya ha salido el juego, el lanzamiento pasa a "hecho" y las raids a "ya llega"
+  if (new Date() >= LANZAMIENTO) {
+    for (const e of CALENDARIO) {
+      if (e.titulo === "Lanzamiento") e.estado = "hecho";
+      if (e.titulo === "Abren las primeras raids" && new Date() < APERTURA_RAIDS) e.estado = "pronto";
+      if (e.titulo === "Abren las primeras raids" && new Date() >= APERTURA_RAIDS) e.estado = "hecho";
+    }
+  }
   document.getElementById("timeline").innerHTML = CALENDARIO.map(e => `
     <li class="step ${e.estado}">
       ${iconoWow(e.icono, "step-icon")}
@@ -869,9 +887,11 @@ function pintarCalendario() {
 const LANZAMIENTO = new Date("2026-11-04T23:00:00Z");
 function cuentaAtras() {
   const falta = LANZAMIENTO - new Date();
-  const el = document.getElementById("count-time");
+  const el = $("count-time");
+  if (!el) return;
   if (falta <= 0) {
     el.textContent = "¡Ya disponible!";
+    if ($("count-label")) $("count-label").textContent = "WoW Forever";
     return;
   }
   const h = Math.floor(falta / 3600000);
@@ -920,193 +940,56 @@ function cargarNoticias() {
     });
 }
 
-// ---------- MENÚ DE SECCIONES ----------
-const SECCIONES = [
-  ["diario", "Diario", "inv_misc_map_01"],
-  ["mapa", "Mapa", "inv_misc_spyglass_02"],
-  ["checklist", "Día 1", "inv_misc_note_01"],
-  ["clases", "Clases", "classicon_warrior"],
-  ["modo", "PvE / PvP", "achievement_pvp_p_250k"],
-  ["test", "Test", "inv_misc_dice_01"],
-  ["personaje", "Personaje", "achievement_character_human_male"],
-  ["talentos.html", "Talentos", "ability_marksmanship"],
-  ["comparador", "Comparar", "inv_misc_coin_01"],
-  ["juego", "Juego", "inv_misc_questionmark"],
-  ["mascotas", "Mascotas", "ability_hunter_beasttaming"],
-  ["razas", "Razas", "achievement_character_orc_male"],
-  ["profesiones", "Oficios", "trade_blacksmithing"],
-  ["raids", "Raids", "achievement_boss_onyxia"],
-  ["calendario", "Calendario", "inv_misc_pocketwatch_01"],
-  ["noticias", "Noticias", "inv_scroll_03"],
-  ["comunidad", "Comunidad", "inv_misc_note_01"]
+// ---------- PORTADA: TARJETAS PARA EXPLORAR ----------
+const EXPLORA = [
+  ["aventura.html", "Aventura", "inv_misc_spyglass_02", "Qué hacer a tu nivel, mapa y checklist", "#5b8def"],
+  ["clases.html", "Clases y razas", "classicon_warrior", "Las 9 clases, test y crea tu personaje", "#C69B6D"],
+  ["talentos.html", "Talentos", "ability_marksmanship", "Calculadora con orden por nivel", "#d6b06a"],
+  ["mascotas.html", "Mascotas", "ability_hunter_beasttaming", "Raras con minimapa y habilidades", "#AAD372"],
+  ["pve-pvp.html", "PvE y PvP", "achievement_pvp_p_250k", "Mazmorras, raids y campos de batalla", "#e0634f"],
+  ["oficios.html", "Oficios", "trade_blacksmithing", "Las 13 profesiones y cuáles combinar", "#b07ce8"],
+  ["comunidad.html", "Comunidad", "inv_misc_note_01", "Foro, comentarios y noticias", "#3FC7EB"]
 ];
 
-function pintarMenu() {
-  document.getElementById("nav-items").innerHTML = SECCIONES.map(([id, nombre, icono]) => {
-    const href = id.endsWith(".html") ? id : "#" + id;
-    return `<a href="${href}" class="nav-item" data-sec="${id}">${iconoWow(icono, "sm")}<span>${nombre}</span></a>`;
-  }).join("");
+function pintarExplora() {
+  $("explore").innerHTML = EXPLORA.map(([url, titulo, icono, texto, color]) => `
+    <a class="explore-card" href="${url}" style="--c:${color}">
+      ${iconoWow(icono, "xl")}
+      <b>${titulo}</b>
+      <span>${texto}</span>
+      <i class="explore-go" aria-hidden="true">→</i>
+    </a>`).join("");
 }
 
-// Marca en el menú la sección que estás viendo
-function seguirScroll() {
-  const observador = new IntersectionObserver(entradas => {
-    for (const e of entradas) {
-      if (!e.isIntersecting) continue;
-      document.querySelectorAll(".nav-item").forEach(a => a.classList.toggle("active", a.dataset.sec === e.target.id));
-      const activo = document.querySelector(`.nav-item[data-sec="${e.target.id}"]`);
-      if (activo) activo.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
-    }
-  }, { rootMargin: "-40% 0px -55% 0px" });
-  document.querySelectorAll("main section[id]").forEach(sec => observador.observe(sec));
-}
+// ---------- ARRANQUE ----------
+// Cada parte solo se pinta si está en la página
 
-// ---------- BUSCADOR ----------
-function sinTildes(texto) {
-  return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+if ($("hero-classes")) {
+  $("hero-classes").innerHTML = CLASSES.map(c =>
+    `<a href="clases.html#${c.id}" class="hero-cls" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}<span>${c.nombre}</span></a>`).join("");
 }
-
-// Junta en una lista todo lo que se puede buscar
-const INDICE = [];
-for (const c of CLASSES) {
-  INDICE.push({ texto: c.nombre, tipo: "Clase", icono: iconoClase(c), ir: () => { location.hash = c.id; } });
-  for (const a of c.arboles) {
-    INDICE.push({ texto: `${a[0]} (${c.nombre})`, tipo: "Especialización", icono: iconoWow(a[2], "sm"), ir: () => { location.hash = c.id; } });
-  }
+if ($("explore")) pintarExplora();
+if ($("count-time")) { cuentaAtras(); setInterval(cuentaAtras, 1000); }
+if ($("j-book")) pintarDiario();
+if ($("check-list")) pintarChecklist();
+if ($("grid")) pintar();
+if ($("quiz")) pintarTest();
+if ($("b-factions")) pintarPersonaje();
+if ($("game")) nuevaRonda();
+if ($("raids-list")) pintarRaids();
+if ($("cmp-a")) prepararComparador();
+if ($("pets")) pintarMascotas();
+if ($("dg-chart")) {
+  try {
+    const n = parseInt(localStorage.getItem("dg-nivel"), 10);
+    if (n) { $("dg-lvl").value = n; localStorage.removeItem("dg-nivel"); }
+    if (localStorage.getItem("modo-juego") === "pvp") cambiarModo("pvp");
+  } catch (e) {}
+  pintarMazmorras();
+  pintarPvP();
 }
-for (const [id, r] of Object.entries(RACES)) {
-  INDICE.push({ texto: r.nombre, tipo: r.faccion === "alianza" ? "Raza · Alianza" : "Raza · Horda", icono: iconoRaza(id, "male", "sm"), ir: () => abrirRaza(id) });
-  for (const h of RACIALES[id].habilidades) {
-    INDICE.push({ texto: h[0], tipo: `Racial de ${r.nombre}`, icono: iconoRaza(id, "male", "sm"), ir: () => abrirRaza(id) });
-  }
-}
-for (const m of MASCOTAS) {
-  INDICE.push({ texto: m[0], tipo: `Mascota · ${m[1]} nivel ${m[2]}`, icono: iconoFamilia(m[1]), ir: () => irA("mascotas") });
-}
-for (const f of FAMILIAS) {
-  INDICE.push({ texto: f[0], tipo: `Familia de mascota · ${f[2]}`, icono: iconoFamilia(f[0]), ir: () => irA("mascotas") });
-}
-for (const p of [...PROFESIONES.principales, ...PROFESIONES.secundarias]) {
-  INDICE.push({ texto: p[0], tipo: "Profesión", icono: iconoWow(p[4], "sm"), ir: () => irA("profesiones") });
-}
-for (const m of MAZMORRAS) {
-  INDICE.push({ texto: m[0], tipo: `Mazmorra · nivel ${m[1]}–${m[2]}`, icono: iconoWow("achievement_dungeon_classicdungeonmaster", "sm"), ir: () => { cambiarModo("pve"); document.getElementById("dg-lvl").value = m[1]; pintarMazmorras(); irA("modo"); } });
-}
-for (const z of ZONAS) {
-  INDICE.push({ texto: z[0], tipo: `Zona · nivel ${z[1]}–${z[2]}`, icono: iconoWow("inv_misc_map_01", "sm"), ir: () => {
-    if (z[3] !== "ambas") diario.faccion = z[3];
-    diario.nivel = z[1];
-    pintarDiario();
-    irA("diario");
-  } });
-}
-for (const c of CAMPOS_BATALLA) {
-  INDICE.push({ texto: c.nombre, tipo: "Campo de batalla · PvP", icono: iconoWow(c.icono, "sm"), ir: () => { cambiarModo("pvp"); irA("modo"); } });
-}
-for (const r of RAIDS) {
-  INDICE.push({ texto: r.nombre, tipo: `Raid de ${r.jugadores}`, icono: r.icono ? iconoWow(r.icono, "sm") : '<span class="wow-icon sm unknown">?</span>', ir: () => irA("raids") });
-}
-for (const [claseId, arboles] of Object.entries(TALENTOS)) {
-  const c = CLASSES.find(x => x.id === claseId);
-  for (const [arbol, lista] of Object.entries(arboles)) {
-    for (const t of lista) {
-      if (!t[3]) continue;
-      INDICE.push({ texto: t[0], tipo: `Talento · ${c.nombre}, ${arbol}`, icono: iconoWow(t[3], "sm"), ir: () => { location.href = "talentos.html#" + claseId; } });
-    }
-  }
-}
-
-function irA(id) {
-  document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-}
-
-function abrirRaza(id) {
-  faccionRazas = "todas";
-  pintarRazas();
-  const det = document.querySelectorAll("#races-list details")[Object.keys(RACES).indexOf(id)];
-  det.open = true;
-  det.scrollIntoView({ behavior: "smooth", block: "center" });
-}
-
-const capa = document.getElementById("search-layer");
-const caja = document.getElementById("search-input");
-
-function abrirBuscador() {
-  capa.hidden = false;
-  bloquearFondo(true);
-  caja.value = "";
-  buscar();
-  caja.focus();
-}
-
-function cerrarBuscador() {
-  capa.hidden = true;
-  bloquearFondo(false);
-}
-
-function buscar() {
-  const q = sinTildes(caja.value.trim());
-  const res = document.getElementById("search-results");
-  if (q.length < 2) {
-    res.innerHTML = `<p class="search-tip">Escribe al menos 2 letras. Prueba con <i>lobo</i>, <i>gnomo</i>, <i>herrería</i> o <i>shadow</i>.</p>`;
-    return;
-  }
-  // Primero lo que coincide en el nombre, luego lo que coincide en el tipo
-  const porNombre = INDICE.filter(x => sinTildes(x.texto).includes(q));
-  const porTipo = INDICE.filter(x => !sinTildes(x.texto).includes(q) && sinTildes(x.tipo).includes(q));
-  const encontrados = [...porNombre, ...porTipo].slice(0, 12);
-  if (encontrados.length === 0) {
-    res.innerHTML = `<p class="search-tip">No hay nada con "${caja.value}".</p>`;
-    return;
-  }
-  res.innerHTML = "";
-  for (const x of encontrados) {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = "search-item";
-    b.innerHTML = `${x.icono}<span><b>${x.texto}</b><small>${x.tipo}</small></span>`;
-    b.addEventListener("click", () => { cerrarBuscador(); x.ir(); });
-    res.appendChild(b);
-  }
-}
-
-document.getElementById("search-open").addEventListener("click", abrirBuscador);
-document.getElementById("search-close").addEventListener("click", cerrarBuscador);
-caja.addEventListener("input", buscar);
-caja.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    const primero = document.querySelector(".search-item");
-    if (primero) primero.click();
-  }
-});
-capa.addEventListener("click", e => { if (e.target === capa) cerrarBuscador(); });
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape" && !capa.hidden) cerrarBuscador();
-  if (e.key === "/" && capa.hidden && !["INPUT", "SELECT", "TEXTAREA"].includes(document.activeElement.tagName)) {
-    e.preventDefault();
-    abrirBuscador();
-  }
-});
-
-// ---------- TIRA DE CLASES DE LA CABECERA ----------
-document.getElementById("hero-classes").innerHTML = CLASSES.map(c =>
-  `<a href="#${c.id}" class="hero-cls" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}<span>${c.nombre}</span></a>`).join("");
-
-pintarMenu();
-seguirScroll();
-pintarDiario();
-pintarChecklist();
-pintar();
-pintarTest();
-pintarPersonaje();
-nuevaRonda();
-pintarRaids();
-prepararComparador();
-pintarMascotas();
-pintarMazmorras();
-pintarPvP();
-pintarRazas();
-pintarProfesiones();
-pintarCalendario();
-cargarNoticias();
-if (location.hash) abrirFicha(location.hash.slice(1));
+if ($("races-list")) pintarRazas();
+if ($("prof-main")) pintarProfesiones();
+if ($("timeline")) pintarCalendario();
+if ($("news-list")) cargarNoticias();
+if (dialogo) abrirFichaDesdeEnlace();

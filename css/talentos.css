@@ -193,3 +193,7 @@
 .segunda-pantalla .next-pick { padding: 18px; }
 .segunda-pantalla .np-next { font-size: 1.1rem; grid-template-columns: 34px 52px 1fr; }
 .segunda-pantalla .np-next .t-icon.small { width: 34px; height: 34px; }
+.tip-en { font-size: .75rem; color: #9d9d9d; font-style: italic; }
+/* La barra de la calculadora va debajo del menú común */
+.t-bar { top: calc(var(--hdr) + env(safe-area-inset-top, 0px)); }
+.t-order { top: calc(var(--hdr) + 130px); }

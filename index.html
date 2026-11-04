@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Brújula de Azeroth · Guía de WoW Forever en español</title>
-<meta name="description" content="Guía de World of Warcraft: Forever en español. Las 9 clases, calculadora de talentos, mascotas de cazador, mazmorras por nivel, razas y test para elegir clase.">
+<meta name="description" content="Guía de World of Warcraft: Forever en español. Clases, calculadora de talentos, mascotas de cazador, mazmorras por nivel, razas y test para elegir clase.">
 <link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/">
-<meta property="og:title" content="Brújula de Azeroth">
-<meta property="og:description" content="Guía en español de WoW Forever: clases, talentos, mascotas y más.">
+<meta property="og:title" content="Brújula de Azeroth · Guía de WoW Forever en español">
+<meta property="og:description" content="Guía de World of Warcraft: Forever en español. Clases, calculadora de talentos, mascotas de cazador, mazmorras por nivel, razas y test para elegir clase.">
 <meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
 <meta property="og:url" content="https://bgarciaa181.github.io/brujula-de-azeroth/">
 <meta property="og:type" content="website">
@@ -17,202 +17,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=16">
-
+<link rel="stylesheet" href="css/estilos.css?v=18">
 </head>
 <body>
-<header class="top">
+<header id="site-header"></header>
+
+<div class="top">
   <div class="wrap">
-    <div class="brand">
-      <svg class="compass" width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
-        <circle cx="22" cy="22" r="20" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>
-        <circle cx="22" cy="22" r="15" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 3.2" opacity=".5"/>
-        <g class="needle">
-          <path d="M22 4 L26.5 22 L22 40 L17.5 22 Z" fill="currentColor"/>
-          <path d="M22 4 L26.5 22 L17.5 22 Z" fill="#fff4d8"/>
-        </g>
-        <circle cx="22" cy="22" r="2" fill="#0c0f1c"/>
-      </svg>
-      <div>
-        <div class="brand-name">Brújula de Azeroth</div>
-        <div class="brand-tag">Fansite no oficial · WoW Forever</div>
-      </div>
-    </div>
     <div class="hero">
       <p class="eyebrow">WoW Forever · en español</p>
-      <h1>Elige tu clase <span>sin perderte en Azeroth</span></h1>
+      <h1>Brújula de Azeroth <span>todo lo que necesitas para empezar</span></h1>
       <div class="hero-classes" id="hero-classes"></div>
-      <div class="hero-ctas"><a class="cta" href="#test">¿Qué clase soy? →</a><a class="cta ghost" href="talentos.html">Talentos</a></div>
     </div>
     <div class="count" id="count">
-      <span class="count-label">Lanzamiento en España</span>
+      <span class="count-label" id="count-label">Lanzamiento en España</span>
       <span class="count-time" id="count-time">—</span>
       <span class="count-note">Jueves 5 nov · 00:00</span>
     </div>
-  </div>
-</header>
-
-<nav class="topnav" aria-label="Secciones">
-  <div class="wrap topnav-in">
-    <div class="nav-items" id="nav-items"></div>
-    <button type="button" class="search-btn" id="search-open" aria-label="Buscar">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
-      <span>Buscar</span>
-    </button>
-  </div>
-</nav>
-
-<div class="achievement" id="achievement" hidden></div>
-
-<div class="search-layer" id="search-layer" hidden>
-  <div class="search-box" role="dialog" aria-label="Buscar en la web">
-    <div class="search-input">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
-      <input type="search" id="search-input" placeholder="Clase, raza, mascota, talento, profesión…" autocomplete="off">
-      <button type="button" id="search-close" aria-label="Cerrar">Esc</button>
-    </div>
-    <div class="search-results" id="search-results"></div>
   </div>
 </div>
 
 <main>
   <div class="wrap">
-    <section id="diario">
+    <section id="explora">
       <div class="section-head">
-        <h2>Diario de aventuras</h2>
-        <p>Dime tu facción y tu nivel. Te digo qué hacer.</p>
+        <h2>Explora</h2>
+        <p>Elige por dónde empezar.</p>
       </div>
-      <div class="journal">
-        <div class="j-controls">
-          <div class="j-factions" id="j-factions"></div>
-          <div class="j-level">
-            <label for="j-lvl">Nivel</label>
-            <button type="button" class="j-step" id="j-minus" aria-label="Bajar nivel">−</button>
-            <input type="range" id="j-lvl" min="1" max="60" value="1">
-            <button type="button" class="j-step" id="j-plus" aria-label="Subir nivel">+</button>
-            <output id="j-lvl-out" for="j-lvl">1</output>
-          </div>
-        </div>
-        <div class="j-book">
-          <div class="j-page j-left" id="j-now"></div>
-          <div class="j-page j-right" id="j-route"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="mapa">
-      <div class="section-head">
-        <h2>Mapa de Azeroth</h2>
-        <p>Las zonas con el color de dificultad del juego según tu nivel.</p>
-      </div>
-      <div class="con-legend">
-        <span class="con gris">Muy fácil</span><span class="con verde">Fácil</span><span class="con amarillo">Tu nivel</span><span class="con naranja">Difícil</span><span class="con rojo">Peligrosa</span>
-      </div>
-      <p class="map-sync">Usa la facción y el nivel del Diario de aventuras: <b id="map-info"></b></p>
-      <div class="continents" id="continents"></div>
-    </section>
-
-    <section id="checklist">
-      <div class="section-head">
-        <h2>Checklist del día 1</h2>
-        <p>Marca lo que vayas haciendo. Se guarda en tu navegador.</p>
-      </div>
-      <div class="check-progress"><span id="check-bar"></span></div>
-      <ul class="checklist" id="check-list"></ul>
-    </section>
-
-    <section id="clases">
-      <div class="section-head">
-        <h2>Las clases</h2>
-        <p id="result-count">Toca una clase para ver su ficha.</p>
-      </div>
-      <div class="class-filters">
-        <div class="row" id="role-filter" role="group" aria-label="Rol"></div>
-        <div class="row" id="faction-filter" role="group" aria-label="Facción"></div>
-      </div>
-      <div class="grid" id="grid"></div>
-    </section>
-
-    <section id="modo">
-      <div class="section-head">
-        <h2>¿PvE o PvP?</h2>
-        <p>Elige cómo quieres jugar.</p>
-      </div>
-      <div class="mode-switch" role="tablist" aria-label="Modo de juego">
-        <button type="button" class="mode-btn pve" id="mode-pve" role="tab" aria-selected="true">
-          <span class="wow-icon xl"><img src="https://render.worldofwarcraft.com/us/icons/56/achievement_dungeon_classicdungeonmaster.jpg" alt="" onerror="this.remove()"></span>
-          <b>PvE</b><small>Mazmorras y raids</small>
-        </button>
-        <button type="button" class="mode-btn pvp" id="mode-pvp" role="tab" aria-selected="false">
-          <span class="wow-icon xl"><img src="https://render.worldofwarcraft.com/us/icons/56/achievement_pvp_p_250k.jpg" alt="" onerror="this.remove()"></span>
-          <b>PvP</b><small>Contra jugadores</small>
-        </button>
-      </div>
-
-      <div class="mode-panel" id="panel-pve">
-        <div class="dg-level">
-          <label for="dg-lvl">Mi nivel</label>
-          <input type="range" id="dg-lvl" min="10" max="60" value="20">
-          <output id="dg-lvl-out" for="dg-lvl">20</output>
-        </div>
-        <div class="dg-now" id="dg-now"></div>
-        <details class="dg-all">
-          <summary>Ver las 35 mazmorras</summary>
-          <div class="dg-chart" id="dg-chart"></div>
-        </details>
-        <p class="dg-note"><span class="new-badge">Nueva</span> = nueva en Forever. Los niveles de las clásicas son los de Classic, pueden cambiar.</p>
-      </div>
-
-      <div class="mode-panel" id="panel-pvp" hidden>
-        <div class="bg-list" id="bg-list"></div>
-        <h3 class="sub">Mascotas de cazador para PvP</h3>
-        <div class="mode-pets" id="pvp-pets"></div>
-        <p class="dg-note">Nueva temporada de PvP en primavera de 2027.</p>
-      </div>
-    </section>
-
-    <section id="test">
-      <div class="section-head">
-        <h2>¿Qué clase va contigo?</h2>
-        <p>5 preguntas y te decimos con qué clase empezar.</p>
-      </div>
-      <div class="quiz" id="quiz"></div>
-    </section>
-
-    <section id="personaje">
-      <div class="section-head">
-        <h2>Crea tu personaje</h2>
-        <p>Facción, raza y clase. Solo salen las combinaciones que existen.</p>
-      </div>
-      <div class="builder">
-        <div class="b-step">
-          <span class="b-num">1</span>
-          <div class="b-factions" id="b-factions"></div>
-        </div>
-        <div class="b-step">
-          <span class="b-num">2</span>
-          <div class="b-races" id="b-races"></div>
-          <button type="button" class="gender" id="b-gender" aria-label="Cambiar entre hombre y mujer">♂ / ♀</button>
-        </div>
-        <div class="b-step">
-          <span class="b-num">3</span>
-          <div class="b-classes" id="b-classes"></div>
-        </div>
-        <div class="b-result" id="b-result"></div>
-      </div>
-    </section>
-
-    <section id="comparador">
-      <div class="section-head">
-        <h2>Comparador de clases</h2>
-        <p>Dos clases, frente a frente.</p>
-      </div>
-      <div class="cmp-pick">
-        <label for="cmp-a">Clase 1<select id="cmp-a"></select></label>
-        <span class="cmp-vs" aria-hidden="true">vs</span>
-        <label for="cmp-b">Clase 2<select id="cmp-b"></select></label>
-      </div>
-      <div class="cmp-table" id="cmp-table"></div>
+      <div class="explore" id="explore"></div>
     </section>
 
     <section id="juego">
@@ -223,84 +55,6 @@
       <div class="game" id="game"></div>
     </section>
 
-    <section id="mascotas">
-      <div class="section-head">
-        <h2>Mascotas de cazador</h2>
-        <p>Las raras que merece la pena domar. Desde nivel 10, y solo bestias de tu nivel o menos.</p>
-      </div>
-      <div class="pet-legend">
-        <span><i class="dot nueva"></i>Nueva en Forever</span>
-        <span><i class="dot vista"></i>Vista en la beta</span>
-        <span><i class="dot classic"></i>Dato de Classic, sin confirmar</span>
-        <span><b class="tag-pve">PvE</b> mazmorras y raids</span>
-        <span><b class="tag-pvp">PvP</b> contra jugadores</span>
-      </div>
-      <div class="pet-tools">
-        <div class="row" id="pet-mode" role="group" aria-label="Para qué la quieres"></div>
-        <label class="pet-sort" for="pet-sort">Ordenar
-          <select id="pet-sort">
-            <option value="nivel">Por nivel</option>
-            <option value="rapida">Más rápidas primero</option>
-          </select>
-        </label>
-      </div>
-      <div class="pet-level">
-        <label for="pet-lvl">Mi nivel</label>
-        <input type="range" id="pet-lvl" min="10" max="60" value="60">
-        <output id="pet-lvl-out" for="pet-lvl">60</output>
-        <span id="pet-count"></span>
-      </div>
-      <div class="pets" id="pets"></div>
-      <details class="families">
-        <summary>Las 19 familias: su habilidad y para qué sirve</summary>
-        <div class="family-grid" id="families"></div>
-      </details>
-    </section>
-
-    <section id="razas">
-      <div class="section-head">
-        <h2>Razas</h2>
-        <p>Toca una raza para ver sus habilidades. <span class="new-badge">Nueva</span> = no existía en Classic.</p>
-      </div>
-      <div class="row race-filter" id="race-filter" role="group" aria-label="Facción de las razas"></div>
-      <div class="races-list" id="races-list"></div>
-    </section>
-
-    <section id="profesiones">
-      <div class="section-head">
-        <h2>Profesiones</h2>
-        <p>Elige dos principales. Las secundarias, todas las que quieras.</p>
-      </div>
-      <div class="prof-ranks" aria-label="Rangos de profesión">
-        <div><b>75</b><span>Aprendiz</span></div>
-        <div><b>150</b><span>Oficial</span></div>
-        <div><b>225</b><span>Experto</span></div>
-        <div><b>300</b><span>Artesano</span></div>
-      </div>
-      <h3 class="sub">Principales</h3>
-      <div class="prof-tiles" id="prof-main"></div>
-      <h3 class="sub">Secundarias</h3>
-      <div class="prof-tiles" id="prof-sec"></div>
-      <h3 class="sub">Parejas que van bien juntas</h3>
-      <div class="pairs" id="prof-pairs"></div>
-    </section>
-
-    <section id="raids">
-      <div class="section-head">
-        <h2>Raids del 9 de diciembre</h2>
-        <p id="raids-count">Las tres primeras raids abren el mismo día.</p>
-      </div>
-      <div class="raids" id="raids-list"></div>
-    </section>
-
-    <section id="calendario">
-      <div class="section-head">
-        <h2>Calendario</h2>
-        <p>Lo que ha anunciado Blizzard.</p>
-      </div>
-      <ol class="timeline" id="timeline"></ol>
-    </section>
-
     <section id="noticias">
       <div class="section-head">
         <h2>Últimas noticias</h2>
@@ -309,92 +63,17 @@
       <div class="news" id="news-list"></div>
     </section>
 
-    <section>
-      <div class="section-head">
-        <h2>Los talentos, en 3 ideas</h2>
-        <p>Lo justo para no perderte.</p>
-      </div>
-      <div class="basics">
-        <div class="basic">
-          <div class="big">Nv. 10</div>
-          <h3>Tu primer punto</h3>
-          <p>A partir del nivel 10 recibes un punto de talento. Al principio solo puedes elegir talentos de la primera fila de cada árbol.</p>
-        </div>
-        <div class="basic">
-          <div class="big">3 árboles</div>
-          <h3>Repártelos como quieras</h3>
-          <p>Puedes poner puntos en los tres árboles. No hace falta terminar uno para empezar otro, pero para subir de nivel suele ir mejor centrarse en uno.</p>
-        </div>
-        <div class="basic">
-          <div class="big">4 especiales</div>
-          <h3>Talentos de 1 punto</h3>
-          <p>Cada árbol tiene cuatro talentos especiales de un solo punto. Forever añade uno nuevo al llegar a 16 puntos en ese árbol.</p>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="section-head">
-        <h2>Para ir más a fondo</h2>
-        <p>Calculadoras de talentos completas (en inglés).</p>
-      </div>
-      <div class="links">
-        <a href="https://metabot.gg/en/wow-forever/talent-calculator" target="_blank" rel="noopener"><span>MetaBot · Calculadora de talentos</span><span>metabot.gg ↗</span></a>
-        <a href="https://www.zockify.com/forever/talents/" target="_blank" rel="noopener"><span>Zockify · Calculadora de talentos</span><span>zockify.com ↗</span></a>
-        <a href="https://www.icy-veins.com/wow-forever/choosing-your-main" target="_blank" rel="noopener"><span>Icy Veins · Cómo elegir clase</span><span>icy-veins.com ↗</span></a>
-      </div>
-    </section>
-
-    <section id="comunidad">
-      <div class="section-head">
-        <h2>Comunidad</h2>
-        <p>Opina, pregunta y comparte tus builds.</p>
-      </div>
-      <div class="community-cards">
-        <a class="community-card" href="https://github.com/bgarciaa181/brujula-de-azeroth/discussions" target="_blank" rel="noopener">
-          <span class="wow-icon xl"><img src="https://render.worldofwarcraft.com/us/icons/56/inv_misc_note_01.jpg" alt="" onerror="this.remove()"></span>
-          <b>Foro</b><small>Preguntas, ideas y builds</small>
-        </a>
-        <a class="community-card" href="talentos.html">
-          <span class="wow-icon xl"><img src="https://render.worldofwarcraft.com/us/icons/56/ability_marksmanship.jpg" alt="" onerror="this.remove()"></span>
-          <b>Comparte tu build</b><small>Hazla en la calculadora</small>
-        </a>
-      </div>
-      <div class="comments">
-        <h3 class="sub">Comentarios</h3>
-        <p class="comments-note">Para comentar necesitas una cuenta de GitHub (es gratis).</p>
-        <script src="https://giscus.app/client.js"
-        data-repo="bgarciaa181/brujula-de-azeroth"
-        data-repo-id="R_kgDOVhVyoQ"
-        data-category="Announcements"
-        data-category-id="DIC_kwDOVhVyoc4DKULv"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="dark"
-        data-lang="es"
-        crossorigin="anonymous"
-        async>
-</script>
-      </div>
-    </section>
   </div>
 </main>
 
-<footer>
-  <div class="wrap">
-    <p>Brújula de Azeroth es un fansite no oficial y sin ánimo de lucro. No está afiliado ni respaldado por Blizzard Entertainment. World of Warcraft y Warcraft son marcas de Blizzard Entertainment.</p>
-    <p>Datos de clases, razas, habilidades y profesiones del cliente 1.60.1. Mascotas según foreverdb.net y mmonster.co. Calendario según la hoja de ruta oficial de Blizzard. Iconos de clase © Blizzard Entertainment. Última revisión: 3 de noviembre de 2026.</p>
-    <p class="credit">Creado por <strong>Bea García</strong> · <a href="https://github.com/bgarciaa181" target="_blank" rel="noopener">github.com/bgarciaa181</a></p>
-  </div>
-</footer>
+<footer id="site-footer"></footer>
 
-<dialog id="detail" aria-labelledby="d-name"></dialog>
+<div class="achievement" id="achievement" hidden></div>
 
-<script src="js/datos.js?v=16"></script>
-<script src="js/talentos-datos.js?v=16"></script>
-<script src="js/app.js?v=16"></script>
+<script src="js/datos.js?v=18"></script>
+<script src="js/talentos-datos.js?v=18"></script>
+<script src="js/talentos-es.js?v=18"></script>
+<script src="js/layout.js?v=18"></script>
+<script src="js/app.js?v=18"></script>
 </body>
 </html>

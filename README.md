@@ -29,19 +29,28 @@ Los datos están en `js/datos.js`, así que es fácil corregirlos o añadir info
 
 ```
 brujula-de-azeroth/
-├── index.html        → la página principal
-├── talentos.html     → la calculadora de talentos
-├── css/estilos.css   → el diseño
-├── css/talentos.css  → el diseño de la calculadora
-├── js/datos.js       → clases, razas, profesiones, mascotas y calendario
-├── js/talentos-datos.js → árboles de talentos, builds y orden de habilidades
-├── js/talentos.js    → la calculadora
-├── js/app.js         → filtros, fichas, comparador, noticias y cuenta atrás
-├── data/noticias.json → noticias (las escribe el script)
+├── index.html          → inicio: portada, explorar, minijuego y noticias
+├── aventura.html       → diario de aventuras, mapa de Azeroth y checklist del día 1
+├── clases.html         → clases, test, crea tu personaje, comparador y razas
+├── talentos.html       → calculadora de talentos
+├── mascotas.html       → mascotas de cazador con minimapa
+├── pve-pvp.html        → mazmorras, campos de batalla, raids y calendario
+├── oficios.html        → profesiones
+├── comunidad.html      → foro, comentarios y noticias
+├── css/estilos.css     → el diseño de toda la web
+├── css/talentos.css    → el diseño de la calculadora
+├── js/layout.js        → menú, pestañas, buscador y pie (común a todas las páginas)
+├── js/app.js           → lo de cada página
+├── js/datos.js         → datos del juego (clases, razas, zonas, mascotas…)
+├── js/talentos-datos.js → árboles de talentos
+├── js/talentos-es.js   → traducción de los talentos al español
+├── js/talentos.js      → la calculadora
+├── data/noticias.json  → noticias (las escribe el script)
 ├── scripts/noticias.py → script que busca las noticias
-├── .github/workflows/ → GitHub Action que lanza el script cada 3 horas
-└── README.md
+└── .github/workflows/  → GitHub Action que lanza el script cada 3 horas
 ```
+
+Para añadir una pestaña nueva a una página basta con poner `data-tab="Nombre"` y `data-icon="icono"` en su `<section>`.
 
 ## Cómo verla en tu ordenador
 

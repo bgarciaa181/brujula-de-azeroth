@@ -407,6 +407,17 @@ const ZONAS = [
 // Zonas completamente nuevas de Forever (para marcarlas aparte)
 const ZONAS_NUEVAS = ["Isla Zephras", "Riverglades", "Monte Hyjal"];
 
+// Ayudas para las mascotas
+function familia(nombre) {
+  return FAMILIAS.find(f => f[0] === nombre);
+}
+
+function iconoFamilia(nombre) {
+  const f = FAMILIAS.find(x => x[0] === nombre);
+  const icono = f && f[1] ? `<img src="${ICONOS_URL}${f[1]}.jpg" alt="" loading="lazy" onerror="this.remove()">` : "";
+  return `<span class="pet-icon" aria-hidden="true"><span>${nombre[0]}</span>${icono}</span>`;
+}
+
 // ---------- DÓNDE ESTÁ CADA MASCOTA ----------
 // Fuente: wowforeverpets.com (datos sincronizados de Forever). Coordenadas en % del mapa de la zona.
 // conoce = habilidades con las que viene al domarla · aprende = las que puede aprender después
