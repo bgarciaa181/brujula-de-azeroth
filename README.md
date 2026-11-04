@@ -40,6 +40,8 @@ brujula-de-azeroth/
 ├── meta.html           → meta PvE y PvP: varias tier lists juntas
 ├── juegos.html         → ruleta de personaje, nombres por raza y minijuego
 ├── comunidad.html      → foro, comentarios y noticias
+├── directo.html        → tu personaje para poner en OBS (stream)
+├── manifest.webmanifest y sw.js → para instalar la web como app
 ├── css/estilos.css     → el diseño de toda la web
 ├── css/talentos.css    → el diseño de la calculadora
 ├── js/layout.js        → menú, pestañas, buscador y pie (común a todas las páginas)

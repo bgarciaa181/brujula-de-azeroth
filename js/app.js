@@ -154,6 +154,7 @@ function pintarTest() {
     const orden = CLASSES.slice().sort((a, b) => (puntosTest[b.id] || 0) - (puntosTest[a.id] || 0));
     const c = orden[0];
     const otras = orden.slice(1, 3);
+    darLogro("test");
     caja.innerHTML = `
       <div class="quiz-result" style="--cls:${c.color}">
         <span class="quiz-label">Tu clase es</span>
@@ -166,7 +167,7 @@ function pintarTest() {
           <a class="cta ghost" href="talentos.html#${c.id}">Sus talentos</a>
           <button type="button" class="cta ghost" id="quiz-again">Repetir</button>
         </div>
-        <p class="quiz-also">También te pegan: ${otras.map(o => `<a href="#${o.id}" style="color:${o.color}">${o.nombre}</a>`).join(" y ")}</p>
+        <p class="quiz-also">También te pegan: ${otras.map(o => `<a href="clase.html?c=${o.id}" style="color:${o.color}">${o.nombre}</a>`).join(" y ")}</p>
       </div>`;
     on("quiz-again", "click", () => {
       pasoTest = 0;
@@ -388,7 +389,8 @@ function pintarChecklist() {
     li.querySelector("input").addEventListener("change", e => {
       hechos = e.target.checked ? [...hechos, id] : hechos.filter(x => x !== id);
       try { localStorage.setItem("checklist", JSON.stringify(hechos)); } catch (err) {}
-      if (e.target.checked) mostrarLogro(hechos.length === CHECKLIST.length ? "¡Día 1 completado!" : texto);
+      if (e.target.checked && hechos.length === CHECKLIST.length) darLogro("dia1");
+      else if (e.target.checked) mostrarLogro(texto);
       pintarChecklist();
     });
     ul.appendChild(li);
@@ -625,6 +627,7 @@ function pintarJuego(elegida) {
       juego.respondido = true;
       if (c.id === t.clase) {
         juego.racha++;
+        if (juego.racha >= 10) darLogro("racha10");
         juego.mejor = Math.max(juego.mejor, juego.racha);
         try { localStorage.setItem("brujula-record", juego.mejor); } catch (e) {}
       } else {
@@ -1146,6 +1149,7 @@ function pintarTier(cajaId, lista) {
 }
 
 function pintarMeta() {
+  darLogro("meta");
   // Botones para cambiar de lista
   for (const [grupo, caja] of [["pvp", "mt-pvp-mode"], ["pve", "mt-pve-mode"]]) {
     $(caja).querySelectorAll("button").forEach(b => {
@@ -1264,6 +1268,113 @@ on("pet-fam", "click", () => { familiaFiltro = null; pintarMascotas(); });
     : "") + "Notas de: " + [...usadas].map(k => `<a href="${MASCOTA_FUENTES[k][1]}" target="_blank" rel="noopener">${MASCOTA_FUENTES[k][0]}</a>`).join(" · ") + ". Datos de la beta.";
 }
 
+// ---------- PORTADA: PREGUNTA DEL DÍA ----------
+// Cada día sale una pregunta distinta, hecha con los datos reales de la web
+function hoyTexto() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+// Números "al azar" pero siempre iguales para el mismo día
+function azarDelDia(semilla) {
+  let a = semilla;
+  return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+
+function preguntaDelDia() {
+  const azar = azarDelDia(parseInt(hoyTexto().replace(/-/g, ""), 10));
+  const uno = l => l[Math.floor(azar() * l.length)];
+  const mezclar = l => l.map(x => [azar(), x]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
+  const opciones = (buena, malas) => mezclar([buena, ...mezclar([...new Set(malas)].filter(x => x !== buena)).slice(0, 3)]);
+  const tipos = [
+    () => { // Talento → clase
+      const c = uno(CLASSES), arbol = uno(Object.keys(TALENTOS[c.id]));
+      const t = uno(TALENTOS[c.id][arbol].filter(x => x[3]));
+      const es = (TALENTOS_ES[c.id] || {})[t[0]];
+      return { icono: iconoWow(t[3], "xl"), texto: `¿De qué clase es el talento <b>${es ? es[0] : t[0]}</b>?`, buena: c.nombre, opciones: opciones(c.nombre, CLASSES.map(x => x.nombre)), url: `talentos.html#${c.id}` };
+    },
+    () => { // Raza → zona de inicio
+      const id = uno(Object.keys(RACIALES)), z = RACIALES[id].inicio;
+      return { icono: iconoRaza(id, "male", "xl"), texto: `¿Dónde empieza un <b>${RACES[id].nombre}</b>?`, buena: z, opciones: opciones(z, Object.values(RACIALES).map(r => r.inicio)), url: "aventura.html#mapa" };
+    },
+    () => { // Mascota rara → familia
+      const m = uno(MASCOTAS);
+      return { icono: iconoFamilia(m[1]), texto: `<b>${m[0]}</b> (${m[3]}), ¿qué tipo de mascota es?`, buena: m[1], opciones: opciones(m[1], FAMILIAS.map(f => f[0])), url: "mascotas.html#mascotas" };
+    },
+    () => { // Mazmorra → nivel
+      const m = uno(MAZMORRAS);
+      const buena = `${m[1]}–${m[2]}`;
+      return { icono: iconoWow("achievement_dungeon_classicdungeonmaster", "xl"), texto: `¿Para qué niveles es <b>${m[0]}</b>?`, buena, opciones: opciones(buena, MAZMORRAS.map(x => `${x[1]}–${x[2]}`)), url: "pve-pvp.html#modo" };
+    },
+    () => { // Racial → raza
+      const id = uno(Object.keys(RACIALES));
+      const propias = RACIALES[id].habilidades.filter(h => Object.entries(RACIALES).filter(([k, r]) => r.habilidades.some(x => x[0] === h[0])).length === 1);
+      const h = uno(propias.length ? propias : RACIALES[id].habilidades);
+      return { icono: iconoWow("inv_misc_book_09", "xl"), texto: `¿Qué raza tiene la racial <b>${h[0]}</b>? <small>${h[1]}</small>`, buena: RACES[id].nombre, opciones: opciones(RACES[id].nombre, Object.values(RACES).map(r => r.nombre)), url: "clases.html#razas" };
+    }
+  ];
+  return uno(tipos)();
+}
+
+function pintarPregunta() {
+  const caja = $("pregunta");
+  const q = preguntaDelDia();
+  const hoy = hoyTexto();
+  let guardada = null, racha = { ultima: null, dias: 0 };
+  try {
+    guardada = JSON.parse(localStorage.getItem("pregunta"));
+    racha = JSON.parse(localStorage.getItem("pregunta-racha")) || racha;
+  } catch (e) {}
+  const respondida = guardada && guardada.fecha === hoy ? guardada.respuesta : null;
+
+  caja.innerHTML = `
+    <div class="pd-head"><small>Pregunta del día</small>${racha.dias ? `<span class="pd-streak" title="Días seguidos">🔥 ${racha.dias}</span>` : ""}</div>
+    <div class="pd-q">${q.icono}<p>${q.texto}</p></div>
+    <div class="pd-opts">${q.opciones.map(o => {
+      const cls = !respondida ? "" : o === q.buena ? " ok" : o === respondida ? " ko" : " off";
+      return `<button type="button" class="pd-opt${cls}" data-o="${o}" ${respondida ? "disabled" : ""}>${o}</button>`;
+    }).join("")}</div>
+    ${respondida ? `<p class="pd-after">${respondida === q.buena ? "¡Correcto!" : "¡Casi!"} Vuelve mañana para otra. <a href="${q.url}">Saber más →</a></p>` : ""}`;
+
+  caja.querySelectorAll(".pd-opt").forEach(b => b.addEventListener("click", () => {
+    const ayer = new Date(); ayer.setDate(ayer.getDate() - 1);
+    const ayerTexto = `${ayer.getFullYear()}-${String(ayer.getMonth() + 1).padStart(2, "0")}-${String(ayer.getDate()).padStart(2, "0")}`;
+    racha = { ultima: hoy, dias: racha.ultima === ayerTexto ? racha.dias + 1 : 1 };
+    try {
+      localStorage.setItem("pregunta", JSON.stringify({ fecha: hoy, respuesta: b.dataset.o }));
+      localStorage.setItem("pregunta-racha", JSON.stringify(racha));
+    } catch (e) {}
+    if (b.dataset.o === q.buena) darLogro("pregunta");
+    if (racha.dias >= 3) darLogro("racha3");
+    pintarPregunta();
+  }));
+}
+
+// ---------- PORTADA: RELOJES DE AZEROTH ----------
+// Fechas del calendario oficial. Las que aún no tienen día exacto salen sin cuenta atrás.
+const RELOJES = [
+  ["Lanzamiento", "inv_misc_map_01", new Date("2026-11-04T23:00:00Z"), "5 nov · 00:00"],
+  ["Abren las raids", "achievement_boss_onyxia", new Date("2026-12-08T23:00:00Z"), "9 dic · hora por confirmar"],
+  ["Modo Hardcore", "inv_misc_bone_humanskull_01", null, "Invierno 2026"],
+  ["1.ª gran actualización", "inv_misc_head_dragon_01", null, "Primavera 2027"]
+];
+
+function pintarRelojes() {
+  const ahora = new Date();
+  $("relojes").innerHTML = `<div class="pd-head"><small>Relojes de Azeroth</small></div>` + RELOJES.map(([t, ic, fecha, nota]) => {
+    let valor;
+    if (!fecha) valor = `<b>${nota}</b>`;
+    else if (fecha <= ahora) {
+      const dias = Math.floor((ahora - fecha) / 86400000);
+      valor = `<b>${dias === 0 ? "¡Hoy!" : `Hace ${dias} día${dias > 1 ? "s" : ""}`}</b>`;
+    } else {
+      const f = fecha - ahora;
+      const d = Math.floor(f / 86400000), h = Math.floor(f % 86400000 / 3600000), m = Math.floor(f % 3600000 / 60000), sg = Math.floor(f % 60000 / 1000);
+      valor = `<b class="rl-count">${d ? `${d}d ` : ""}${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(sg).padStart(2, "0")}</b>`;
+    }
+    return `<div class="clock">${iconoWow(ic, "lg")}<span><small>${t}</small>${valor}${fecha ? `<em>${nota}</em>` : ""}</span></div>`;
+  }).join("");
+}
+
 // ---------- PORTADA: TU PERSONAJE ----------
 // Si guardaste tu personaje, la portada te dice qué hacer a tu nivel
 function pintarMiPersonaje() {
@@ -1332,7 +1443,6 @@ function pintarMiPersonaje() {
   const subir = d => {
     cambiarPerfil({ nivel: Math.min(60, Math.max(1, n + d)) });
     try { localStorage.setItem("diario-nivel", Math.min(60, Math.max(1, n + d))); localStorage.setItem("diario-faccion", p.faccion); } catch (e) {}
-    if (n + d === 60) mostrarLogro("¡Nivel 60! Ya puedes ir a las raids");
     pintarMiPersonaje();
   };
   $("mp-minus").addEventListener("click", () => subir(-1));
@@ -1402,6 +1512,7 @@ function girarRuleta() {
 function terminarRuleta([raza, claseId]) {
   ruleta.girando = false;
   ruleta.resultado = [raza, claseId];
+  darLogro("ruleta");
   $("rl-spin").disabled = false;
   $("rl-spin").textContent = "Girar otra vez";
   const c = CLASSES.find(x => x.id === claseId);
@@ -1495,6 +1606,7 @@ function pintarNombres() {
   $("nm-list").querySelectorAll(".nm-name").forEach(b => b.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(b.dataset.n); } catch (e) {}
     nombres.copiado = b.dataset.n;
+    darLogro("nombre");
     if (p) {
       const [nombre, apellido] = b.dataset.n.split(" ");
       cambiarPerfil({ nombre, apellido });
@@ -1537,6 +1649,8 @@ if ($("hero-classes")) {
 }
 if ($("explore")) pintarExplora();
 if ($("mi-pj")) pintarMiPersonaje();
+if ($("pregunta")) pintarPregunta();
+if ($("relojes")) { pintarRelojes(); setInterval(pintarRelojes, 1000); }
 if ($("mt-pvp")) pintarMeta();
 if ($("el-result")) pintarElige();
 if ($("rl-wheel")) {

@@ -75,6 +75,7 @@ function ponerPunto(indice) {
   const motivo = motivoBloqueo(indice);
   if (!motivo) {
     orden.push(indice);
+    if (orden.length >= 51) darLogro("talentos");
     guardarEnEnlace();
     pintarTodo();
   }

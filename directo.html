@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modo directo · Brújula de Azeroth</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="img/icono.svg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&display=swap">
+<style>
+  /* Fondo transparente para que OBS lo ponga encima del juego */
+  html, body { margin: 0; background: transparent; font-family: "Alegreya Sans", sans-serif; color: #ece4d2; }
+  body:not(.obs) { background: #0b0e1a; padding: 24px 16px; }
+  .ov { --cls: #d6b06a; display: flex; align-items: center; gap: 14px; width: 600px; max-width: 100%; box-sizing: border-box; padding: 12px 16px 12px 12px; border-radius: 14px;
+        background: linear-gradient(90deg, rgba(11, 14, 26, .92), rgba(22, 28, 49, .85)); border: 2px solid #8c6a2c; box-shadow: 0 0 0 1px #000, 0 6px 24px rgba(0, 0, 0, .5); position: relative; }
+  .icons { display: flex; flex: none; }
+  .ic { position: relative; display: grid; place-items: center; overflow: hidden; background: #1c2440; box-shadow: 0 0 0 2px #d6b06a, 0 0 0 3px #000; }
+  .ic img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ic.raza { width: 84px; height: 84px; border-radius: 12px; }
+  .ic.clase { width: 44px; height: 44px; border-radius: 10px; margin: 48px 0 0 -22px; box-shadow: 0 0 0 2px var(--cls), 0 0 0 3px #000; }
+  .txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
+  .name { font-family: "Alegreya SC", serif; font-size: 30px; line-height: 1; color: #f5dc9f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 2px 6px #000; }
+  .sub { font-size: 17px; }
+  .sub b { color: var(--cls); }
+  .bar { height: 10px; border-radius: 5px; background: #121729; overflow: hidden; margin-top: 4px; box-shadow: inset 0 0 0 1px #2a3252; }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, #8c6a2c, var(--cls)); transition: width .4s; }
+  .info { display: flex; gap: 12px; font-size: 14px; color: #a7a08f; margin-top: 3px; white-space: nowrap; overflow: hidden; }
+  .info b { color: #ece4d2; }
+  .lvl { flex: none; display: grid; justify-items: center; }
+  .lvl small { font-size: 12px; letter-spacing: .14em; color: #a7a08f; }
+  .lvl b { font-family: "Alegreya SC", serif; font-size: 44px; line-height: 1; color: #f5dc9f; text-shadow: 0 2px 8px #000; }
+  .ctrl { position: absolute; right: -2px; top: -14px; display: flex; gap: 4px; opacity: 0; transition: opacity .2s; }
+  .ov:hover .ctrl { opacity: 1; }
+  .ctrl button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #d6b06a; background: #161c31; color: #f5dc9f; font: inherit; font-weight: 700; cursor: pointer; }
+  .up { animation: up .9s ease-out; }
+  @keyframes up { 0% { box-shadow: 0 0 0 2px #fff, 0 0 40px #f5dc9f; } 100% { box-shadow: 0 0 0 1px #000, 0 6px 24px rgba(0, 0, 0, .5); } }
+  .help { max-width: 600px; margin-top: 24px; line-height: 1.5; color: #a7a08f; }
+  .help h1 { font-family: "Alegreya SC", serif; color: #f5dc9f; font-size: 28px; margin: 0 0 8px; }
+  .help ol { padding-left: 20px; }
+  .help b { color: #ece4d2; }
+  .help input { width: 100%; box-sizing: border-box; padding: 8px; border-radius: 8px; border: 1px solid #2a3252; background: #121729; color: #ece4d2; font: inherit; }
+  .help button, .help a.btn { display: inline-block; margin-top: 8px; padding: 8px 16px; border-radius: 999px; border: 0; background: #d6b06a; color: #141826; font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; }
+  .vacio { color: #a7a08f; }
+  .vacio a { color: #f5dc9f; }
+</style>
+</head>
+<body>
+<div id="overlay"></div>
+<div class="help" id="help" hidden>
+  <h1>Modo directo</h1>
+  <p>Tu personaje encima del juego en tu stream. El fondo es transparente.</p>
+  <ol>
+    <li>Copia este enlace: <input id="obs-link" readonly> <button type="button" id="copy">Copiar</button></li>
+    <li>En OBS: <b>Fuentes → + → Navegador</b> y pega el enlace en <b>URL</b>.</li>
+    <li>Pon <b>ancho 620</b> y <b>alto 130</b>.</li>
+    <li>Para subir de nivel en directo: clic derecho en la fuente → <b>Interactuar</b>, pasa el ratón por encima y usa <b>+</b> o <b>−</b>.</li>
+  </ol>
+  <p>OBS guarda el nivel aunque lo cierres.</p>
+</div>
+
+<script src="js/datos.js?v=20"></script>
+<script src="js/meta-datos.js?v=20"></script>
+<script>
+  // El personaje llega en el enlace (?d=...) y se guarda en este navegador (el de OBS)
+  const params = new URLSearchParams(location.search);
+  const enObs = params.has("obs");
+  if (enObs) document.body.classList.add("obs");
+
+  function leer() {
+    try {
+      if (params.get("d")) {
+        const p = JSON.parse(decodeURIComponent(escape(atob(params.get("d").replace(/-/g, "+").replace(/_/g, "/")))));
+        const guardado = JSON.parse(localStorage.getItem("directo") || "null");
+        // Si es el mismo personaje, mantenemos el nivel que ya llevabas en OBS
+        if (guardado && guardado.nombre === p.nombre && guardado.apellido === p.apellido && guardado.clase === p.clase) return guardado;
+        return p;
+      }
+      return JSON.parse(localStorage.getItem("directo") || "null");
+    } catch (e) { return null; }
+  }
+  let pj = leer();
+
+  function img(src) { return `<img src="${src}" alt="" onerror="this.remove()">`; }
+
+  function pintar(animar) {
+    const caja = document.getElementById("overlay");
+    if (!pj || !RACES[pj.raza]) {
+      caja.innerHTML = '<p class="vacio">No hay personaje. Ábrelo desde <a href="index.html">Mis personajes → Directo</a>.</p>';
+      return;
+    }
+    try { localStorage.setItem("directo", JSON.stringify(pj)); } catch (e) {}
+    const c = CLASSES.find(x => x.id === pj.clase);
+    const r = RACES[pj.raza];
+    const n = pj.nivel || 1;
+    const zona = ZONAS.find(z => (z[3] === "ambas" || z[3] === pj.faccion) && z[1] <= n && n <= z[2]);
+    const meta = mejorSpec(pj.clase, "pve");
+    caja.innerHTML = `
+      <div class="ov${animar ? " up" : ""}" style="--cls:${c.color}">
+        <div class="icons">
+          <span class="ic raza">${ICONO_RAZA[pj.raza] ? img(`${ICONOS_URL}achievement_character_${ICONO_RAZA[pj.raza]}_${pj.genero || "male"}.jpg`) : r.nombre[0]}</span>
+          <span class="ic clase">${img(`${ICONOS_URL}${c.icono}.jpg`)}</span>
+        </div>
+        <div class="txt">
+          <span class="name">${[pj.nombre, pj.apellido].filter(Boolean).join(" ")}</span>
+          <span class="sub">${r.nombre} <b>${c.nombre}</b> · ${pj.faccion === "alianza" ? "Alianza" : "Horda"}</span>
+          <div class="bar"><i style="width:${n / 60 * 100}%"></i></div>
+          <div class="info">${zona ? `<span>Zona: <b>${zona[0]}</b></span>` : ""}${meta ? `<span>Meta: <b>${meta.nombre}</b></span>` : ""}</div>
+        </div>
+        <div class="lvl"><small>NIVEL</small><b>${n}</b></div>
+        <div class="ctrl"><button type="button" data-d="-1" aria-label="Bajar nivel">−</button><button type="button" data-d="1" aria-label="Subir nivel">+</button></div>
+      </div>`;
+    caja.querySelectorAll(".ctrl button").forEach(b => b.onclick = () => {
+      pj.nivel = Math.min(60, Math.max(1, n + Number(b.dataset.d)));
+      pintar(Number(b.dataset.d) > 0);
+    });
+  }
+  pintar(false);
+
+  if (!enObs && pj) {
+    const enlace = location.href.split("#")[0] + (location.search ? "&" : "?") + "obs=1";
+    document.getElementById("help").hidden = false;
+    document.getElementById("obs-link").value = enlace;
+    document.getElementById("copy").onclick = async e => {
+      try { await navigator.clipboard.writeText(enlace); e.target.textContent = "¡Copiado!"; }
+      catch (err) { document.getElementById("obs-link").select(); }
+    };
+  }
+</script>
+</body>
+</html>

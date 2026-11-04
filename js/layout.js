@@ -84,6 +84,11 @@ function guardarPerfil(perfil) {
   guardarPersonajes(lista.slice(-MAX_PERSONAJES));
   elegirActivo(perfil.id);
   pintarBotonPj();
+  if (typeof darLogro === "function") {
+    darLogro("pj");
+    if (lista.length >= 3) darLogro("pj3");
+    if (perfil.nivel >= 60) darLogro("nivel60");
+  }
   return perfil;
 }
 
@@ -154,6 +159,7 @@ function pintarPie() {
       <nav class="foot-links" aria-label="Páginas">${PAGINAS.map(([a, n]) => `<a href="${a}">${n}</a>`).join("")}</nav>
       <p>Brújula de Azeroth es un fansite no oficial y sin ánimo de lucro. No está afiliado ni respaldado por Blizzard Entertainment. World of Warcraft y Warcraft son marcas de Blizzard Entertainment. Iconos © Blizzard Entertainment.</p>
       <p>Datos del cliente 1.60.1 (MetaBot.GG, foreverdb.net, wowforeverpets.com, mmonster.co) y de la hoja de ruta oficial de Blizzard.</p>
+      <button type="button" class="btn-instalar" hidden>📲 Instalar como app</button>
       <p class="credit">Creado por <strong>Bea García</strong> · <a href="https://github.com/bgarciaa181" target="_blank" rel="noopener">github.com/bgarciaa181</a></p>
     </div>`;
 }
@@ -362,6 +368,166 @@ function prepararBuscador() {
 }
 
 
+// ---------- LOGROS DE LA WEB ----------
+// [id, icono, nombre, cómo se consigue]
+const LOGROS = [
+  ["pj", "achievement_character_human_male", "Nace un héroe", "Crea tu primer personaje"],
+  ["pj3", "achievement_character_orc_male", "Alter adicto", "Ten 3 personajes"],
+  ["test", "inv_misc_book_09", "Conócete a ti mismo", "Haz el test de clase"],
+  ["ruleta", "inv_misc_coin_01", "Que decida el destino", "Gira la ruleta"],
+  ["nombre", "inv_misc_note_01", "Bautizo", "Usa el generador de nombres"],
+  ["racha10", "ability_marksmanship", "Ojo de halcón", "Acierta 10 seguidas en Adivina la clase"],
+  ["pregunta", "inv_misc_spyglass_02", "Sabio de Azeroth", "Acierta la pregunta del día"],
+  ["racha3", "inv_misc_pocketwatch_01", "Fiel a la cita", "Responde la pregunta del día 3 días seguidos"],
+  ["dia1", "inv_misc_map_01", "Lista para el Día 1", "Completa el checklist del Día 1"],
+  ["meta", "achievement_bg_winwsg", "Sigue el meta", "Mira la página Meta"],
+  ["talentos", "ability_hunter_beasttaming", "Arquitecto de talentos", "Gasta los 51 puntos en la calculadora"],
+  ["tarjeta", "inv_misc_gem_sapphire_01", "Fama en Azeroth", "Crea la imagen de tu personaje"],
+  ["nivel60", "achievement_boss_onyxia", "¡Nivel 60!", "Pon a un personaje a nivel 60"],
+  ["app", "inv_misc_head_dragon_01", "Siempre a mano", "Instala la web como app"]
+];
+
+function leerLogros() {
+  try { return JSON.parse(localStorage.getItem("logros")) || {}; } catch (e) { return {}; }
+}
+
+// Da un logro (solo la primera vez) y enseña el aviso dorado
+function darLogro(id) {
+  const hechos = leerLogros();
+  if (hechos[id]) return;
+  const l = LOGROS.find(x => x[0] === id);
+  if (!l) return;
+  hechos[id] = Date.now();
+  try { localStorage.setItem("logros", JSON.stringify(hechos)); } catch (e) {}
+  let caja = document.getElementById("achievement");
+  if (!caja) {
+    caja = document.createElement("div");
+    caja.className = "achievement";
+    caja.id = "achievement";
+    document.body.appendChild(caja);
+  }
+  // Si ya hay otro aviso en pantalla, esperamos un poco
+  setTimeout(() => {
+    caja.innerHTML = `${iconoWow(l[1], "lg")}<div><small>¡Logro conseguido!</small><b>${l[2]}</b></div>`;
+    caja.hidden = false;
+    clearTimeout(darLogro.t);
+    darLogro.t = setTimeout(() => { caja.hidden = true; }, 3500);
+  }, caja.hidden === false ? 1800 : 0);
+}
+
+// ---------- IMAGEN DEL PERSONAJE PARA COMPARTIR ----------
+function cargarImagen(src) {
+  return new Promise(res => {
+    const i = new Image();
+    i.crossOrigin = "anonymous";
+    i.onload = () => res(i);
+    i.onerror = () => res(null);
+    i.src = src;
+  });
+}
+
+async function crearTarjeta(p) {
+  const c = CLASSES.find(x => x.id === p.clase);
+  const r = RACES[p.raza];
+  const W = 1080, H = 1080;
+  const lienzo = document.createElement("canvas");
+  lienzo.width = W; lienzo.height = H;
+  const g = lienzo.getContext("2d");
+  await (document.fonts ? document.fonts.ready : Promise.resolve());
+
+  // Fondo: noche con el color de la clase
+  g.fillStyle = "#0b0e1a"; g.fillRect(0, 0, W, H);
+  let grad = g.createRadialGradient(W / 2, 380, 50, W / 2, 380, 700);
+  grad.addColorStop(0, c.color + "66"); grad.addColorStop(1, "#0b0e1a00");
+  g.fillStyle = grad; g.fillRect(0, 0, W, H);
+  // Estrellas
+  g.fillStyle = "#ffffff";
+  for (let k = 0; k < 90; k++) { g.globalAlpha = Math.random() * .6; g.fillRect((k * 397) % W, (k * 211) % 620, 2, 2); }
+  g.globalAlpha = 1;
+  // Marco dorado
+  g.strokeStyle = "#8c6a2c"; g.lineWidth = 6; g.strokeRect(30, 30, W - 60, H - 60);
+  g.strokeStyle = "#d6b06a"; g.lineWidth = 2; g.strokeRect(44, 44, W - 88, H - 88);
+
+  // Iconos de raza y clase
+  const racial = ICONO_RAZA[p.raza];
+  const [imgRaza, imgClase, imgFac] = await Promise.all([
+    racial ? cargarImagen(`${ICONOS_URL}achievement_character_${racial}_${p.genero || "male"}.jpg`) : null,
+    cargarImagen(`${ICONOS_URL}${c.icono}.jpg`),
+    cargarImagen(`${ICONOS_URL}${p.faccion === "alianza" ? "achievement_pvp_a_a" : "achievement_pvp_h_h"}.jpg`)
+  ]);
+  const icono = (img, x, y, t, borde) => {
+    g.fillStyle = "#000"; g.fillRect(x - 6, y - 6, t + 12, t + 12);
+    g.fillStyle = borde; g.fillRect(x - 4, y - 4, t + 8, t + 8);
+    if (img) g.drawImage(img, x, y, t, t);
+    else { g.fillStyle = "#1c2440"; g.fillRect(x, y, t, t); }
+  };
+  icono(imgRaza, W / 2 - 190, 150, 240, "#d6b06a");
+  icono(imgClase, W / 2 + 20, 290, 150, c.color);
+  if (imgFac) icono(imgFac, 90, 90, 80, "#8c6a2c");
+
+  g.textAlign = "center";
+  g.fillStyle = "#f5dc9f";
+  g.font = '700 84px "Alegreya SC", Georgia, serif';
+  g.fillText(nombreCompleto(p), W / 2, 560, W - 140);
+  g.font = '500 44px "Alegreya Sans", sans-serif';
+  g.fillStyle = "#ece4d2";
+  const linea = `${r.nombre} `;
+  const ancho1 = g.measureText(linea).width, ancho2 = g.measureText(c.nombre).width;
+  const x0 = W / 2 - (ancho1 + ancho2) / 2;
+  g.textAlign = "left";
+  g.fillText(linea, x0, 625);
+  g.fillStyle = c.color; g.fillText(c.nombre, x0 + ancho1, 625);
+  g.textAlign = "center";
+
+  // Nivel
+  g.fillStyle = "#a7a08f"; g.font = '500 30px "Alegreya Sans", sans-serif';
+  g.fillText(`NIVEL ${p.nivel || 1} · ${p.faccion === "alianza" ? "ALIANZA" : "HORDA"}`, W / 2, 690);
+  g.fillStyle = "#121729"; g.fillRect(190, 712, 700, 16);
+  g.fillStyle = c.color; g.fillRect(190, 712, 700 * Math.min(1, (p.nivel || 1) / 60), 16);
+
+  // Meta de su clase
+  if (typeof mejorSpec === "function") {
+    const pve = mejorSpec(p.clase, "pve"), pvp = mejorSpec(p.clase, "pvp");
+    g.font = '700 34px "Alegreya Sans", sans-serif';
+    [[pve, "PvE"], [pvp, "PvP"]].forEach(([m, t], i) => {
+      if (!m) return;
+      const y = 800 + i * 62;
+      g.fillStyle = "#1c2440"; g.fillRect(170, y - 42, 740, 54);
+      g.fillStyle = "#ff9a66"; g.textAlign = "left"; g.fillText(t, 195, y);
+      g.fillStyle = "#ece4d2"; g.fillText(`Meta: ${m.nombre}`.slice(0, 34), 290, y);
+      g.fillStyle = "#ff7a3d"; g.fillRect(842, y - 36, 44, 42);
+      g.fillStyle = "#141826"; g.textAlign = "center"; g.fillText(m.letra, 864, y - 3);
+    });
+  }
+
+  // Firma de la web
+  g.textAlign = "center";
+  g.fillStyle = "#d6b06a"; g.font = '700 38px "Alegreya SC", Georgia, serif';
+  g.fillText("Brújula de Azeroth", W / 2, 985);
+  g.fillStyle = "#a7a08f"; g.font = '400 24px "Alegreya Sans", sans-serif';
+  g.fillText("Guía de WoW Forever en español · bgarciaa181.github.io/brujula-de-azeroth", W / 2, 1022);
+
+  return new Promise(res => lienzo.toBlob(res, "image/png"));
+}
+
+async function compartirTarjeta(p, boton) {
+  if (boton) boton.textContent = "Creando…";
+  const blob = await crearTarjeta(p);
+  const archivo = new File([blob], `${(p.nombre || "personaje").toLowerCase()}-brujula.png`, { type: "image/png" });
+  darLogro("tarjeta");
+  // En el móvil se abre el menú de compartir; en el ordenador se descarga
+  if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
+    try { await navigator.share({ files: [archivo], title: nombreCompleto(p) }); } catch (e) {}
+  } else {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = archivo.name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }
+  if (boton) boton.textContent = "Imagen";
+}
+
 // ---------- MIS PERSONAJES (botón del menú y panel) ----------
 function pintarBotonPj() {
   const b = document.getElementById("pj-open");
@@ -400,6 +566,25 @@ function avisoRapido(texto) {
   t.hidden = false;
   clearTimeout(avisoRapido.t);
   avisoRapido.t = setTimeout(() => { t.hidden = true; }, 3000);
+}
+
+function pintarLogros() {
+  const hechos = leerLogros();
+  const n = LOGROS.filter(l => hechos[l[0]]).length;
+  return `<div class="pj-logros">
+    <b>Logros <span>${n} / ${LOGROS.length}</span></b>
+    <div class="pj-logros-grid">${LOGROS.map(([id, ic, nom, como]) =>
+      `<span class="pj-logro${hechos[id] ? " hecho" : ""}" title="${nom}: ${como}">${iconoWow(ic, "lg")}<small>${hechos[id] ? nom : como}</small></span>`).join("")}</div>
+  </div>`;
+}
+
+// Un personaje metido en un texto corto (para enlaces)
+function codigoPersonaje(p) {
+  const { nombre, apellido, faccion, raza, clase, nivel, genero } = p;
+  return btoa(unescape(encodeURIComponent(JSON.stringify({ nombre, apellido, faccion, raza, clase, nivel, genero })))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function leerCodigo(codigo) {
+  return JSON.parse(decodeURIComponent(escape(atob(codigo.replace(/-/g, "+").replace(/_/g, "/")))));
 }
 
 // Enlace para llevarte los personajes a otro móvil u ordenador
@@ -471,13 +656,15 @@ function prepararPersonajes() {
               <div class="pj-acts">
                 ${es ? "" : `<button type="button" class="pj-mini oro" data-a="usar" data-id="${p.id}">Jugar</button>`}
                 ${editando === p.id ? "" : `<button type="button" class="pj-mini" data-a="editar" data-id="${p.id}">Nombre</button>`}
-                <a class="pj-mini" href="clase.html?c=${c.id}">Clase</a>
+                <button type="button" class="pj-mini" data-a="imagen" data-id="${p.id}">Imagen</button>
+                <a class="pj-mini" href="directo.html?d=${codigoPersonaje(p)}" title="Para poner en OBS">Directo</a>
                 <button type="button" class="pj-mini rojo" data-a="borrar" data-id="${p.id}">${borrando === p.id ? "¿Seguro?" : "Borrar"}</button>
               </div>
             </div>`;
           }).join("") : '<p class="pj-empty">Aún no tienes personajes. Crea uno y la web se adapta a él: tus talentos, tus zonas, tu meta.</p>'}
         </div>
         <a class="cta pj-new" href="clases.html#personaje">+ Crear personaje</a>
+        ${pintarLogros()}
         ${lista.length ? `
         <div class="pj-sync">
           <b>¿Los quieres en el móvil o en otro ordenador?</b>
@@ -504,6 +691,7 @@ function prepararPersonajes() {
       if (borrando !== id) { borrando = id; pintar(); return; }
       borrarPersonaje(id); borrando = null; pintar(); return;
     }
+    if (b.dataset.a === "imagen") { const p = leerPersonajes().find(x => x.id === id); if (p) compartirTarjeta(p, b); return; }
     if (b.dataset.a === "enlace") {
       try { await navigator.clipboard.writeText(enlacePersonajes()); b.textContent = "¡Copiado!"; }
       catch (err) { prompt("Copia este enlace:", enlacePersonajes()); }
@@ -529,6 +717,29 @@ function prepararPersonajes() {
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !capa.hidden) cerrar(); });
 }
 
+// ---------- INSTALAR COMO APP ----------
+let avisoInstalar = null;
+function prepararApp() {
+  if ("serviceWorker" in navigator && location.protocol === "https:") {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+  window.addEventListener("beforeinstallprompt", e => {
+    e.preventDefault();
+    avisoInstalar = e;
+    document.querySelectorAll(".btn-instalar").forEach(b => b.hidden = false);
+  });
+  window.addEventListener("appinstalled", () => { darLogro("app"); avisoInstalar = null; });
+  if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) darLogro("app");
+  document.addEventListener("click", async e => {
+    const b = e.target.closest(".btn-instalar");
+    if (!b || !avisoInstalar) return;
+    avisoInstalar.prompt();
+    await avisoInstalar.userChoice;
+    avisoInstalar = null;
+    b.hidden = true;
+  });
+}
+
 // La altura del menú se guarda en una variable CSS, para que las barras fijas se coloquen debajo
 function medirCabecera() {
   const h = document.getElementById("site-header");
@@ -543,5 +754,6 @@ pintarPie();
 prepararPestanas();
 prepararBuscador();
 importarPersonajes();
+prepararApp();
 pintarBotonPj();
 prepararPersonajes();
