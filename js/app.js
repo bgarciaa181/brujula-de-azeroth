@@ -538,7 +538,7 @@ function pintarPersonaje() {
         <ul class="b-racials">${info.habilidades.map(h => `<li${h[2] ? ' class="new"' : ""} title="${h[1]}">${h[0]}</li>`).join("")}</ul>
         <div class="b-save">
           <label for="b-name">Nombre</label>
-          <input type="text" id="b-name" maxlength="12" placeholder="Tu nombre" value="${(leerPerfil() && leerPerfil().nombre) || ""}">
+          <input type="text" id="b-name" maxlength="25" placeholder="Tu nombre" value="${(leerPerfil() && leerPerfil().nombre) || ""}">
           <button type="button" class="cta" id="b-save">Guardar como mi personaje</button>
         </div>
         <a class="b-link" href="clase.html?c=${c.id}">Ver la página del ${c.nombre} →</a>
@@ -1362,25 +1362,52 @@ const SILABAS = {
   orco:     [["Gru", "Kro", "Thra", "Zug", "Mog", "Gor", "Dra", "Ur", "Kar", "Rok", "Gar", "Naz"], ["", "", "a", "o", "u"], ["gash", "nak", "mok", "thar", "rok", "gul", "rash", "dra", "ka", "grim", "tok"]],
   nomuerto: [["Mor", "Vel", "Ske", "Cor", "Gri", "Nec", "Sar", "Lur", "Dre", "Ash", "Vor"], ["a", "e", "o", "i", "va", ""], ["vane", "mor", "dred", "sius", "rin", "ghast", "ith", "na", "lis", "goth"]],
   tauren:   [["Ha", "Ka", "Ma", "Ta", "Ba", "Mu", "Ko", "Ne", "Ru", "Tah", "Ho"], ["", "ka", "no", "wa", "ra", "ma"], ["hoof", "ruk", "tah", "ne", "wa", "mu", "sha", "kan", "tor", "li"]],
-  trol:     [["Zul", "Jin", "Vol", "Ra", "Ze", "Sen", "Ka", "Mal", "Tak", "Zan", "Ji"], ["'", "a", "i", "ja", "'"], ["jin", "zu", "ka", "tal", "ji", "rak", "zin", "ma", "kal", "do"]],
+  trol:     [["Zul", "Jin", "Vol", "Ra", "Ze", "Sen", "Ka", "Mal", "Tak", "Zan", "Ji"], ["", "a", "i", "ja", "u"], ["jin", "zu", "ka", "tal", "ji", "rak", "zin", "ma", "kal", "do"]],
   skyWS:    [["Vey", "Sha", "Kae", "Zir", "Tal", "Ryn", "Sae", "Ori", "Fen", "Ves"], ["a", "e", "i", "ra", "", "wi"], ["sha", "rin", "wynd", "kai", "ros", "ael", "rys", "tha", "len"]]
 };
+// En Forever el apellido es obligatorio. Se forma con dos trozos (sin espacios ni símbolos).
+const APELLIDOS = {
+  humano:   [["Ash", "Bright", "Hart", "Thorn", "Mill", "Hollow", "Fair", "Wester", "Rook", "Dawn", "Marsh", "Oak"], ["ford", "well", "vale", "wick", "brook", "mere", "ridge", "field", "ton", "croft"]],
+  enano:    [["Granite", "Coal", "Flint", "Copper", "Deep", "Anvil", "Ember", "Stout", "Rumble", "Slate"], ["mantle", "fist", "brew", "delve", "keg", "braid", "helm", "grip", "mug"]],
+  elfo:     [["Moon", "Silver", "Leaf", "Shade", "Dusk", "Mist", "Glade", "Dew", "Thistle", "Willow"], ["whisper", "bough", "glen", "blossom", "leaf", "brook", "veil", "thorn", "light"]],
+  gnomo:    [["Cog", "Gear", "Spark", "Fizz", "Tinker", "Bolt", "Widget", "Fuse", "Gadget", "Nut"], ["spinner", "whistle", "twist", "bang", "nozzle", "bottom", "pop", "tock", "wobble"]],
+  skyHO:    [["Cloud", "Gale", "Zephyr", "Aether", "High", "Feather", "Breeze", "Sun", "Azure", "Crest"], ["wing", "drift", "song", "reach", "spire", "plume", "veil", "sail", "glide"]],
+  orco:     [["Skull", "Bone", "War", "Rage", "Grim", "Gore", "Scar", "Ash", "Red", "Rust"], ["fang", "maw", "tusk", "axe", "hide", "rend", "jaw", "spike", "brow"]],
+  nomuerto: [["Grave", "Rot", "Bleak", "Dread", "Mourn", "Crypt", "Gloom", "Pale", "Hollow", "Dust"], ["whisper", "shroud", "bane", "stitch", "veil", "bone", "marrow", "grin", "worm"]],
+  tauren:   [["Earth", "Plain", "Stone", "Mesa", "Grass", "River", "Dust", "Tall", "Sage", "Cloud"], ["hoof", "horn", "mane", "walker", "strider", "runner", "hide", "song", "drum"]],
+  trol:     [["Zah", "Raz", "Tal", "Shen", "Mojo", "Voo", "Kal", "Zan", "Jab", "Tika"], ["jin", "zah", "kaz", "ruk", "mon", "juju", "zeek", "ka", "tiki"]],
+  skyWS:    [["Gale", "Storm", "Squall", "Tempest", "Breeze", "Cyclone", "Sky", "Vane", "Whirl", "Rain"], ["wing", "caller", "drift", "song", "talon", "plume", "dancer", "sail", "eye"]]
+};
+// Apellidos de personajes famosos del juego: no los usamos
+const APELLIDOS_PROHIBIDOS = ["bronzebeard", "wildhammer", "ironforge", "stormwind", "hellscream", "doomhammer", "bloodhoof",
+  "shadowsong", "whisperwind", "stormrage", "windrunner", "sunstrider", "thunderbrew", "grimtotem", "runetotem", "thunderhorn",
+  "staghelm", "proudmoore", "menethil", "frostwolf", "warsong", "blackrock", "shadowmoon", "skyhorn", "stormsong"];
+
 const nombres = { raza: "humano", lista: [], copiado: null };
 
 function nombreAlAzar(raza) {
   const [a, b, c] = SILABAS[raza];
   const al = l => l[Math.floor(Math.random() * l.length)];
-  let n = al(a) + al(b) + al(c);
-  n = n.replace(/'+$/, "").replace(/''/g, "'").replace(/([aeiou])\1+/gi, "$1");
-  return n.charAt(0).toUpperCase() + n.slice(1).toLowerCase().replace(/'(.)/, (m, x) => "'" + x.toUpperCase());
+  let n = (al(a) + al(b) + al(c)).replace(/'/g, "").replace(/([aeiou])\1+/gi, "$1");
+  return n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
+}
+
+function apellidoAlAzar(raza) {
+  const [a, b] = APELLIDOS[raza];
+  const al = l => l[Math.floor(Math.random() * l.length)];
+  const n = (al(a) + al(b)).replace(/([a-z])\1\1/gi, "$1$1");
+  return n.charAt(0).toUpperCase() + n.slice(1).toLowerCase();
 }
 
 function nuevosNombres() {
   const vistos = new Set();
   let intentos = 0;
-  while (vistos.size < 8 && intentos++ < 80) {
+  while (vistos.size < 8 && intentos++ < 200) {
     const n = nombreAlAzar(nombres.raza);
-    if (n.length >= 4 && n.length <= 12) vistos.add(n);
+    const a = apellidoAlAzar(nombres.raza);
+    if (n.length < 4 || n.length > 12 || a.length > 12) continue;
+    if (APELLIDOS_PROHIBIDOS.includes(a.toLowerCase())) continue;
+    vistos.add(`${n} ${a}`);
   }
   nombres.lista = [...vistos];
 }
@@ -1395,7 +1422,7 @@ function pintarNombres() {
   if (!nombres.lista.length) nuevosNombres();
   const p = leerPerfil();
   $("nm-list").innerHTML = nombres.lista.map(n => `
-    <button type="button" class="nm-name" data-n="${n}">${n}<small>${nombres.copiado === n ? "¡Copiado!" : "copiar"}</small></button>`).join("");
+    <button type="button" class="nm-name" data-n="${n}">${n.split(" ")[0]}<span class="nm-last">${n.split(" ")[1]}</span><small>${nombres.copiado === n ? "¡Copiado!" : "copiar"}</small></button>`).join("");
   $("nm-list").querySelectorAll(".nm-name").forEach(b => b.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(b.dataset.n); } catch (e) {}
     nombres.copiado = b.dataset.n;

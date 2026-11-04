@@ -1343,3 +1343,4 @@ button.cta.ghost { border: 1px solid var(--oro-osc); }
 .el-txt .mt-debate { position: static; }
 .el-make { flex: none; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--oro-osc); background: transparent; color: var(--oro-claro); font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; }
 .el-make:hover { background: rgba(214, 176, 106, .15); }
+.nm-last { display: block; font-size: .8em; color: var(--texto); opacity: .85; line-height: 1.1; }
