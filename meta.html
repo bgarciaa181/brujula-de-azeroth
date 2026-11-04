@@ -34,6 +34,33 @@
 
 <main>
   <div class="wrap">
+    <section id="elige" data-tab="Elige tu main" data-icon="inv_misc_dice_01">
+      <div class="section-head">
+        <h2>Elige tu main</h2>
+        <p>Modo, facción, y la mejor raza y clase según el meta.</p>
+      </div>
+
+      <h3 class="el-step"><span>1</span> El modo (no se puede cambiar después)</h3>
+      <div class="el-rules">
+        <div class="el-rule rec"><b>Normal</b><small>Nadie te ataca si no quieres. Duelos y campos de batalla: sí.</small><em>Para casi todos</em></div>
+        <div class="el-rule"><b>PvP</b><small>Te pueden atacar en zonas disputadas. Solo una facción por cuenta en este modo.</small><em>Si te gusta el PvP en el mundo abierto</em></div>
+        <div class="el-rule"><b>Rol / Rol-PvP</b><small>Jugar metido en el personaje, con normas de nombres.</small></div>
+        <div class="el-rule"><b>Hardcore</b><small>Si mueres, se acabó. Llega más tarde.</small></div>
+      </div>
+      <p class="el-note">Los campos de batalla son compartidos entre modos (menos Hardcore). Tus amigos deben estar en el mismo modo y facción.</p>
+
+      <h3 class="el-step"><span>2</span> La facción</h3>
+      <div id="el-pop"></div>
+      <div class="el-opts" id="el-fac" role="group" aria-label="Facción"></div>
+
+      <h3 class="el-step"><span>3</span> ¿Qué te importa más?</h3>
+      <div class="el-opts" id="el-mode" role="group" aria-label="PvE o PvP"></div>
+
+      <h3 class="el-step"><span>4</span> Tu ranking</h3>
+      <div class="el-result" id="el-result"></div>
+      <p class="el-note">Raza: lo que vota cada guía (<span id="el-sources"></span>). Si no coinciden, sale "debate". Clase: la media del meta.</p>
+    </section>
+
     <section id="meta-pvp" data-tab="PvP" data-icon="achievement_pvp_p_250k">
       <div class="section-head">
         <h2>Meta PvP</h2>

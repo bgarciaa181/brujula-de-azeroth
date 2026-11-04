@@ -157,3 +157,48 @@ function mejorSpec(claseId, modo) {
   const empatadas = lista.filter(x => x.media === m.media).map(nombre);
   return { ...m, nombre: empatadas.join(" o "), empate: empatadas.length > 1, letra: ["D", "C", "B", "A", "S"][Math.min(4, Math.floor(m.media + 0.5))] };
 }
+
+// ---------- MEJOR RAZA PARA CADA CLASE ----------
+// Votos de 3 guías: M = MmonsteR, H = Hotspawn, C = ConquestCapped
+const RAZA_FUENTES = {
+  M: ["MmonsteR", "https://mmonster.co/wow-forever/guides/tier-lists/race-tier-list", "3 nov"],
+  H: ["Hotspawn", "https://www.hotspawn.com/world-of-warcraft/guide/wow-forever-best-race-for-each-class", "26 oct"],
+  C: ["ConquestCapped", "https://conquestcapped.com/guides/wow-forever/wow-forever-race-tier-list/", "27 oct"]
+};
+const RAZA_META = {
+  guerrero: { alianza: { pve: { M: "elfo", H: "humano", C: "humano" }, pvp: { M: "humano", H: "humano", C: "humano" } },
+              horda:   { pve: { M: "orco", H: "skyWS", C: "orco" },     pvp: { H: "orco", C: "orco" } } },
+  paladin:  { alianza: { pve: { M: "humano", H: "humano", C: "humano" }, pvp: { M: "humano", H: "humano", C: "enano" } },
+              horda:   { pve: { M: "nomuerto", H: "nomuerto", C: "nomuerto" }, pvp: { H: "nomuerto", C: "nomuerto" } } },
+  cazador:  { alianza: { pve: { M: "enano", H: "skyHO", C: "humano" }, pvp: { H: "elfo", C: "elfo" } },
+              horda:   { pve: { M: "orco", H: "skyWS", C: "orco" },  pvp: { M: "tauren", H: "orco", C: "orco" } } },
+  picaro:   { alianza: { pve: { M: "elfo", H: "humano", C: "humano" }, pvp: { H: "humano", C: "gnomo" } },
+              horda:   { pve: { M: "orco", H: "skyWS", C: "orco" },    pvp: { M: "nomuerto", H: "nomuerto", C: "orco" } } },
+  sacerdote:{ alianza: { pve: { M: "gnomo", H: "humano", C: "gnomo" }, pvp: { M: "humano", H: "elfo", C: "humano" } },
+              horda:   { pve: { M: "nomuerto", H: "nomuerto", C: "trol" }, pvp: { H: "nomuerto", C: "nomuerto" } } },
+  chaman:   { alianza: { pve: { M: "enano", H: "enano", C: "enano" }, pvp: { H: "enano", C: "enano" } },
+              horda:   { pve: { M: "orco", H: "orco", C: "orco" },    pvp: { M: "trol", H: "orco", C: "orco" } } },
+  mago:     { alianza: { pve: { M: "gnomo", H: "skyHO", C: "skyHO" }, pvp: { H: "humano", C: "gnomo" } },
+              horda:   { pve: { M: "orco", H: "nomuerto", C: "orco" }, pvp: { M: "nomuerto", H: "nomuerto", C: "nomuerto" } } },
+  brujo:    { alianza: { pve: { M: "gnomo", H: "humano", C: "humano" }, pvp: { M: "humano", H: "gnomo", C: "humano" } },
+              horda:   { pve: { M: "orco", H: "nomuerto", C: "orco" },  pvp: { H: "nomuerto", C: "nomuerto" } } },
+  druida:   { alianza: { pve: { M: "elfo", H: "elfo", C: "skyHO" },   pvp: { H: "elfo", C: "elfo" } },
+              horda:   { pve: { M: "tauren", H: "tauren", C: "skyWS" }, pvp: { H: "tauren", C: "tauren" } } }
+};
+
+// La raza con más votos (si empatan, salen las dos)
+function mejorRaza(claseId, faccion, modo) {
+  const votos = (RAZA_META[claseId] && RAZA_META[claseId][faccion] && RAZA_META[claseId][faccion][modo]) || {};
+  const cuenta = {};
+  for (const r of Object.values(votos)) cuenta[r] = (cuenta[r] || 0) + 1;
+  const max = Math.max(0, ...Object.values(cuenta));
+  return { razas: Object.keys(cuenta).filter(r => cuenta[r] === max), votos, max, total: Object.keys(votos).length };
+}
+
+// Población de la beta (censo no oficial, Blizzard no da cifras)
+const POBLACION = {
+  fuente: ["WoW Forever Data (censo de la beta)", "https://wowforeverdata.com/factions"],
+  total: { alianza: 48.6, horda: 51.4 },
+  normal: { alianza: 46.3, horda: 53.7 },
+  pvp: { alianza: 50.9, horda: 49.1 }
+};

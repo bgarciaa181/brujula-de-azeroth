@@ -24,7 +24,7 @@ const SECCION_PAGINA = {
   modo: "pve-pvp.html", raids: "pve-pvp.html", calendario: "pve-pvp.html",
   profesiones: "oficios.html",
   comunidad: "comunidad.html", noticias: "comunidad.html",
-  "meta-pvp": "meta.html", "meta-pve": "meta.html", "meta-clases": "meta.html",
+  elige: "meta.html", "meta-pvp": "meta.html", "meta-pve": "meta.html", "meta-clases": "meta.html",
   juego: "juegos.html", ruleta: "juegos.html", nombres: "juegos.html"
 };
 
@@ -165,6 +165,7 @@ function sinTildes(texto) {
 // Todo lo que se puede buscar, con la página a la que lleva
 const INDICE = [];
 function prepararIndice() {
+  INDICE.push({ texto: "Elige tu main (Horda o Alianza, Normal o PvP)", tipo: "Ayuda para decidir", icono: iconoWow("inv_misc_dice_01", "sm"), url: "meta.html#elige" });
   INDICE.push({ texto: "Meta y tier list", tipo: "Las specs más fuertes · PvE y PvP", icono: iconoWow("achievement_bg_winwsg", "sm"), url: "meta.html" });
   for (const c of CLASSES) {
     INDICE.push({ texto: c.nombre, tipo: "Clase", icono: iconoClase(c), url: `clase.html?c=${c.id}` });

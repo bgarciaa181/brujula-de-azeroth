@@ -1302,3 +1302,44 @@ button.cta.ghost { border: 1px solid var(--oro-osc); }
 .mp-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 8px 12px; border-radius: 10px; background: rgba(255, 122, 61, .1); border: 1px solid rgba(255, 122, 61, .4); color: var(--suave); text-decoration: none; font-size: .88rem; }
 .mp-meta b { color: #ffb48a; }
 .mp-meta i { margin-left: auto; font-style: normal; color: #ff7a3d; }
+
+/* ---------- Elige tu main ---------- */
+.el-step { display: flex; align-items: center; gap: 10px; font-size: 1.15rem; margin: 22px 0 10px; }
+.el-step span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--oro); color: #141826; font-size: .95rem; }
+.el-rules { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.el-rule { display: grid; gap: 4px; padding: 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--linea); }
+.el-rule b { font-family: var(--font-display); font-size: 1.2rem; }
+.el-rule small { color: var(--suave); font-size: .85rem; }
+.el-rule em { font-style: normal; font-size: .75rem; color: var(--oro); }
+.el-rule.rec { border-color: var(--oro); background: radial-gradient(circle at 0 0, rgba(214, 176, 106, .16), transparent 60%), var(--panel); }
+.el-note { color: var(--suave); font-size: .85rem; margin-top: 8px; }
+.el-note a { color: var(--oro-claro); }
+.el-bar { display: flex; height: 34px; border-radius: 999px; overflow: hidden; font-weight: 700; font-size: .9rem; }
+.el-bar span { display: flex; align-items: center; gap: 6px; padding: 0 12px; }
+.el-bar .alianza { background: linear-gradient(90deg, #1f3c7a, #3d63b8); }
+.el-bar .horda { background: linear-gradient(90deg, #a5352a, #6e1d18); justify-content: flex-end; }
+.el-bar .wow-icon.sm { width: 22px; height: 22px; }
+.el-opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.el-opt { display: flex; align-items: center; gap: 10px; padding: 8px 16px 8px 8px; border-radius: 12px; border: 1px solid var(--linea); background: var(--panel); color: var(--suave); font: inherit; font-weight: 700; cursor: pointer; text-align: left; }
+.el-opt span { display: grid; }
+.el-opt small { font-weight: 400; font-size: .78rem; }
+.el-opt .wow-icon.lg { width: 40px; height: 40px; }
+.el-opt[aria-pressed="true"] { color: var(--texto); border-color: var(--oro); background: rgba(214, 176, 106, .12); }
+.el-opt.alianza[aria-pressed="true"] { border-color: #5b8def; background: rgba(91, 141, 239, .15); }
+.el-opt.horda[aria-pressed="true"] { border-color: #e0634f; background: rgba(224, 99, 79, .15); }
+.el-result { display: grid; gap: 6px; }
+.el-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 12px; background: var(--panel); border: 1px solid var(--linea); border-left: 3px solid var(--cls); }
+.el-row.top { background: radial-gradient(circle at 0 50%, color-mix(in srgb, var(--cls) 18%, transparent), transparent 50%), var(--panel); }
+.el-row.mia { box-shadow: 0 0 0 2px var(--cls); }
+.el-pos { font-family: var(--font-display); font-size: 1.3rem; width: 24px; text-align: center; color: var(--suave); }
+.el-row.top .el-pos { color: var(--oro-claro); }
+.el-combo { display: flex; flex: none; }
+.el-combo .wow-icon.lg { width: 44px; height: 44px; }
+.el-combo .sigil { width: 28px; height: 28px; margin: 22px 0 0 -14px; box-shadow: 0 0 0 2px var(--cls), 0 0 0 3px #000; }
+.el-txt { display: grid; flex: 1; min-width: 0; line-height: 1.3; }
+.el-txt small { color: var(--suave); font-size: .8rem; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.el-txt em { font-style: normal; font-weight: 700; font-size: .7rem; width: 18px; height: 18px; display: inline-grid; place-items: center; border-radius: 4px; color: #141826; background: var(--t); }
+.el-txt i { font-style: normal; font-size: .7rem; padding: 0 5px; border-radius: 4px; background: var(--noche-2); }
+.el-txt .mt-debate { position: static; }
+.el-make { flex: none; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--oro-osc); background: transparent; color: var(--oro-claro); font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; }
+.el-make:hover { background: rgba(214, 176, 106, .15); }

@@ -1147,6 +1147,54 @@ function pintarMeta() {
   document.querySelectorAll(".mt-patch").forEach(e => e.textContent = META_PARCHE);
 }
 
+// ---------- META: ELIGE TU MAIN ----------
+const elige = { faccion: null, modo: "pvp" };
+
+function pintarElige() {
+  const p = leerPerfil();
+  if (!elige.faccion) elige.faccion = (p && p.faccion) || "horda";
+
+  // Barra de población
+  const pob = POBLACION.total;
+  $("el-pop").innerHTML = `
+    <div class="el-bar"><span class="alianza" style="width:${pob.alianza}%">${iconoFaccion("alianza", "sm")} ${pob.alianza}%</span><span class="horda" style="width:${pob.horda}%">${pob.horda}% ${iconoFaccion("horda", "sm")}</span></div>
+    <p class="el-note">Casi a medias. En modo Normal: Horda ${POBLACION.normal.horda}% · en PvP: Alianza ${POBLACION.pvp.alianza}%. <a href="${POBLACION.fuente[1]}" target="_blank" rel="noopener">${POBLACION.fuente[0]}</a></p>`;
+
+  // Botones de facción y de modo
+  $("el-fac").innerHTML = [["alianza", "Alianza"], ["horda", "Horda"]].map(([id, t]) =>
+    `<button type="button" class="el-opt ${id}" data-f="${id}" aria-pressed="${elige.faccion === id}">${iconoFaccion(id, "lg")}<span>${t}</span></button>`).join("");
+  $("el-mode").innerHTML = [["pve", "PvE", "Mazmorras y raids", "achievement_dungeon_classicdungeonmaster"], ["pvp", "PvP", "Campos de batalla y duelos", "achievement_pvp_p_250k"]].map(([id, t, d, ic]) =>
+    `<button type="button" class="el-opt" data-m="${id}" aria-pressed="${elige.modo === id}">${iconoWow(ic, "lg")}<span>${t}<small>${d}</small></span></button>`).join("");
+  $("el-fac").querySelectorAll("button").forEach(b => b.onclick = () => { elige.faccion = b.dataset.f; pintarElige(); });
+  $("el-mode").querySelectorAll("button").forEach(b => b.onclick = () => { elige.modo = b.dataset.m; pintarElige(); });
+
+  // Ranking de clases para ese modo, con su mejor raza en esa facción
+  const filas = CLASSES.map(c => ({ c, spec: mejorSpec(c.id, elige.modo), raza: mejorRaza(c.id, elige.faccion, elige.modo) }))
+    .filter(x => x.spec && x.raza.razas.length)
+    .sort((a, b) => b.spec.media - a.spec.media);
+
+  $("el-result").innerHTML = filas.map((x, i) => {
+    const r0 = x.raza.razas[0];
+    const debate = x.raza.max < 2;
+    return `<div class="el-row${i < 3 ? " top" : ""}${p && p.clase === x.c.id ? " mia" : ""}" style="--cls:${x.c.color}">
+      <span class="el-pos">${i + 1}</span>
+      <div class="el-combo">${iconoRaza(r0, "male", "lg")}${iconoClase(x.c)}</div>
+      <div class="el-txt">
+        <b>${x.raza.razas.map(r => RACES[r].nombre).join(" o ")} <span style="color:${x.c.color}">${x.c.nombre}</span></b>
+        <small>${x.spec.nombre} · <em class="t-${x.spec.letra}">${x.spec.letra}</em>
+          · raza: ${Object.entries(x.raza.votos).map(([f, r]) => `<i title="${RAZA_FUENTES[f][0]}">${RACES[r].nombre.split(" ")[0]}</i>`).join("")}
+          ${debate ? '<span class="mt-debate">debate</span>' : ""}</small>
+      </div>
+      <button type="button" class="el-make" data-r="${r0}" data-c="${x.c.id}">Crear</button>
+    </div>`;
+  }).join("");
+  $("el-result").querySelectorAll(".el-make").forEach(b => b.onclick = () => {
+    try { localStorage.setItem("pj-raza", b.dataset.r); localStorage.setItem("pj-clase", b.dataset.c); } catch (e) {}
+    location.href = "clases.html#personaje";
+  });
+  $("el-sources").innerHTML = Object.values(RAZA_FUENTES).map(([n, u, f]) => `<a href="${u}" target="_blank" rel="noopener">${n}</a> (${f})`).join(" · ");
+}
+
 // ---------- PORTADA: TU PERSONAJE ----------
 // Si guardaste tu personaje, la portada te dice qué hacer a tu nivel
 function pintarMiPersonaje() {
@@ -1390,6 +1438,7 @@ if ($("hero-classes")) {
 if ($("explore")) pintarExplora();
 if ($("mi-pj")) pintarMiPersonaje();
 if ($("mt-pvp")) pintarMeta();
+if ($("el-result")) pintarElige();
 if ($("rl-wheel")) {
   pintarRuletaFiltros();
   pintarRuletaCara("humano", "guerrero", false);
