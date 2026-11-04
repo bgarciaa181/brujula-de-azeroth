@@ -1012,7 +1012,12 @@ function pintarClase() {
         ${c.arboles.map(a => {
           const lista = arboles[a[0]] || [];
           const final = lista.filter(t => t[3]).sort((a, b) => b[1] - a[1])[0];
+          const insignias = [["pve", "PvE"], ["pvp", "PvP"]].map(([m, t]) => {
+            const mejor = mejorSpec(c.id, m);
+            return mejor && mejor.nombre.split(" o ").some(n => n.split(" (")[0] === a[0]) ? `<span class="cp-meta">★ Meta ${t}${mejor.empate ? " (empate)" : ""}</span>` : "";
+          }).join("");
           return `<div class="cp-spec">
+            ${insignias ? `<div class="cp-metas">${insignias}</div>` : ""}
             ${iconoWow(a[2], "xl")}
             <h3>${a[0]}</h3>
             <span class="cp-spec-role">${a[1]}</span>
@@ -1084,6 +1089,64 @@ function pintarClase() {
   }));
 }
 
+// ---------- META: TIER LISTS ----------
+const metaVista = { pvp: "bg", pve: "dps" };
+const TIER_TEXTO = { S: "Lo más fuerte", A: "Muy buena", B: "Buena", C: "Floja", D: "Muy floja" };
+
+function chipMeta([claseId, arbol, notas, extra], miClase) {
+  const c = CLASSES.find(x => x.id === claseId);
+  const a = c.arboles.find(x => x[0] === arbol);
+  const acuerdo = acuerdoMeta(notas);
+  return `<a class="mt-chip${miClase === claseId ? " mia" : ""}" href="clase.html?c=${claseId}" style="--cls:${c.color}">
+    ${iconoWow(a ? a[2] : c.icono, "lg")}
+    <span class="mt-name"><b>${arbol}${extra ? ` <i>${extra}</i>` : ""}</b><small>${c.nombre}</small></span>
+    <span class="mt-votes">${Object.entries(notas).map(([f, l]) => `<em class="t-${l}" title="${META_FUENTES[f][0]}: ${l}">${l}</em>`).join("")}</span>
+    ${acuerdo === "debate" ? '<span class="mt-debate" title="Las fuentes no se ponen de acuerdo">debate</span>' : ""}
+  </a>`;
+}
+
+function pintarTier(cajaId, lista) {
+  const p = leerPerfil();
+  const mia = p && p.clase;
+  const filas = { S: [], A: [], B: [], C: [], D: [] };
+  for (const x of lista) filas[letraMedia(x[2])].push(x);
+  for (const k in filas) filas[k].sort((a, b) => puntosMeta(b[2]) - puntosMeta(a[2]));
+  $(cajaId).innerHTML = Object.entries(filas).filter(([, l]) => l.length).map(([t, l]) => `
+    <div class="mt-row">
+      <div class="mt-tier t-${t}"><b>${t}</b><small>${TIER_TEXTO[t]}</small></div>
+      <div class="mt-specs">${l.map(x => chipMeta(x, mia)).join("")}</div>
+    </div>`).join("");
+}
+
+function pintarMeta() {
+  // Botones para cambiar de lista
+  for (const [grupo, caja] of [["pvp", "mt-pvp-mode"], ["pve", "mt-pve-mode"]]) {
+    $(caja).querySelectorAll("button").forEach(b => {
+      b.setAttribute("aria-pressed", String(metaVista[grupo] === b.dataset.v));
+      b.onclick = () => { metaVista[grupo] = b.dataset.v; pintarMeta(); };
+    });
+  }
+  pintarTier("mt-pvp", META[metaVista.pvp]);
+  pintarTier("mt-pve", META[metaVista.pve]);
+
+  // Por clase: la especialización más fuerte de cada una
+  const p = leerPerfil();
+  $("mt-classes").innerHTML = CLASSES.map(c => {
+    const pve = mejorSpec(c.id, "pve");
+    const pvp = mejorSpec(c.id, "pvp");
+    const linea = (m, txt) => m ? `<div class="mt-best"><small>${txt}</small><b>${m.nombre}</b><em class="t-${m.letra}">${m.letra}</em></div>` : "";
+    return `<a class="mt-class${p && p.clase === c.id ? " mia" : ""}" href="clase.html?c=${c.id}" style="--cls:${c.color}">
+      <div class="mt-class-head">${iconoClase(c)}<b>${c.nombre}</b>${p && p.clase === c.id ? '<span class="mt-you">tu clase</span>' : ""}</div>
+      ${linea(pve, "Meta PvE")}${linea(pvp, "Meta PvP")}
+    </a>`;
+  }).join("");
+
+  $("mt-sources").innerHTML = Object.entries(META_FUENTES).map(([k, [n, url, f]]) =>
+    `<li><em>${k}</em> <a href="${url}" target="_blank" rel="noopener">${n}</a> <small>· ${f}</small></li>`).join("");
+  document.querySelectorAll(".mt-date").forEach(e => e.textContent = META_FECHA);
+  document.querySelectorAll(".mt-patch").forEach(e => e.textContent = META_PARCHE);
+}
+
 // ---------- PORTADA: TU PERSONAJE ----------
 // Si guardaste tu personaje, la portada te dice qué hacer a tu nivel
 function pintarMiPersonaje() {
@@ -1137,6 +1200,7 @@ function pintarMiPersonaje() {
       </div>
     </div>
     <div class="mp-bar" aria-hidden="true"><i style="width:${(n / 60) * 100}%"></i></div>
+    <a class="mp-meta" href="meta.html">${(() => { const a = mejorSpec(c.id, "pve"), b = mejorSpec(c.id, "pvp"); return `<span>Meta PvE: <b>${a ? a.nombre : "—"}</b></span><span>Meta PvP: <b>${b ? b.nombre : "—"}</b></span>`; })()}<i>→</i></a>
     <h3 class="mp-now">Ahora te toca</h3>
     <div class="mp-goals">
       ${objetivos.map(([icono, t, d, url]) => `<a class="mp-goal" href="${url}">${icono}<span><b>${t}</b><small>${d}</small></span></a>`).join("")}
@@ -1301,6 +1365,7 @@ const EXPLORA = [
   ["mascotas.html", "Mascotas", "ability_hunter_beasttaming", "Raras con minimapa y habilidades", "#AAD372"],
   ["pve-pvp.html", "PvE y PvP", "achievement_pvp_p_250k", "Mazmorras, raids y campos de batalla", "#e0634f"],
   ["oficios.html", "Oficios", "trade_blacksmithing", "Las 13 profesiones y cuáles combinar", "#b07ce8"],
+  ["meta.html", "Meta", "achievement_bg_winwsg", "Las specs más fuertes en PvE y PvP", "#ff7a3d"],
   ["juegos.html", "Juegos", "inv_misc_dice_01", "Minijuego, ruleta y nombres", "#f0a04b"],
   ["comunidad.html", "Comunidad", "inv_misc_note_01", "Foro, comentarios y noticias", "#3FC7EB"]
 ];
@@ -1324,6 +1389,7 @@ if ($("hero-classes")) {
 }
 if ($("explore")) pintarExplora();
 if ($("mi-pj")) pintarMiPersonaje();
+if ($("mt-pvp")) pintarMeta();
 if ($("rl-wheel")) {
   pintarRuletaFiltros();
   pintarRuletaCara("humano", "guerrero", false);

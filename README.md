@@ -37,12 +37,14 @@ brujula-de-azeroth/
 ├── mascotas.html       → mascotas de cazador con minimapa
 ├── pve-pvp.html        → mazmorras, campos de batalla, raids y calendario
 ├── oficios.html        → profesiones
+├── meta.html           → meta PvE y PvP: varias tier lists juntas
 ├── juegos.html         → ruleta de personaje, nombres por raza y minijuego
 ├── comunidad.html      → foro, comentarios y noticias
 ├── css/estilos.css     → el diseño de toda la web
 ├── css/talentos.css    → el diseño de la calculadora
 ├── js/layout.js        → menú, pestañas, buscador y pie (común a todas las páginas)
 ├── js/app.js           → lo de cada página
+├── js/meta-datos.js    → las notas del meta (cambiar aquí con cada parche)
 ├── js/datos.js         → datos del juego (clases, razas, zonas, mascotas…)
 ├── js/talentos-datos.js → árboles de talentos
 ├── js/talentos-es.js   → traducción de los talentos al español

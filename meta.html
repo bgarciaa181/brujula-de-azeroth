@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meta · Brújula de Azeroth</title>
+<meta name="description" content="Meta de WoW Forever en español: tier list de PvP (campos de batalla y duelos) y PvE (DPS, tanques y sanadores), juntando varias fuentes.">
+<link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/meta.html">
+<meta property="og:title" content="Meta · Brújula de Azeroth">
+<meta property="og:description" content="Meta de WoW Forever en español: tier list de PvP (campos de batalla y duelos) y PvE (DPS, tanques y sanadores), juntando varias fuentes.">
+<meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
+<meta property="og:url" content="https://bgarciaa181.github.io/brujula-de-azeroth/meta.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="img/icono.svg">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
+<link rel="stylesheet" href="css/estilos.css?v=19">
+</head>
+<body>
+<header id="site-header"></header>
+
+<div class="page-hero">
+  <div class="wrap page-hero-in">
+    <span class="wow-icon xl page-hero-icon" aria-hidden="true"><img src="https://render.worldofwarcraft.com/us/icons/56/achievement_bg_winwsg.jpg" alt="" onerror="this.remove()"></span>
+    <div>
+      <h1>Meta</h1>
+      <p>Las especializaciones más fuertes ahora mismo. Varias tier lists juntas en una.</p>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <section id="meta-pvp" data-tab="PvP" data-icon="achievement_pvp_p_250k">
+      <div class="section-head">
+        <h2>Meta PvP</h2>
+        <p>En Forever no hay arenas (de momento): el PvP es campos de batalla, duelos y mundo abierto.</p>
+      </div>
+      <div class="mt-modes" id="mt-pvp-mode" role="group" aria-label="Tipo de PvP">
+        <button type="button" class="chip" data-v="bg">Campos de batalla</button>
+        <button type="button" class="chip" data-v="duelo">Duelos y mundo abierto</button>
+      </div>
+      <div class="mt-list" id="mt-pvp"></div>
+    </section>
+
+    <section id="meta-pve" data-tab="PvE" data-icon="achievement_dungeon_classicdungeonmaster">
+      <div class="section-head">
+        <h2>Meta PvE</h2>
+        <p>Para mazmorras y raids a nivel 60.</p>
+      </div>
+      <div class="mt-modes" id="mt-pve-mode" role="group" aria-label="Rol">
+        <button type="button" class="chip" data-v="dps">Daño</button>
+        <button type="button" class="chip" data-v="tanque">Tanques</button>
+        <button type="button" class="chip" data-v="sanador">Sanadores</button>
+      </div>
+      <div class="mt-list" id="mt-pve"></div>
+    </section>
+
+    <section id="meta-clases" data-tab="Por clase" data-icon="classicon_warrior">
+      <div class="section-head">
+        <h2>La spec meta de cada clase</h2>
+        <p>De sus 3 especializaciones, cuál es la más fuerte.</p>
+      </div>
+      <div class="mt-classes" id="mt-classes"></div>
+    </section>
+
+    <section id="meta-info" data-tab="Cómo se hace" data-icon="inv_misc_book_09">
+      <div class="section-head">
+        <h2>¿De dónde sale esto?</h2>
+        <p>Actualizado el <b class="mt-date"></b> · <span class="mt-patch"></span></p>
+      </div>
+      <div class="mt-how">
+        <p>Cada especialización tiene la nota que le da cada web (las letras pequeñas). La letra grande es la <b>media</b>. Si las webs no se ponen de acuerdo, sale la etiqueta <span class="mt-debate">debate</span>.</p>
+        <p>Ahora mismo todo viene de la beta (hasta nivel 30). Con el juego ya fuera y cada parche, las notas cambiarán y aquí se irán actualizando.</p>
+        <ul class="mt-sources" id="mt-sources"></ul>
+      </div>
+      <div class="section-head mt-opina">
+        <h2>¿Estás de acuerdo?</h2>
+        <p>Si has visto algo distinto jugando, cuéntalo aquí. Necesitas una cuenta de GitHub (es gratis).</p>
+      </div>
+      <script src="https://giscus.app/client.js"
+        data-repo="bgarciaa181/brujula-de-azeroth"
+        data-repo-id="R_kgDOVhVyoQ"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOVhVyoc4DKULv"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="dark"
+        data-lang="es"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </section>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+<div class="achievement" id="achievement" hidden></div>
+
+<script src="js/datos.js?v=19"></script>
+<script src="js/talentos-datos.js?v=19"></script>
+<script src="js/talentos-es.js?v=19"></script>
+<script src="js/meta-datos.js?v=19"></script>
+<script src="js/layout.js?v=19"></script>
+<script src="js/app.js?v=19"></script>
+</body>
+</html>

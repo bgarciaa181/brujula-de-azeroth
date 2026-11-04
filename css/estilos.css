@@ -1248,3 +1248,57 @@ a.mini-pet { color: var(--texto); text-decoration: none; }
 a.mini-pet:hover { border-color: var(--cls, var(--oro)); }
 button.cta { font: inherit; font-weight: 700; border: 0; cursor: pointer; }
 button.cta.ghost { border: 1px solid var(--oro-osc); }
+
+/* ---------- Meta: tier lists ---------- */
+.t-S { --t: #ff7a3d; } .t-A { --t: #d6b06a; } .t-B { --t: #6fd17a; } .t-C { --t: #5b8def; } .t-D { --t: #8a8a99; }
+.mt-modes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.mt-list { display: grid; gap: 8px; }
+.mt-row { display: grid; grid-template-columns: 86px 1fr; gap: 8px; align-items: stretch; }
+.mt-tier { display: grid; place-content: center; text-align: center; border-radius: 12px; background: color-mix(in srgb, var(--t) 22%, var(--panel)); border: 1px solid color-mix(in srgb, var(--t) 60%, transparent); }
+.mt-tier b { font-family: var(--font-display); font-size: 2.2rem; line-height: 1; color: var(--t); }
+.mt-tier small { font-size: .68rem; color: var(--suave); line-height: 1.1; }
+.mt-specs { display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); padding: 6px; border-radius: 12px; background: rgba(22, 28, 49, .6); }
+.mt-chip { position: relative; display: flex; align-items: center; gap: 10px; padding: 6px 10px 6px 6px; border-radius: 10px; background: var(--panel); border: 1px solid var(--linea); border-left: 3px solid var(--cls); color: var(--texto); text-decoration: none; }
+.mt-chip:hover { border-color: var(--cls); }
+.mt-chip.mia { box-shadow: 0 0 0 2px var(--cls), 0 0 16px color-mix(in srgb, var(--cls) 40%, transparent); }
+.mt-chip .wow-icon.lg { width: 40px; height: 40px; box-shadow: 0 0 0 1.5px var(--cls), 0 0 0 2.5px #000; }
+.mt-name { display: grid; min-width: 0; flex: 1; line-height: 1.2; }
+.mt-name b { font-size: .98rem; }
+.mt-name b i { font-style: normal; font-weight: 400; color: var(--suave); font-size: .85em; }
+.mt-name small { color: var(--cls); font-size: .78rem; }
+.mt-votes { display: flex; gap: 3px; }
+.mt-votes em, .mt-best em, .mt-sources em { font-style: normal; font-weight: 700; font-size: .72rem; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 5px; color: #141826; background: var(--t, var(--oro)); }
+.mt-debate { position: absolute; top: -7px; right: 8px; font-size: .62rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 700; padding: 1px 6px; border-radius: 999px; background: #3a2140; color: #f0a0e8; border: 1px solid #7d3f80; }
+.mt-how .mt-debate { position: static; }
+@media (max-width: 520px) {
+  .mt-row { grid-template-columns: 52px 1fr; }
+  .mt-tier small { display: none; }
+  .mt-tier b { font-size: 1.8rem; }
+  .mt-specs { grid-template-columns: 1fr; padding: 4px; }
+}
+
+.mt-classes { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.mt-class { display: grid; gap: 8px; padding: 14px; border-radius: 14px; background: radial-gradient(circle at 0 0, color-mix(in srgb, var(--cls) 18%, transparent), transparent 60%), var(--panel); border: 1px solid var(--linea); color: var(--texto); text-decoration: none; }
+.mt-class:hover, .mt-class.mia { border-color: var(--cls); }
+.mt-class-head { display: flex; align-items: center; gap: 10px; }
+.mt-class-head .sigil { width: 40px; height: 40px; }
+.mt-class-head b { font-family: var(--font-display); font-size: 1.3rem; color: var(--cls); }
+.mt-you { margin-left: auto; font-size: .7rem; text-transform: uppercase; color: #141826; background: var(--cls); padding: 2px 8px; border-radius: 999px; font-weight: 700; }
+.mt-best { display: grid; grid-template-columns: 70px 1fr auto; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; background: var(--noche-2); }
+.mt-best small { font-size: .72rem; color: var(--suave); text-transform: uppercase; letter-spacing: .06em; }
+.mt-best b { font-size: .95rem; }
+.mt-how { display: grid; gap: 10px; max-width: 46em; color: var(--suave); }
+.mt-how b { color: var(--texto); }
+.mt-sources { list-style: none; padding: 0; margin: 4px 0 0; display: grid; gap: 6px; }
+.mt-sources li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mt-sources em { --t: var(--oro); }
+.mt-sources a { color: var(--oro-claro); }
+.mt-opina { margin-top: 28px; }
+
+/* Insignias meta en la página de clase y en "Tu personaje" */
+.cp-spec { position: relative; }
+.cp-metas { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+.cp-meta { font-size: .72rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; color: #141826; background: #ff7a3d; }
+.mp-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 8px 12px; border-radius: 10px; background: rgba(255, 122, 61, .1); border: 1px solid rgba(255, 122, 61, .4); color: var(--suave); text-decoration: none; font-size: .88rem; }
+.mp-meta b { color: #ffb48a; }
+.mp-meta i { margin-left: auto; font-style: normal; color: #ff7a3d; }
