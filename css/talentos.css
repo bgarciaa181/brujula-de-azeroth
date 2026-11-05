@@ -197,3 +197,23 @@
 /* La barra de la calculadora va debajo del menú común */
 .t-bar { top: calc(var(--hdr) + env(safe-area-inset-top, 0px)); }
 .t-order { top: calc(var(--hdr) + 130px); }
+
+/* Árbol en 4 columnas, como en el juego */
+.t-row { display: grid; grid-template-columns: repeat(4, 62px); justify-content: start; }
+@media (max-width: 420px) { .t-row { grid-template-columns: repeat(4, minmax(0, 1fr)); } .talent { width: auto; } }
+.tip-next { font-size: .82rem; color: #a7a08f; margin-top: 4px; }
+.tip-next b { color: #ece4d2; }
+
+/* Builds populares */
+.t-builds { grid-column: 1 / -1; display: grid; gap: 10px; }
+.t-builds h2 { font-size: 1.3rem; color: var(--oro-claro); }
+.bb-note { grid-column: 1 / -1; color: var(--suave); font-size: .85rem; }
+.bb-note a { color: var(--oro-claro); }
+.bb-list { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.build-btn { position: relative; display: flex !important; align-items: center; gap: 10px; padding: 10px 12px !important; text-align: left; border-radius: 12px !important; }
+.build-btn .t-icon { width: 40px; height: 40px; flex: none; filter: none; }
+.bb-txt { display: grid; flex: 1; min-width: 0; line-height: 1.2; }
+.bb-txt b { font-size: 1.05rem; }
+.bb-txt small { color: var(--suave); font-size: .78rem; }
+.bb-meta { position: absolute; top: -8px; left: 10px; font-style: normal; font-size: .64rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: #ff7a3d; color: #141826; }
+.bb-go { font-size: .78rem; font-weight: 700; color: var(--oro-claro); }

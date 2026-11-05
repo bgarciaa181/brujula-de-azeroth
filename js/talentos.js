@@ -39,7 +39,8 @@ function cargarClase(id) {
       const es = (TALENTOS_ES[clase] || {})[t[0]];
       lista.push({
         arbol: a, nombreArbol, nombre: es ? es[0] : t[0], original: t[0],
-        fila: t[1], rangos: t[2], icono: t[3], req: t[4], desc: es ? es[1] : t[5], traducido: !!es
+        fila: t[1], rangos: t[2], icono: t[3], req: t[4], desc: es ? es[1] : t[5], traducido: !!es && es[0] !== t[0],
+        col: t[6] || 0, descMax: t[7] || ""
       });
     }
   });
@@ -184,6 +185,7 @@ function pintarArboles() {
         });
         b.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") mostrarTooltip(i, b); });
         b.addEventListener("pointerleave", ocultarTooltip);
+        b.style.gridColumn = String((t.col || 0) + 1);
         filaDiv.appendChild(b);
       });
       arbol.appendChild(filaDiv);
@@ -207,7 +209,9 @@ function textoTooltip(indice) {
     const hecho = r >= 0 && puntosEn(r) >= lista[r].rangos;
     if (!hecho) html += `<p class="tip-red">Requiere ${t.req === "?" ? "un talento oculto" : (r >= 0 ? lista[r].nombre : t.req)}</p>`;
   }
-  if (t.desc) html += `<p class="tip-desc">${t.desc}</p>`;
+  // Lo que hace en el rango que tienes (o el 1 si aún no tiene puntos) y en el último
+  if (t.desc) html += `<p class="tip-desc">${p === t.rangos && t.descMax ? t.descMax : t.desc}</p>`;
+  if (t.descMax && p < t.rangos) html += `<p class="tip-next"><b>Al máximo (${t.rangos}):</b> ${t.descMax}</p>`;
   if (t.nombre === "?") html += `<p class="tip-desc">Se conocerá cuando salga el juego.</p>`;
   if (!motivo) html += `<p class="tip-green">Toca para aprender</p>`;
   else if (p === t.rangos) html += `<p class="tip-green">Aprendido</p>`;
@@ -274,16 +278,29 @@ function pintarExtras() {
   const builds = BUILDS[clase] || [];
   const caja = document.getElementById("builds");
   if (builds.length === 0) {
-    caja.innerHTML = '<p class="pending">Todavía no hay builds comprobadas para esta clase. Las añadiremos cuando salga el juego y las hayamos probado. Mientras, puedes hacer la tuya y compartirla con "Copiar enlace".</p>';
+    caja.innerHTML = '<p class="pending">Aún no hay builds populares que encajen con los árboles nuevos de esta clase. Mientras, haz la tuya y compártela con "Copiar enlace".</p>';
   } else {
-    caja.innerHTML = "";
+    caja.innerHTML = '<p class="bb-note">Toca una para cargarla entera. Las más usadas según <a href="https://foreverchanges.pro/es/talents" target="_blank" rel="noopener">ForeverChanges</a>.</p>';
     for (const b of builds) {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "btn build-btn";
-      btn.innerHTML = `<b>${b.nombre}</b><span>${b.autor ? "por " + b.autor : ""}</span>`;
+      const total = b.puntos ? b.puntos.reduce((x, y) => x + y, 0) : 51;
+      const meta = typeof mejorSpec === "function" && ["pve", "pvp"].filter(m => {
+        const mj = mejorSpec(clase, m);
+        return mj && mj.nombre.split(" o ").some(n => n.split(" (")[0] === b.nombre);
+      }).map(m => m.toUpperCase()).join(" y ");
+      const arbol = Object.keys(TALENTOS[clase]).indexOf(b.nombre);
+      const icono = CLASSES.find(c => c.id === clase).arboles.find(a => a[0] === b.nombre);
+      btn.innerHTML = `${icono ? iconoTalento({ icono: icono[2] }) : ""}<span class="bb-txt"><b>${b.nombre}</b>
+        <small>${b.puntos ? b.puntos.join(" / ") : ""}${total < 51 ? ` · ${total} puntos` : ""}</small></span>
+        ${meta ? `<em class="bb-meta">★ Meta ${meta}</em>` : ""}<span class="bb-go">Cargar</span>`;
+      btn.title = `Build popular de ${b.autor}`;
       btn.addEventListener("click", () => {
         location.hash = `${clase}=${b.codigo}`;
+        if (arbol >= 0) arbolPendiente = arbol;
+        avisar(`Build de ${b.nombre} cargada`);
+        document.getElementById("trees-wrap").scrollIntoView({ behavior: "smooth", block: "start" });
       });
       caja.appendChild(btn);
     }
@@ -388,8 +405,10 @@ document.getElementById("my-level").addEventListener("input", e => {
   }
 });
 
+let arbolPendiente = null;
 window.addEventListener("hashchange", () => {
   leerEnlace();
+  if (arbolPendiente !== null) { arbolMovil = arbolPendiente; arbolPendiente = null; }
   pintarTodo();
 });
 

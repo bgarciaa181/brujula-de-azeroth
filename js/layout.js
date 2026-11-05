@@ -158,7 +158,7 @@ function pintarPie() {
     <div class="wrap">
       <nav class="foot-links" aria-label="Páginas">${PAGINAS.map(([a, n]) => `<a href="${a}">${n}</a>`).join("")}</nav>
       <p>Brújula de Azeroth es un fansite no oficial y sin ánimo de lucro. No está afiliado ni respaldado por Blizzard Entertainment. World of Warcraft y Warcraft son marcas de Blizzard Entertainment. Iconos © Blizzard Entertainment.</p>
-      <p>Datos del cliente 1.60.1 (MetaBot.GG, foreverdb.net, wowforeverpets.com, mmonster.co) y de la hoja de ruta oficial de Blizzard.</p>
+      <p>Talentos del lanzamiento (ForeverChanges); otros datos de MetaBot.GG, foreverdb.net, wowforeverpets.com, mmonster.co y de la hoja de ruta oficial de Blizzard.</p>
       <button type="button" class="btn-instalar" hidden>📲 Instalar como app</button>
       <p class="credit">Creado por <strong>Bea García</strong> · <a href="https://github.com/bgarciaa181" target="_blank" rel="noopener">github.com/bgarciaa181</a></p>
     </div>`;
