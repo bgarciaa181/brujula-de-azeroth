@@ -1679,3 +1679,30 @@ button.cta.ghost { border: 1px solid var(--oro-osc); }
 .ap-btn:hover { filter: brightness(1.1); }
 .ap-ico { font-weight: 800; }
 .ap-note { color: var(--suave); font-size: .82rem; }
+
+/* ---------- Mapa de mascota más claro ---------- */
+.minimap.mm-big { width: 260px; max-width: 100%; aspect-ratio: 1; background: radial-gradient(circle at 50% 50%, #3d4a2c, #232c1a 70%, #161c10); }
+.mm-gv, .mm-gh { position: absolute; background: rgba(255, 255, 255, .06); pointer-events: none; }
+.mm-gv { top: 0; bottom: 0; width: 1px; }
+.mm-gh { left: 0; right: 0; height: 1px; }
+.mm-dot { position: absolute; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: rgba(255, 90, 70, .7); pointer-events: none; }
+.mm-pin { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; border: 2px solid #fff; background: #d23a2a; color: #fff; font: 700 .8rem/1 var(--font-body); cursor: pointer; box-shadow: 0 0 0 2px #000, 0 2px 6px rgba(0, 0, 0, .7); z-index: 2; }
+.mm-pin.on { background: #ffd100; color: #141826; transform: scale(1.2); z-index: 3; }
+@media (prefers-reduced-motion: no-preference) { .mm-pin.on { animation: radar 1.6s ease-in-out infinite; } }
+.mm-sitios { display: grid; gap: 6px; }
+.mm-sitio { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--linea); background: var(--panel); color: var(--texto); font: inherit; text-align: left; cursor: pointer; }
+.mm-sitio > b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #d23a2a; color: #fff; font-size: .8rem; }
+.mm-sitio.on { border-color: #ffd100; }
+.mm-sitio.on > b { background: #ffd100; color: #141826; }
+.mm-sitio span { display: grid; line-height: 1.25; }
+.mm-sitio small { color: var(--suave); font-size: .76rem; }
+.mm-sitio code, .mm-note code { font-size: .74rem; padding: 3px 6px; border-radius: 6px; background: var(--noche-2); color: var(--oro-claro); white-space: nowrap; }
+.mm-note a { color: var(--oro-claro); }
+@media (max-width: 520px) { .minimap.mm-big { width: 240px; } .mm-sitio { grid-template-columns: auto 1fr; } .mm-sitio code { grid-column: 2; justify-self: start; } }
+/* Mapa real de la zona: rectangular, como en el juego */
+.minimap.mm-big.mm-real { width: 100%; max-width: 520px; aspect-ratio: 772 / 515; border-radius: 8px; background-size: 100% 100%; background-color: #1b2014;
+  box-shadow: 0 0 0 2px #6b5328, 0 0 0 4px #1a1206, 0 6px 18px rgba(0, 0, 0, .5); }
+.minimap.mm-real .mm-n { display: none; }
+.mm-credit { font-size: .66rem; color: var(--suave); opacity: .7; }
+.pet-detail:has(.mm-real) { grid-template-columns: 1fr; }
+.pet-detail:has(.mm-real) .mm-wrap { justify-items: stretch; }

@@ -845,21 +845,54 @@ function abrirMascota(boton) {
   const conoce = datos.conoce.length ? datos.conoce : [];
   const aprende = [...datos.aprende, f[2]].filter((h, i, a) => a.indexOf(h) === i);
 
+  // Juntamos los puntos que están cerca en "sitios" (más fácil de entender que 8 coordenadas)
+  const sitios = [];
+  for (const p of datos.puntos) {
+    const cerca = sitios.find(c => Math.hypot(c.x - p[0], c.y - p[1]) < 9);
+    if (cerca) { cerca.puntos.push(p); cerca.x = cerca.puntos.reduce((a, q) => a + q[0], 0) / cerca.puntos.length; cerca.y = cerca.puntos.reduce((a, q) => a + q[1], 0) / cerca.puntos.length; }
+    else sitios.push({ x: p[0], y: p[1], puntos: [p] });
+  }
+  const lado = (x, y) => {
+    const ns = y < 35 ? "norte" : y > 65 ? "sur" : "";
+    const eo = x < 35 ? "oeste" : x > 65 ? "este" : "";
+    if (ns && eo) return `al ${ns}${eo}`.replace("norteoeste", "noroeste").replace("norteeste", "noreste");
+    if (ns || eo) return `al ${ns || eo}`;
+    return "en el centro";
+  };
+  const slug = m[0].toLowerCase().replace(/'/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
   panel.innerHTML = `
     <div class="mm-wrap">
-      <div class="minimap" aria-label="Mapa de ${m[3]} con los sitios donde aparece ${m[0]}">
+      <div class="minimap mm-big${MAPA_ZONA[m[3]] ? " mm-real" : ""}" aria-label="Mapa de ${m[3]} con los sitios donde aparece ${m[0]}"${MAPA_ZONA[m[3]] ? ` style="background-image:url(${MAPA_URL(MAPA_ZONA[m[3]])})"` : ""}>
+        ${MAPA_ZONA[m[3]] ? "" : [10, 20, 30, 40, 50, 60, 70, 80, 90].map(v => `<i class="mm-gv" style="left:${v}%"></i><i class="mm-gh" style="top:${v}%"></i>`).join("")}
         <span class="mm-n">N</span>
-        ${datos.puntos.map(p => `<i class="mm-spot" style="left:${p[0]}%;top:${p[1]}%" title="${p[0]}, ${p[1]}"></i>`).join("")}
+        ${datos.puntos.map(p => `<i class="mm-dot" style="left:${p[0]}%;top:${p[1]}%"></i>`).join("")}
+        ${sitios.map((c, i) => `<button type="button" class="mm-pin" data-i="${i}" style="left:${c.x}%;top:${c.y}%" aria-label="Sitio ${i + 1}">${i + 1}</button>`).join("")}
       </div>
-      <span class="mm-zone">${m[3]}</span>
+      <span class="mm-zone">${m[3]}${MAPA_ZONA[m[3]] ? "" : " (mapa aproximado: zona nueva)"}</span>
+      ${MAPA_ZONA[m[3]] ? '<small class="mm-credit">Mapa: Blizzard, vía Wowhead</small>' : ""}
     </div>
     <div class="pet-info">
-      <p class="mm-coords"><b>Coordenadas:</b> ${datos.puntos.map(p => `${p[0]}, ${p[1]}`).join(" · ")}</p>
+      <h4>Dónde buscarla</h4>
+      <div class="mm-sitios">${sitios.map((c, i) => `
+        <button type="button" class="mm-sitio" data-i="${i}">
+          <b>${i + 1}</b><span>${m[3]}, ${lado(c.x, c.y)}<small>cerca de ${c.x.toFixed(0)}, ${c.y.toFixed(0)} · ${c.puntos.length} ${c.puntos.length > 1 ? "puntos" : "punto"}</small></span>
+          <code>/way ${c.x.toFixed(1)} ${c.y.toFixed(1)}</code>
+        </button>`).join("")}</div>
+      <p class="mm-note">Toca un sitio para copiar el <code>/way</code> (con el addon TomTom te pone una flecha). Al ser rara, puede tardar en salir. <a href="https://wowforeverpets.com/pets/${slug}" target="_blank" rel="noopener">Ver el mapa real ↗</a></p>
       ${conoce.length ? `<h4>Viene con</h4><div class="ab-list">${conoce.map(h => chipHabilidad(h, f)).join("")}</div>` : ""}
       <h4>Puede aprender</h4>
       <div class="ab-list">${aprende.map(h => chipHabilidad(h, f)).join("")}</div>
-      <p class="mm-note">Los círculos rojos son los sitios donde suele aparecer. Al ser rara, puede tardar en salir.</p>
     </div>`;
+
+  const marcar = i => panel.querySelectorAll(".mm-pin, .mm-sitio").forEach(e => e.classList.toggle("on", e.dataset.i === String(i)));
+  panel.querySelectorAll(".mm-pin").forEach(b => b.onclick = () => marcar(b.dataset.i));
+  panel.querySelectorAll(".mm-sitio").forEach(b => b.onclick = async () => {
+    marcar(b.dataset.i);
+    const code = b.querySelector("code");
+    try { await navigator.clipboard.writeText(code.textContent); const t = code.textContent; code.textContent = "¡Copiado!"; setTimeout(() => { code.textContent = t; }, 1200); } catch (e) {}
+  });
+  marcar(0);
 }
 
 // ---------- RAZAS ----------

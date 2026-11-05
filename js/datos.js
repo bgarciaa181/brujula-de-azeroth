@@ -522,3 +522,12 @@ const PREGUNTAS_OFICIOS = [
   ["inv_misc_coin_01", "¿Cuál da más oro?", "Mientras subes, Desuello. A nivel 60, Encantamiento y Alquimia, con Herboristería para conseguir las hierbas."],
   ["inv_misc_book_09", "¿Hay Joyería o Inscripción?", "No en el lanzamiento. Blizzard tiene prevista una actualización de profesiones y Legado para el verano de 2027."]
 ];
+
+// Mapas reales de cada zona (imagen del mapa del juego que aloja Wowhead). Número = id de la zona.
+// Las coordenadas del juego (0 a 100) coinciden con el ancho y el alto de la imagen.
+const MAPA_ZONA = {
+  "Durotar": 14, "Dun Morogh": 1, "Bosque de Elwynn": 12, "Teldrassil": 141, "Mulgore": 215,
+  "Claros de Tirisfal": 85, "Los Baldíos": 17, "Vallefresno": 331, "Bosque del Ocaso": 10,
+  "Tierras Inhóspitas": 3, "Feralas": 357, "Las Tierras Devastadas": 4, "Las Estepas Ardientes": 46
+};
+const MAPA_URL = id => `https://wow.zamimg.com/images/wow/classic/maps/enus/zoom/${id}.jpg`;
