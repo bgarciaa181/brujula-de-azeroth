@@ -3,13 +3,13 @@
 // Cuando salga un parche, se cambian las letras de aquí y la fecha. Nada más.
 // Letras: S (lo mejor), A, B, C, D.
 
-const META_FECHA = "4 nov 2026";
-const META_PARCHE = "Cliente 1.60.1 (beta, nivel 30 llevado a 60)";
+const META_FECHA = "5 nov 2026";
+const META_PARCHE = "Lanzamiento (cliente 1.60.1). Las simulaciones ya son a nivel 60";
 
 // Las fuentes. La letra corta es la que sale en cada especialización.
 const META_FUENTES = {
   L: ["LFCarry", "https://lfcarry.com/guides/wow-forever-tier-list", "4 nov"],
-  Y: ["MythicSim (simulaciones)", "https://mythicsim.com/wow-forever/tier-list", "3 nov"],
+  Y: ["MythicSim (simulaciones)", "https://mythicsim.com/wow-forever/tier-list", "4 nov"],
   M: ["MmonsteR", "https://mmonster.co/wow-forever/guides/tier-lists/pvp-tier-list", "3 nov"],
   I: ["WoW Forever Info", "https://wowforeverinfo.com/tier-lists/pvp/", "31 oct"],
   "1": ["Lista pública 1 (recopilada por MmonsteR)", "https://mmonster.co/wow-forever/guides/tier-lists/tank-healer-tier-list", "3 nov"],
@@ -31,11 +31,11 @@ const META = {
     ["picaro", "Sutileza", { L: "B", Y: "B" }],
     ["sacerdote", "Sombras", { L: "B", Y: "B" }],
     ["chaman", "Elemental", { L: "A", Y: "C" }],
-    ["chaman", "Mejora", { L: "S", Y: "S" }],
+    ["chaman", "Mejora", { L: "S", Y: "A" }],
     ["mago", "Arcano", { L: "B", Y: "A" }],
     ["mago", "Fuego", { L: "B", Y: "A" }],
     ["mago", "Escarcha", { L: "B", Y: "C" }],
-    ["brujo", "Aflicción", { L: "B", Y: "B" }],
+    ["brujo", "Aflicción", { L: "B", Y: "A" }],
     ["brujo", "Demonología", { L: "A", Y: "A" }],
     ["brujo", "Destrucción", { L: "B", Y: "A" }],
     ["druida", "Combate feral", { L: "B", Y: "A" }, "felino"],

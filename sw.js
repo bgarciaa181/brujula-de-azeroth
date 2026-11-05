@@ -1,12 +1,12 @@
 // Service worker: guarda la web para que funcione sin internet.
 // Primero intenta la red (para ver siempre lo último) y si no hay conexión usa lo guardado.
-const CACHE = "brujula-v24";
+const CACHE = "brujula-v27";
 const BASICOS = [
   "./", "index.html", "aventura.html", "clases.html", "clase.html", "talentos.html", "mascotas.html",
   "pve-pvp.html", "oficios.html", "meta.html", "juegos.html", "comunidad.html",
-  "css/estilos.css?v=24", "css/talentos.css?v=24",
-  "js/datos.js?v=24", "js/talentos-datos.js?v=24", "js/talentos-es.js?v=24", "js/meta-datos.js?v=24",
-  "js/layout.js?v=24", "js/app.js?v=24", "js/talentos.js?v=24", "img/icono.svg"
+  "css/estilos.css?v=27", "css/talentos.css?v=27",
+  "js/datos.js?v=27", "js/talentos-datos.js?v=27", "js/talentos-es.js?v=27", "js/meta-datos.js?v=27",
+  "js/layout.js?v=27", "js/app.js?v=27", "js/talentos.js?v=27", "img/icono.svg"
 ];
 
 self.addEventListener("install", e => {

@@ -231,3 +231,47 @@
   .t-row { grid-template-columns: repeat(4, minmax(0, 84px)); column-gap: 10px; }
 }
 @media (max-width: 420px) { .t-row { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 4px; } }
+
+/* Arreglo: la columna "Orden por nivel" ya no se pone encima de los comentarios */
+@media (min-width: 901px) {
+  .t-builds { grid-row: 1; }
+  .t-trees-wrap { grid-column: 1; grid-row: 2; }
+  .t-order { grid-column: 2; grid-row: 2 / span 3; align-self: start; }
+  .t-extra, .t-community { grid-column: 1; }
+  .segunda-pantalla .t-order { grid-row: auto; grid-column: 1; }
+}
+
+/* ---------- Interfaz más visual ---------- */
+.t-sum { align-items: center; gap: 10px 14px; }
+.sum-ring { position: relative; flex: none; width: 54px; height: 54px; border-radius: 50%; display: grid; place-content: center; text-align: center; line-height: 1;
+  background: radial-gradient(circle, var(--noche) 58%, transparent 60%), conic-gradient(var(--cls) var(--p), #232a45 0); }
+.sum-ring b { font-family: var(--font-display); font-size: 1.2rem; color: var(--oro-claro); }
+.sum-ring small { font-size: .62rem; color: var(--suave); }
+.sum-who { display: grid; line-height: 1.1; }
+.sum-who small { font-size: .78rem; }
+.sum-split { display: flex; flex-wrap: wrap; gap: 6px; }
+.sum-tree { position: relative; display: flex; align-items: center; gap: 6px; padding: 4px 10px 6px 4px; border-radius: 10px; border: 1px solid var(--linea); background: var(--panel); color: var(--suave); font: inherit; cursor: pointer; overflow: hidden; }
+.sum-tree .t-icon { width: 28px; height: 28px; filter: grayscale(1) brightness(.6); }
+.sum-tree.on .t-icon { filter: none; }
+.sum-tree span { display: grid; line-height: 1.05; text-align: left; }
+.sum-tree small { font-size: .68rem; }
+.sum-tree b { font-size: 1rem; color: var(--texto); }
+.sum-tree i { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--oro); }
+.sum-tree.on { border-color: var(--oro-osc); }
+@media (max-width: 520px) { .sum-tree small { display: none; } .sum-tree { padding-right: 8px; } }
+
+.tree-tab { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.tree-tab .t-icon { width: 24px; height: 24px; filter: grayscale(1) brightness(.7); }
+.tree-tab[aria-selected="true"] .t-icon { filter: none; }
+@media (max-width: 420px) { .tree-tab span { display: none; } }
+
+.tree-box { position: relative; overflow: hidden; isolation: isolate; }
+.tree-box::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--bg-icon) center 40% / 140% no-repeat; opacity: .07; filter: blur(2px) saturate(1.4); }
+.tree-box h3 { justify-content: flex-start; align-items: center; }
+.tree-box h3 .t-icon { width: 30px; height: 30px; flex: none; }
+.tree-box h3 .tb-name { flex: 1; }
+.talent.open:hover .t-icon, .talent.some:hover .t-icon { transform: translateY(-2px); }
+.talent .t-icon { transition: filter .15s, box-shadow .15s, transform .15s; }
+.build-btn { transition: border-color .15s, transform .15s; }
+.build-btn:hover { transform: translateY(-2px); border-color: var(--oro) !important; }
+@media (max-width: 1299px) { .sum-tree.sel { border-color: var(--oro); box-shadow: 0 0 0 1px var(--oro); color: var(--texto); } }

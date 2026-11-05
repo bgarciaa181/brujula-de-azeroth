@@ -128,12 +128,20 @@ function pintarClases() {
 function pintarResumen() {
   const c = claseActual();
   const nombres = Object.keys(TALENTOS[clase]);
-  const reparto = nombres.map((n, a) => `${n} <b>${puntosArbol(a)}</b>`).join(" · ");
   const nivel = orden.length ? NIVEL_INICIAL + orden.length - 1 : "—";
+  // Una barrita por árbol con su icono, en vez de tanto texto
+  const reparto = nombres.map((n, a) => {
+    const p = puntosArbol(a);
+    const arbol = c.arboles.find(x => x[0] === n);
+    return `<button type="button" class="sum-tree${p ? " on" : ""}${a === arbolMovil ? " sel" : ""}" data-a="${a}" title="${n}: ${p} puntos">
+      ${iconoTalento({ icono: arbol ? arbol[2] : null })}<span><small>${n}</small><b>${p}</b></span>
+      <i style="width:${Math.min(100, p / 51 * 100)}%"></i></button>`;
+  }).join("");
   document.getElementById("t-sum").innerHTML = `
-    <span class="sum-class" style="--cls:${c.color}">${c.nombre}</span>
-    <span class="sum-points"><b>${orden.length}</b>/${PUNTOS_MAX} puntos · nivel ${nivel}</span>
+    <span class="sum-ring" style="--cls:${c.color};--p:${orden.length / PUNTOS_MAX * 100}%"><b>${orden.length}</b><small>/${PUNTOS_MAX}</small></span>
+    <span class="sum-who"><span class="sum-class" style="--cls:${c.color}">${c.nombre}</span><small>nivel ${nivel}</small></span>
     <span class="sum-split">${reparto}</span>`;
+  document.querySelectorAll(".sum-tree").forEach(b => b.onclick = () => { arbolMovil = Number(b.dataset.a); pintarResumen(); pintarArboles(); });
 }
 
 function pintarArboles() {
@@ -148,8 +156,9 @@ function pintarArboles() {
     b.className = "tree-tab";
     b.setAttribute("role", "tab");
     b.setAttribute("aria-selected", String(a === arbolMovil));
-    b.innerHTML = `${n} <b>${puntosArbol(a)}</b>`;
-    b.addEventListener("click", () => { arbolMovil = a; pintarArboles(); });
+    const arbolTab = claseActual().arboles.find(x => x[0] === n);
+    b.innerHTML = `${iconoTalento({ icono: arbolTab ? arbolTab[2] : null })}<span>${n}</span> <b>${puntosArbol(a)}</b>`;
+    b.addEventListener("click", () => { arbolMovil = a; pintarResumen(); pintarArboles(); });
     tabs.appendChild(b);
   });
 
@@ -158,7 +167,9 @@ function pintarArboles() {
   nombres.forEach((n, a) => {
     const arbol = document.createElement("div");
     arbol.className = "tree-box" + (a === arbolMovil ? " active" : "");
-    arbol.innerHTML = `<h3>${n} <span>${puntosArbol(a)} puntos</span></h3>`;
+    const datosArbol = claseActual().arboles.find(x => x[0] === n);
+    if (datosArbol) arbol.style.setProperty("--bg-icon", `url(${ICONOS_URL}${datosArbol[2]}.jpg)`);
+    arbol.innerHTML = `<h3>${datosArbol ? iconoTalento({ icono: datosArbol[2] }) : ""}<span class="tb-name">${n}</span><span>${puntosArbol(a)} puntos</span></h3>`;
 
     for (let fila = 1; fila <= 7; fila++) {
       const filaDiv = document.createElement("div");
