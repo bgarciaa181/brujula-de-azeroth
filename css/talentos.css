@@ -217,3 +217,17 @@
 .bb-txt small { color: var(--suave); font-size: .78rem; }
 .bb-meta { position: absolute; top: -8px; left: 10px; font-style: normal; font-size: .64rem; font-weight: 700; padding: 1px 8px; border-radius: 999px; background: #ff7a3d; color: #141826; }
 .bb-go { font-size: .78rem; font-weight: 700; color: var(--oro-claro); }
+
+/* Arreglo: con 4 columnas los 3 árboles solo caben juntos en pantallas anchas.
+   En pantallas medianas se ve un árbol cada vez, con pestañas (como en el móvil). */
+.t-row { grid-template-columns: repeat(4, minmax(0, 64px)); column-gap: 6px; }
+.talent { width: auto; min-width: 0; }
+.t-name { max-width: 100%; overflow-wrap: anywhere; }
+@media (max-width: 1299px) {
+  .tree-tabs { display: flex; }
+  .trees { grid-template-columns: minmax(0, 1fr); }
+  .tree-box { display: none; }
+  .tree-box.active { display: grid; }
+  .t-row { grid-template-columns: repeat(4, minmax(0, 84px)); column-gap: 10px; }
+}
+@media (max-width: 420px) { .t-row { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 4px; } }
