@@ -1570,3 +1570,88 @@ button.cta.ghost { border: 1px solid var(--oro-osc); }
 .camp div { display: grid; gap: 2px; line-height: 1.25; }
 .camp small { color: var(--suave); font-size: .78rem; }
 .camp em { font-style: normal; font-size: .72rem; color: #f0a04b; }
+
+/* ---------- Profesiones: asistente ---------- */
+.eo-classes { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; }
+.eo-class { display: grid; justify-items: center; gap: 4px; padding: 8px 4px; border-radius: 12px; border: 1px solid var(--linea); background: var(--panel); color: var(--suave); font: inherit; font-size: .78rem; cursor: pointer; }
+.eo-class .sigil { width: 40px; height: 40px; filter: grayscale(.6); }
+.eo-class[aria-pressed="true"] { border-color: var(--cls); color: var(--texto); background: color-mix(in srgb, var(--cls) 14%, var(--panel)); }
+.eo-class[aria-pressed="true"] .sigil { filter: none; box-shadow: 0 0 0 2px var(--cls), 0 0 0 3px #000, 0 0 14px color-mix(in srgb, var(--cls) 60%, transparent); }
+.eo-goals { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.eo-goals .bp-mode { flex-direction: column; text-align: center; gap: 4px; }
+@media (max-width: 620px) { .eo-goals { grid-template-columns: repeat(3, minmax(0, 1fr)); } .eo-goals .bp-mode b { font-size: .85rem; } }
+.eo-result { display: grid; gap: 8px; margin-top: 16px; }
+.eo-card { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; padding: 18px; border-radius: 16px; border: 1px solid var(--oro); background: radial-gradient(circle at 0 50%, color-mix(in srgb, var(--cls) 22%, transparent), transparent 55%), var(--panel); }
+@media (prefers-reduced-motion: no-preference) { .eo-card { animation: rl-pop .4s ease-out; } }
+.eo-pair { display: flex; align-items: center; gap: 8px; }
+.eo-pair .wow-icon.xl { width: 72px; height: 72px; box-shadow: 0 0 0 2px var(--oro), 0 0 0 3px #000, 0 0 18px rgba(214, 176, 106, .4); }
+.eo-pair i { font-style: normal; font-size: 1.6rem; color: var(--oro); }
+.eo-txt { flex: 1; min-width: 220px; display: grid; gap: 6px; }
+.eo-txt small { color: var(--cls); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; }
+.eo-txt h3 { font-size: 1.6rem; color: var(--oro-claro); line-height: 1.1; }
+.eo-txt p b { color: var(--texto); }
+.eo-txt ul { margin: 0; padding-left: 18px; color: var(--suave); font-size: .86rem; }
+.eo-alt { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 10px; background: var(--panel); border: 1px dashed var(--linea); color: var(--suave); font-size: .88rem; }
+.eo-alt .wow-icon.sm { width: 26px; height: 26px; }
+.eo-alt b { color: var(--texto); }
+
+/* Plan para tus personajes */
+.pa-list { display: grid; gap: 8px; }
+.pa-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px; border-radius: 14px; background: var(--panel); border: 1px solid var(--linea); border-left: 3px solid var(--cls); }
+.pa-row .to-who { flex: 1; min-width: 180px; }
+.pa-profs { display: flex; gap: 10px; }
+.pa-prof { display: grid; justify-items: center; gap: 2px; font-size: .74rem; color: var(--suave); width: 78px; text-align: center; }
+.pa-prof .wow-icon.lg { width: 44px; height: 44px; }
+.pa-use { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--oro); background: rgba(214, 176, 106, .12); color: var(--oro-claro); font: inherit; font-weight: 700; cursor: pointer; }
+.pa-tag { font-style: normal; font-size: .75rem; color: #6fd17a; }
+.pa-sum { display: grid; gap: 6px; margin-top: 12px; padding: 14px; border-radius: 12px; background: rgba(214, 176, 106, .08); border: 1px solid var(--oro-osc); }
+.pa-sum b { font-family: var(--font-display); font-size: 1.5rem; color: var(--oro-claro); }
+.pa-sum span { color: var(--suave); }
+.pa-sum .wow-icon.sm { width: 22px; height: 22px; vertical-align: middle; }
+
+/* Preguntas */
+.faq { display: grid; gap: 8px; }
+.faq-item { border-radius: 12px; background: var(--panel); border: 1px solid var(--linea); }
+.faq-item summary { display: flex; align-items: center; gap: 12px; padding: 10px 14px; cursor: pointer; list-style: none; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: "+"; margin-left: auto; font-size: 1.4rem; color: var(--oro); }
+.faq-item[open] summary::after { content: "−"; }
+.faq-item[open] { border-color: var(--oro-osc); }
+.faq-item .wow-icon.lg { width: 36px; height: 36px; flex: none; }
+.faq-item p { padding: 0 14px 14px 62px; color: var(--suave); }
+
+/* ---------- Menú como barra de habilidades del juego ---------- */
+.abar { flex: 1; min-width: 0; display: flex; align-items: flex-end; position: relative; }
+.abar .site-nav {
+  gap: 4px; padding: 6px 8px 4px; border-radius: 10px;
+  background: linear-gradient(180deg, #2a2620 0%, #17140f 55%, #0d0b08 100%);
+  border: 1px solid #5b4a2c; box-shadow: inset 0 1px 0 rgba(255, 230, 170, .15), inset 0 -2px 0 rgba(0, 0, 0, .6), 0 4px 14px rgba(0, 0, 0, .5);
+}
+.abar .site-link { padding: 0; gap: 2px; border: 0; background: none; border-radius: 0; }
+.slot { position: relative; display: block; width: 46px; height: 46px; padding: 3px; border-radius: 6px;
+  background: linear-gradient(145deg, #3d3426, #0e0c09); box-shadow: inset 0 0 0 1px #000, inset 0 0 0 2px #6d5a36, 0 1px 0 rgba(255, 255, 255, .06); }
+.slot .wow-icon.sm { width: 40px; height: 40px; border-radius: 4px; box-shadow: inset 0 0 6px rgba(0, 0, 0, .8); filter: grayscale(.45) brightness(.85); }
+.slot kbd { position: absolute; top: 2px; right: 4px; font: 700 .68rem/1 var(--font-body); color: #e8e3d4; text-shadow: 0 0 2px #000, 1px 1px 0 #000; pointer-events: none; }
+.slot-name { font-size: .68rem; color: var(--suave); white-space: nowrap; }
+.site-link:hover .slot .wow-icon { filter: brightness(1.2); transform: none; }
+.site-link:hover .slot { box-shadow: inset 0 0 0 1px #000, inset 0 0 0 2px #e8c25a, 0 0 10px rgba(232, 194, 90, .45); }
+.site-link:active .slot, .site-link.pulsado .slot { transform: translateY(1px); }
+.site-link:active .slot .wow-icon, .site-link.pulsado .slot .wow-icon { filter: brightness(.6); }
+.site-link.active { background: none; border: 0; }
+.site-link.active .slot { box-shadow: inset 0 0 0 1px #000, inset 0 0 0 2px #ffd56b, 0 0 14px rgba(255, 213, 107, .7); }
+.site-link.active .slot .wow-icon { filter: none; box-shadow: inset 0 0 8px rgba(255, 220, 120, .6); }
+@media (prefers-reduced-motion: no-preference) {
+  .site-link.active .slot::after { content: ""; position: absolute; inset: 3px; border-radius: 4px; pointer-events: none;
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .35) 45%, transparent 60%); background-size: 250% 100%; animation: brillo 3.2s ease-in-out infinite; }
+  @keyframes brillo { 0% { background-position: 120% 0; } 60%, 100% { background-position: -120% 0; } }
+}
+.site-link.active .slot-name { color: var(--oro-claro); }
+.abar-dragon { flex: none; width: 78px; height: 58px; margin: 0 -14px 0 -6px; z-index: 1; filter: drop-shadow(0 3px 4px rgba(0, 0, 0, .7)); }
+.abar-dragon.der { transform: scaleX(-1); margin: 0 -6px 0 -14px; }
+@media (max-width: 1100px) { .abar-dragon { display: none; } }
+@media (max-width: 640px) {
+  .slot { width: 40px; height: 40px; }
+  .slot .wow-icon.sm { width: 34px; height: 34px; }
+  .slot-name { font-size: .62rem; }
+  .abar .site-nav { padding: 5px 6px 3px; }
+}

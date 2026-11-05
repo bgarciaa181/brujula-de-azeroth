@@ -496,3 +496,29 @@ const CAMPAMENTO = [
 const FUEGOS = [["Básico", 3], ["Oficial", 5], ["Experto", 10]];
 // Profesiones de fabricación que dan puntos de Legado (a 150, 225 y 300). Cuentan para toda la cuenta.
 const OFICIOS_LEGADO = ["Alquimia", "Herrería", "Encantamiento", "Ingeniería", "Peletería", "Sastrería"];
+
+// ---------- ¿QUÉ PROFESIONES ME COJO? ----------
+// Tipo de armadura de cada clase: así sabemos qué profesión le hace su equipo
+const ARMADURA = { guerrero: "placas", paladin: "placas", cazador: "cuero", picaro: "cuero", chaman: "cuero", druida: "cuero", mago: "tela", brujo: "tela", sacerdote: "tela" };
+// [profesión 1, profesión 2, para qué, por qué (corto)]
+const PAREJAS_META = {
+  equipo: {
+    placas: ["Minería", "Herrería", "Te fabricas tus armas y tus placas", "La minería te da el metal gratis. Y tu campamento da Fuerza y poder de ataque."],
+    cuero: ["Desuello", "Peletería", "Te fabricas tu cuero y tu malla", "Despellejas lo que ya matas. Y la tienda de campaña da más experiencia a tu grupo."],
+    tela: ["Sastrería", "Encantamiento", "Te haces tu ropa y encantas tu equipo", "La tela cae sola de los enemigos y lo que no uses lo desencantas. Además, bolsas para todos."]
+  },
+  pve: ["Ingeniería", "Alquimia", "Para raids", "Pociones y frascos para aguantar más, y aparatos útiles."],
+  pvp: ["Ingeniería", "Minería", "Para PvP", "Granadas, capa de escape y aparatos que solo puede usar un ingeniero. La minería le da el metal."],
+  oro: ["Herboristería", "Alquimia", "Para ganar oro", "Pociones y frascos siempre se venden, sobre todo los días de raid. Y las hierbas raras valen mucho."],
+  subir: ["Desuello", "Herboristería", "Para subir rápido y con oro", "Las dos recogen mientras subes sin gastar nada. A 60 cambias una por una de fabricación."]
+};
+// Preguntas que se hace todo el mundo
+const PREGUNTAS_OFICIOS = [
+  ["inv_misc_note_01", "¿Cuántas profesiones puedo tener?", "Dos principales. Además Cocina, Primeros auxilios y Pesca, que no ocupan hueco: cógelas siempre."],
+  ["spell_holy_dispelmagic", "¿Puedo cambiar de profesión?", "Sí, olvidándola en el libro de profesiones. Pierdes lo que habías subido. Las de recolección se cambian sin perder recetas."],
+  ["inv_letter_15", "¿Puedo pasar lo que fabrico a mis otros personajes?", "Sí, por correo, si son de la misma facción y el mismo modo. Ojo: lo que se fabrica con recetas de Merchant's Favor se liga al recogerlo y no se puede pasar."],
+  ["inv_misc_gem_sapphire_01", "¿Qué gano subiendo profesiones?", "Puntos de Legado para toda la cuenta (a 150, 225 y 300 en las de fabricación) y objetos de campamento con bonus."],
+  ["trade_engineering", "¿Merece la pena Ingeniería?", "Para PvP sí. Pero casi todo lo que hace solo lo puede usar un ingeniero, así que no sirve para tus otros personajes."],
+  ["inv_misc_coin_01", "¿Cuál da más oro?", "Mientras subes, Desuello. A nivel 60, Encantamiento y Alquimia, con Herboristería para conseguir las hierbas."],
+  ["inv_misc_book_09", "¿Hay Joyería o Inscripción?", "No en el lanzamiento. Blizzard tiene prevista una actualización de profesiones y Legado para el verano de 2027."]
+];

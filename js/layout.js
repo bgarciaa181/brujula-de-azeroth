@@ -10,7 +10,7 @@ const PAGINAS = [
   ["talentos.html", "Talentos", "ability_marksmanship"],
   ["mascotas.html", "Mascotas", "ability_hunter_beasttaming"],
   ["pve-pvp.html", "PvE y PvP", "achievement_pvp_p_250k"],
-  ["oficios.html", "Oficios", "trade_blacksmithing"],
+  ["oficios.html", "Profesiones", "trade_blacksmithing"],
   ["meta.html", "Meta", "achievement_bg_winwsg"],
   ["juegos.html", "Juegos", "inv_misc_dice_01"],
   ["comunidad.html", "Comunidad", "inv_misc_note_01"]
@@ -22,7 +22,7 @@ const SECCION_PAGINA = {
   clases: "clases.html", test: "clases.html", personaje: "clases.html", comparador: "clases.html", razas: "clases.html", basico: "clases.html",
   mascotas: "mascotas.html", mejores: "mascotas.html",
   modo: "pve-pvp.html", raids: "pve-pvp.html", calendario: "pve-pvp.html",
-  profesiones: "oficios.html", cual: "oficios.html", "tus-oficios": "oficios.html", campamento: "oficios.html",
+  profesiones: "oficios.html", cual: "oficios.html", "elige-oficio": "oficios.html", "plan-alts": "oficios.html", preguntas: "oficios.html", "tus-oficios": "oficios.html", campamento: "oficios.html",
   comunidad: "comunidad.html", noticias: "comunidad.html",
   elige: "meta.html", "meta-pvp": "meta.html", "meta-pve": "meta.html", "meta-clases": "meta.html",
   juego: "juegos.html", ruleta: "juegos.html", nombres: "juegos.html"
@@ -122,6 +122,15 @@ function bloquearFondo(si) {
 }
 
 // ---------- MENÚ DE ARRIBA ----------
+// Dragón plateado de los lados de la barra (dibujo propio)
+const DRAGON_SVG = `<svg class="abar-dragon" viewBox="0 0 120 90" aria-hidden="true">
+  <defs><linearGradient id="plata" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f7fb"/><stop offset=".45" stop-color="#a9b3c2"/><stop offset="1" stop-color="#4a5262"/></linearGradient></defs>
+  <path fill="url(#plata)" stroke="#1b1f2b" stroke-width="1.5" d="M116 86 C100 70 92 58 88 44 C80 50 70 52 60 50 C66 44 70 38 70 30 C60 36 48 38 36 34 C44 28 50 20 50 10 C40 18 28 20 14 16 C30 6 52 2 70 6 C84 9 96 18 104 30 C110 40 114 56 116 86 Z"/>
+  <path fill="none" stroke="#1b1f2b" stroke-width="1.2" opacity=".55" d="M100 34 C88 30 76 26 62 24 M104 46 C92 40 80 38 66 38 M96 22 C84 16 70 14 54 14"/>
+  <path fill="url(#plata)" stroke="#1b1f2b" stroke-width="1.5" d="M96 60 C88 62 80 68 76 78 C84 74 92 74 98 76 Z"/>
+  <circle cx="58" cy="11" r="2" fill="#ffcf5a"/>
+</svg>`;
+
 function pintarCabecera() {
   const actual = paginaActual();
   const cabecera = document.getElementById("site-header");
@@ -133,12 +142,16 @@ function pintarCabecera() {
         <img src="img/icono.svg" alt="" width="34" height="34">
         <span>Brújula<br>de Azeroth</span>
       </a>
-      <nav class="site-nav" aria-label="Páginas">
-        ${PAGINAS.map(([archivo, nombre, icono]) => `
-          <a href="${archivo}" class="site-link${archivo === actual ? " active" : ""}"${archivo === actual ? ' aria-current="page"' : ""}>
-            ${iconoWow(icono, "sm")}<span>${nombre}</span>
-          </a>`).join("")}
-      </nav>
+      <div class="abar">
+        ${DRAGON_SVG}
+        <nav class="site-nav" aria-label="Páginas">
+          ${PAGINAS.map(([archivo, nombre, icono], i) => `
+            <a href="${archivo}" class="site-link${archivo === actual ? " active" : ""}"${archivo === actual ? ' aria-current="page"' : ""} title="${nombre} (tecla ${(i + 1) % 10})">
+              <span class="slot">${iconoWow(icono, "sm")}<kbd>${(i + 1) % 10}</kbd></span><span class="slot-name">${nombre}</span>
+            </a>`).join("")}
+        </nav>
+        ${DRAGON_SVG.replace('class="abar-dragon"', 'class="abar-dragon der"')}
+      </div>
       <button type="button" class="pj-btn" id="pj-open" aria-label="Mis personajes"></button>
       <button type="button" class="search-btn" id="search-open" aria-label="Buscar">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
@@ -149,6 +162,21 @@ function pintarCabecera() {
   const activo = cabecera.querySelector(".site-link.active");
   if (activo) activo.scrollIntoView({ block: "nearest", inline: "center" });
 }
+
+// Atajos de teclado como en el juego: del 1 al 0 cambias de página
+document.addEventListener("keydown", e => {
+  if (e.ctrlKey || e.altKey || e.metaKey || e.repeat) return;
+  const t = e.target;
+  if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+  if (document.querySelector(".search-layer:not([hidden]), .pj-layer:not([hidden]), dialog[open]")) return;
+  if (!/^[0-9]$/.test(e.key)) return;
+  const i = e.key === "0" ? 9 : Number(e.key) - 1;
+  if (PAGINAS[i]) {
+    const slot = document.querySelectorAll(".site-link")[i];
+    if (slot) slot.classList.add("pulsado");
+    setTimeout(() => { location.href = PAGINAS[i][0]; }, 120);
+  }
+});
 
 // ---------- PIE DE PÁGINA ----------
 function pintarPie() {

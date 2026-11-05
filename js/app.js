@@ -1380,6 +1380,116 @@ function pintarRelojes() {
   }).join("");
 }
 
+// ---------- PROFESIONES: ASISTENTE, PLAN DE PERSONAJES Y PREGUNTAS ----------
+const asistente = { clase: null, meta: "equipo" };
+const METAS_OFICIO = [
+  ["equipo", "Fabricarme mi equipo", "inv_hammer_04"],
+  ["pve", "Raids (PvE)", "achievement_dungeon_classicdungeonmaster"],
+  ["pvp", "PvP", "achievement_pvp_p_250k"],
+  ["oro", "Ganar oro", "inv_misc_coin_01"],
+  ["subir", "Subir rápido", "inv_misc_map_01"]
+];
+
+function parejaPara(claseId, meta) {
+  return meta === "equipo" ? PAREJAS_META.equipo[ARMADURA[claseId]] : PAREJAS_META[meta];
+}
+
+function pintarAsistenteOficios() {
+  const p = leerPerfil();
+  if (!asistente.clase) asistente.clase = (p && p.clase) || "guerrero";
+  $("eo-classes").innerHTML = CLASSES.map(c =>
+    `<button type="button" class="eo-class" data-c="${c.id}" aria-pressed="${asistente.clase === c.id}" style="--cls:${c.color}" title="${c.nombre}">${iconoClase(c)}<span>${c.nombre}</span></button>`).join("");
+  $("eo-goals").innerHTML = METAS_OFICIO.map(([id, t, ic]) =>
+    `<button type="button" class="bp-mode" data-m="${id}" aria-pressed="${asistente.meta === id}">${iconoWow(ic, "lg")}<span><b>${t}</b></span></button>`).join("");
+  $("eo-classes").querySelectorAll("button").forEach(b => b.onclick = () => { asistente.clase = b.dataset.c; pintarAsistenteOficios(); });
+  $("eo-goals").querySelectorAll("button").forEach(b => b.onclick = () => { asistente.meta = b.dataset.m; pintarAsistenteOficios(); });
+
+  const c = CLASSES.find(x => x.id === asistente.clase);
+  const [a, b, para, porque] = parejaPara(c.id, asistente.meta);
+  // Otra opción: la de su equipo si ha elegido otra cosa, o la de oro si ha elegido equipo
+  const otra = asistente.meta === "equipo" ? PAREJAS_META.oro : PAREJAS_META.equipo[ARMADURA[c.id]];
+  const avisos = [];
+  if ([a, b].includes("Ingeniería")) avisos.push("Casi todo lo de Ingeniería solo lo puede usar un ingeniero.");
+  if ([a, b].includes("Desuello") && [a, b].includes("Herboristería")) avisos.push("A nivel 60 cambia una de las dos por una de fabricación.");
+  avisos.push("Coge también Cocina, Primeros auxilios y Pesca: no ocupan hueco.");
+
+  $("eo-result").innerHTML = `
+    <div class="eo-card" style="--cls:${c.color}">
+      <div class="eo-pair">${iconoOficio(a)}<i>+</i>${iconoOficio(b)}</div>
+      <div class="eo-txt">
+        <small>${c.nombre} · ${para}</small>
+        <h3>${a} + ${b}</h3>
+        <p><b>¿Por qué?</b> ${porque}</p>
+        <ul>${avisos.map(x => `<li>${x}</li>`).join("")}</ul>
+      </div>
+    </div>
+    <div class="eo-alt">${iconoOficio(otra[0], "sm")}${iconoOficio(otra[1], "sm")}<span>Otra opción: <b>${otra[0]} + ${otra[1]}</b> · ${otra[2].toLowerCase()}</span></div>`;
+}
+
+// Reparte profesiones entre tus personajes para cubrir el máximo posible
+function planAlts(lista) {
+  const cubiertas = new Set();
+  const plan = [];
+  const candidatas = p => {
+    const propia = PAREJAS_META.equipo[ARMADURA[p.clase]];
+    return [propia, PAREJAS_META.oro, PAREJAS_META.equipo.placas, PAREJAS_META.equipo.cuero, PAREJAS_META.equipo.tela, PAREJAS_META.pvp, PAREJAS_META.pve]
+      .map(x => [x[0], x[1], x === propia]);
+  };
+  // Primero los que ya tienen profesiones puestas
+  const orden = lista.slice().sort((x, y) => (y.profs || []).length - (x.profs || []).length);
+  for (const p of orden) {
+    if ((p.profs || []).length === 2) {
+      p.profs.forEach(x => cubiertas.add(x.n));
+      plan.push([p, p.profs.map(x => x.n), true]);
+      continue;
+    }
+    let mejor = null, nuevas = -1;
+    for (const [x, y, propia] of candidatas(p)) {
+      const n = [x, y].filter(z => !cubiertas.has(z)).length + (propia ? 0.5 : 0);
+      if (n > nuevas) { nuevas = n; mejor = [x, y]; }
+    }
+    mejor.forEach(z => cubiertas.add(z));
+    plan.push([p, mejor, false]);
+  }
+  return { plan, cubiertas };
+}
+
+function pintarPlanAlts() {
+  const lista = leerPersonajes();
+  if (!lista.length) {
+    $("pa-plan").innerHTML = `<div class="to-empty">${iconoWow("achievement_character_human_male", "xl")}<p>Crea tus personajes (puedes tener varios) y te decimos qué profesiones dar a cada uno.</p><a class="cta" href="clases.html#personaje">Crear personaje</a></div>`;
+    return;
+  }
+  const { plan, cubiertas } = planAlts(lista);
+  const faltan = TODAS_PRINCIPALES().filter(n => !cubiertas.has(n));
+  $("pa-plan").innerHTML = `
+    <div class="pa-list">${plan.map(([p, profs, yaTiene]) => {
+      const c = CLASSES.find(x => x.id === p.clase);
+      return `<div class="pa-row" style="--cls:${c.color}">
+        <div class="to-who">${iconoRaza(p.raza, p.genero || "male", "lg")}${iconoClase(c)}<span><b>${nombreCompleto(p)}</b><small style="color:${c.color}">${c.nombre}</small></span></div>
+        <div class="pa-profs">${profs.map(n => `<span class="pa-prof">${iconoOficio(n, "lg")}<small>${n}</small></span>`).join("")}</div>
+        ${yaTiene ? '<em class="pa-tag">ya las tiene</em>' : `<button type="button" class="pa-use" data-id="${p.id}" data-p="${profs.join("|")}">Ponérselas</button>`}
+      </div>`;
+    }).join("")}</div>
+    <div class="pa-sum"><b>${cubiertas.size} / 9</b> profesiones cubiertas
+      ${faltan.length ? `<span>Te falta: ${faltan.map(n => `${iconoOficio(n, "sm")} ${n}`).join(", ")}.
+        ${faltan.includes("Ingeniería") ? "Consejo: a nivel 60, cambia una de recolección por Ingeniería." : "Con otro personaje lo tendrías todo."}</span>` : "<span>¡Lo tienes todo cubierto!</span>"}
+    </div>`;
+  $("pa-plan").querySelectorAll(".pa-use").forEach(b => b.onclick = () => {
+    const todos = leerPersonajes();
+    const p = todos.find(x => x.id === b.dataset.id);
+    p.profs = b.dataset.p.split("|").map(n => ({ n, s: 1 }));
+    guardarPersonajes(todos);
+    pintarPlanAlts();
+    if ($("to-chars")) pintarTusOficios();
+  });
+}
+
+function pintarPreguntasOficios() {
+  $("faq").innerHTML = PREGUNTAS_OFICIOS.map(([ic, q, r]) =>
+    `<details class="faq-item"><summary>${iconoWow(ic, "lg")}<b>${q}</b></summary><p>${r}</p></details>`).join("");
+}
+
 // ---------- OFICIOS: TUS PROFESIONES, TALLER Y LEGADO ----------
 const TODAS_PRINCIPALES = () => PROFESIONES.principales.map(p => p[0]);
 
@@ -1464,8 +1574,9 @@ function pintarTusOficios() {
     total += hechos;
     return `<div class="to-l">${iconoOficio(n, "sm")}<b>${n}</b><span>${[150, 225, 300].map(m => `<u class="${max >= m ? "ok" : ""}">★</u>`).join("")}</span></div>`;
   }).join("") + `<div class="to-total"><b>${total}</b> / 18 puntos de Legado por profesiones</div>`;
-  // El campamento marca los objetos que puedes poner tú
+  // El campamento y el plan se actualizan con tus profesiones
   if ($("camp-grid")) pintarCampamento();
+  if ($("pa-plan") && typeof pintarPlanAlts === "function") pintarPlanAlts();
 }
 
 function pintarCampamento() {
@@ -1781,7 +1892,7 @@ const EXPLORA = [
   ["talentos.html", "Talentos", "ability_marksmanship", "Calculadora con orden por nivel", "#d6b06a"],
   ["mascotas.html", "Mascotas", "ability_hunter_beasttaming", "Raras con minimapa y habilidades", "#AAD372"],
   ["pve-pvp.html", "PvE y PvP", "achievement_pvp_p_250k", "Mazmorras, raids y campos de batalla", "#e0634f"],
-  ["oficios.html", "Oficios", "trade_blacksmithing", "Las 13 profesiones y cuáles combinar", "#b07ce8"],
+  ["oficios.html", "Profesiones", "trade_blacksmithing", "Cuáles coger y por qué", "#b07ce8"],
   ["meta.html", "Meta", "achievement_bg_winwsg", "Las specs más fuertes en PvE y PvP", "#ff7a3d"],
   ["juegos.html", "Juegos", "inv_misc_dice_01", "Minijuego, ruleta y nombres", "#f0a04b"],
   ["comunidad.html", "Comunidad", "inv_misc_note_01", "Foro, comentarios y noticias", "#3FC7EB"]
@@ -1852,6 +1963,9 @@ if ($("races-list")) pintarRazas();
 if ($("of-podium")) pintarCualOficio();
 if ($("to-chars")) pintarTusOficios();
 if ($("camp-grid")) pintarCampamento();
+if ($("eo-result")) pintarAsistenteOficios();
+if ($("pa-plan")) pintarPlanAlts();
+if ($("faq")) pintarPreguntasOficios();
 if ($("prof-main")) pintarProfesiones();
 if ($("timeline")) pintarCalendario();
 if ($("news-list")) cargarNoticias();

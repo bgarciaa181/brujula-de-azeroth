@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Profesiones · Brújula de Azeroth</title>
-<meta name="description" content="Las 13 profesiones de WoW Forever: recetas, recetas nuevas, rangos y parejas que van bien juntas.">
+<meta name="description" content="Qué profesiones coger en WoW Forever según tu clase y lo que buscas: equipo, PvE, PvP u oro. Plan para tus personajes, campamento y Legado.">
 <link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/oficios.html">
 <meta property="og:title" content="Profesiones · Brújula de Azeroth">
-<meta property="og:description" content="Las 13 profesiones de WoW Forever: recetas, recetas nuevas, rangos y parejas que van bien juntas.">
+<meta property="og:description" content="Qué profesiones coger en WoW Forever según tu clase y lo que buscas: equipo, PvE, PvP u oro. Plan para tus personajes, campamento y Legado.">
 <meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
 <meta property="og:url" content="https://bgarciaa181.github.io/brujula-de-azeroth/oficios.html">
 <meta property="og:type" content="website">
@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=27">
+<link rel="stylesheet" href="css/estilos.css?v=28">
 </head>
 <body>
 <header id="site-header"></header>
@@ -28,15 +28,43 @@
   <div class="wrap page-hero-in">
     <span class="wow-icon xl page-hero-icon" aria-hidden="true"><img src="https://render.worldofwarcraft.com/us/icons/56/trade_blacksmithing.jpg" alt="" onerror="this.remove()"></span>
     <div>
-      <h1>Oficios</h1>
-      <p>Cuál te conviene para PvE, PvP, oro o subir de nivel.</p>
+      <h1>Profesiones</h1>
+      <p>Cuáles coger y por qué, en tres toques.</p>
     </div>
   </div>
 </div>
 
 <main>
   <div class="wrap">
-    <section id="tus-oficios" data-tab="Tus profesiones" data-icon="trade_blacksmithing">
+    <section id="elige-oficio" data-tab="¿Cuáles cojo?" data-icon="inv_misc_coin_01">
+      <div class="section-head">
+        <h2>¿Qué profesiones me cojo?</h2>
+        <p>Dos toques y te lo decimos, con el porqué.</p>
+      </div>
+      <h3 class="el-step"><span>1</span> Tu clase</h3>
+      <div class="eo-classes" id="eo-classes" role="group" aria-label="Clase"></div>
+      <h3 class="el-step"><span>2</span> ¿Qué quieres?</h3>
+      <div class="bp-modes eo-goals" id="eo-goals" role="group" aria-label="Objetivo"></div>
+      <div class="eo-result" id="eo-result" aria-live="polite"></div>
+    </section>
+
+    <section id="plan-alts" data-tab="Mis personajes" data-icon="achievement_character_human_male">
+      <div class="section-head">
+        <h2>Plan para tus personajes</h2>
+        <p>Reparte las profesiones entre tus personajes para fabricaros todo entre vosotros.</p>
+      </div>
+      <div id="pa-plan"></div>
+    </section>
+
+    <section id="preguntas" data-tab="Preguntas" data-icon="inv_misc_note_01">
+      <div class="section-head">
+        <h2>Lo que pregunta todo el mundo</h2>
+        <p>Toca una pregunta.</p>
+      </div>
+      <div class="faq" id="faq"></div>
+    </section>
+
+    <section id="tus-oficios" data-tab="Subir las mías" data-icon="trade_blacksmithing">
       <div class="section-head">
         <h2>Tus profesiones</h2>
         <p>Ponle profesiones a cada personaje y mira qué te falta para fabricarte todo.</p>
@@ -60,9 +88,9 @@
       <p class="bp-note">Objeto de nivel 1 a 20 de habilidad, nivel 2 a 140 y nivel 3 a 300 (estos dos necesitan plano). Cada jugador pone 1 objeto por hora. El bonus de cada objeto no se suma con el de la clase que da lo mismo. Datos de la beta según <a href="https://mmonster.co/wow-forever/guides/professions/camping" target="_blank" rel="noopener">MmonsteR</a>.</p>
     </section>
 
-    <section id="cual" data-tab="¿Cuál me cojo?" data-icon="inv_misc_coin_01">
+    <section id="cual" data-tab="Ranking" data-icon="inv_misc_coin_01">
       <div class="section-head">
-        <h2>¿Cuál me cojo?</h2>
+        <h2>Ranking de profesiones</h2>
         <p>Toca para qué la quieres.</p>
       </div>
       <div class="bp-modes of-modes" id="of-modes" role="group" aria-label="Para qué la quieres"></div>
@@ -101,11 +129,11 @@
 
 <div class="achievement" id="achievement" hidden></div>
 
-<script src="js/datos.js?v=27"></script>
-<script src="js/talentos-datos.js?v=27"></script>
-<script src="js/talentos-es.js?v=27"></script>
-<script src="js/meta-datos.js?v=27"></script>
-<script src="js/layout.js?v=27"></script>
-<script src="js/app.js?v=27"></script>
+<script src="js/datos.js?v=28"></script>
+<script src="js/talentos-datos.js?v=28"></script>
+<script src="js/talentos-es.js?v=28"></script>
+<script src="js/meta-datos.js?v=28"></script>
+<script src="js/layout.js?v=28"></script>
+<script src="js/app.js?v=28"></script>
 </body>
 </html>
