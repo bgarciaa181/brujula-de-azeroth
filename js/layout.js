@@ -20,7 +20,7 @@ const PAGINAS = [
 const SECCION_PAGINA = {
   diario: "aventura.html", mapa: "aventura.html", checklist: "aventura.html",
   clases: "clases.html", test: "clases.html", personaje: "clases.html", comparador: "clases.html", razas: "clases.html", basico: "clases.html",
-  mascotas: "mascotas.html", mejores: "mascotas.html",
+  mascotas: "mascotas.html", mejores: "mascotas.html", aspectos: "mascotas.html",
   modo: "pve-pvp.html", raids: "pve-pvp.html", calendario: "pve-pvp.html",
   profesiones: "oficios.html", cual: "oficios.html", "elige-oficio": "oficios.html", "plan-alts": "oficios.html", preguntas: "oficios.html", "tus-oficios": "oficios.html", campamento: "oficios.html",
   comunidad: "comunidad.html", aportar: "comunidad.html", noticias: "comunidad.html",

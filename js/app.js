@@ -1270,6 +1270,81 @@ function pintarElige() {
   $("el-sources").innerHTML = Object.values(RAZA_FUENTES).map(([n, u, f]) => `<a href="${u}" target="_blank" rel="noopener">${n}</a> (${f})`).join(" · ");
 }
 
+// ---------- MASCOTAS: TODAS LAS BESTIAS CON FOTO ----------
+// familia "Todas" = mezcla todas. orden: "nivel" (las más cercanas a tu nivel primero), "raid", "pvp" o "solo"
+const bestiario = { familia: "Todas", nivel: 60, texto: "", orden: "nivel", abierto: null, mostrar: 48 };
+const ORDEN_BESTIAS = [["nivel", "Cerca de mi nivel", "inv_misc_map_01"], ["raid", "Mejor para raids", "achievement_boss_onyxia"], ["pvp", "Mejor para PvP", "achievement_pvp_p_250k"], ["solo", "Mejor para subir solo", "ability_hunter_beasttaming"]];
+
+// Nota de la familia en ese modo (S=4 … D=0). Si la familia no sale en la lista, cuenta como floja.
+function notaFamilia(fam, modo) {
+  const x = (MASCOTA_META[modo] || []).find(m => m[0] === fam);
+  return x ? { letra: letraMedia(x[1]), puntos: puntosMeta(x[1]), txt: x[2] } : { letra: null, puntos: -1, txt: "" };
+}
+
+function pintarBestiario() {
+  const familias = ["Todas", ...Object.keys(BESTIARIO)];
+  $("be-fams").innerHTML = familias.map(f =>
+    `<button type="button" class="be-fam" data-f="${f}" aria-pressed="${bestiario.familia === f}">${f === "Todas" ? '<span class="pet-icon be-all">★</span>' : iconoFamilia(f)}<span>${f}</span></button>`).join("");
+  $("be-fams").querySelectorAll("button").forEach(b => b.onclick = () => { bestiario.familia = b.dataset.f; bestiario.abierto = null; bestiario.mostrar = 48; pintarBestiario(); });
+  $("be-orden").innerHTML = ORDEN_BESTIAS.map(([id, t, ic]) =>
+    `<button type="button" class="bp-mode" data-o="${id}" aria-pressed="${bestiario.orden === id}">${iconoWow(ic, "lg")}<span><b>${t}</b></span></button>`).join("");
+  $("be-orden").querySelectorAll("button").forEach(b => b.onclick = () => { bestiario.orden = b.dataset.o; bestiario.mostrar = 48; pintarBestiario(); });
+
+  // Cada aspecto se queda con la bestia de nivel más alto que puedes domar (la más cercana a tu nivel)
+  const txt = bestiario.texto.toLowerCase();
+  const fams = bestiario.familia === "Todas" ? Object.keys(BESTIARIO) : [bestiario.familia];
+  let lista = [];
+  for (const fam of fams) {
+    for (const [modelo, bestias] of BESTIARIO[fam]) {
+      const validas = bestias.filter(b => b[1] <= bestiario.nivel && (!txt || (b[0] + " " + b[3] + " " + fam).toLowerCase().includes(txt)));
+      if (!validas.length) continue;
+      const mejor = validas.reduce((a, b) => (b[1] > a[1] ? b : a));
+      lista.push({ fam, modelo, bestias: validas.sort((a, b) => b[1] - a[1]), mejor });
+    }
+  }
+  const modo = bestiario.orden === "nivel" ? null : bestiario.orden;
+  lista.sort((a, b) => {
+    if (modo) { const d = notaFamilia(b.fam, modo).puntos - notaFamilia(a.fam, modo).puntos; if (d) return d; }
+    return b.mejor[1] - a.mejor[1];
+  });
+  const total = lista.length;
+  $("be-count").textContent = `${total} aspectos · ${lista.reduce((a, x) => a + x.bestias.length, 0)} bestias que puedes domar a nivel ${bestiario.nivel}`;
+
+  $("be-grid").innerHTML = lista.slice(0, bestiario.mostrar).map(({ fam, modelo, bestias, mejor }, i) => {
+    const abierto = bestiario.abierto === modelo + fam;
+    const nota = modo ? notaFamilia(fam, modo) : null;
+    return `<div class="be-card${abierto ? " open" : ""}${i < 3 ? " top" : ""}">
+      <button type="button" class="be-pic" data-k="${modelo + fam}" aria-expanded="${abierto}">
+        <img src="${FOTO_MODELO(modelo)}" alt="${mejor[0]}" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'be-nofoto',textContent:'Sin foto'}))">
+        <span class="be-lv">nv ${mejor[1]}${mejor[2] !== mejor[1] ? "–" + mejor[2] : ""}</span>
+        ${nota && nota.letra ? `<span class="be-tier t-${nota.letra}" title="${nota.txt}">${nota.letra}</span>` : ""}
+        ${bestias.length > 1 ? `<span class="be-more">+${bestias.length - 1}</span>` : ""}
+        ${i < 3 ? `<span class="be-medal">${["🥇", "🥈", "🥉"][i]}</span>` : ""}
+      </button>
+      <b>${mejor[0]}</b>
+      <small>${iconoFamilia(fam)} ${fam} · ${mejor[3] || "—"}</small>
+      ${abierto ? `<ul class="be-list">${bestias.map(b => `<li><a href="https://www.wowhead.com/classic/npc=${b[4]}" target="_blank" rel="noopener">${b[0]}</a><span>nv ${b[1]}${b[2] !== b[1] ? "–" + b[2] : ""} · ${b[3] || "—"}</span></li>`).join("")}</ul>` : ""}
+    </div>`;
+  }).join("") + (total > bestiario.mostrar ? `<button type="button" class="cta ghost be-vermas" id="be-vermas">Ver ${Math.min(48, total - bestiario.mostrar)} más</button>` : "")
+    || '<p class="empty">No hay bestias con ese filtro.</p>';
+  $("be-grid").querySelectorAll(".be-pic").forEach(b => b.onclick = () => {
+    bestiario.abierto = bestiario.abierto === b.dataset.k ? null : b.dataset.k;
+    pintarBestiario();
+  });
+  const mas = $("be-vermas");
+  if (mas) mas.onclick = () => { bestiario.mostrar += 48; pintarBestiario(); };
+}
+
+function prepararBestiario() {
+  const p = leerPerfil();
+  if (p && p.clase === "cazador" && p.nivel) bestiario.nivel = Math.max(10, Math.min(60, p.nivel));
+  $("be-lvl").value = bestiario.nivel;
+  $("be-lvl-n").textContent = bestiario.nivel;
+  $("be-lvl").addEventListener("input", e => { bestiario.nivel = Number(e.target.value); $("be-lvl-n").textContent = bestiario.nivel; bestiario.mostrar = 48; pintarBestiario(); });
+  $("be-search").addEventListener("input", e => { bestiario.texto = e.target.value.trim(); bestiario.mostrar = 48; pintarBestiario(); });
+  pintarBestiario();
+}
+
 // ---------- MASCOTAS: LAS MEJORES A NIVEL 60 ----------
 const MODOS_MASCOTA = [
   ["raid", "Raids", "achievement_boss_onyxia", "Para hacer daño contra jefes"],
@@ -2013,6 +2088,7 @@ if ($("game")) nuevaRonda();
 if ($("raids-list")) pintarRaids();
 if ($("cmp-a")) prepararComparador();
 if ($("bp-podium")) pintarMejoresMascotas();
+if ($("be-grid")) prepararBestiario();
 if ($("pets")) pintarMascotas();
 if ($("dg-chart")) {
   try {
