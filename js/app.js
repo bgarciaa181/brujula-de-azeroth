@@ -799,7 +799,10 @@ function pintarMascotas() {
         <span class="pet-meta">${m[1]} · nivel ${m[2]} · ${m[3]}</span>
         <span class="pet-ability">${f[2]}: ${f[3].toLowerCase()} ${etiquetasUso(f)}</span>
         <p>${m[6]}</p>
-        <button type="button" class="pet-where" data-pet="${m[0]}" aria-expanded="false">Dónde está y habilidades</button>
+        <div class="pet-btns">
+          <button type="button" class="pet-where" data-pet="${m[0]}" aria-expanded="false">Dónde está y habilidades</button>
+          <a class="pet-look" href="https://wowforeverpets.com/pets/${m[0].toLowerCase().replace(/'/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}" target="_blank" rel="noopener" title="Abre su ficha con foto en wowforeverpets.com">👁 Ver cómo es</a>
+        </div>
       </div>
       <div class="pet-side">
         ${m[4] ? `<span class="pet-speed"><b>${m[4].toFixed(1)} s</b>por ataque</span>` : ""}
@@ -1640,6 +1643,30 @@ function pintarCualOficio() {
     ". Aún no hay precios reales de la subasta: se verán cuando salga el juego.";
 }
 
+// ---------- COMUNIDAD: APORTAR ----------
+// No hay servidor: abrimos la página de Reddit o de GitHub con el texto ya escrito
+const TIPOS_APORTE = [["raro", "Un raro o una mascota", "ability_hunter_beasttaming"], ["fallo", "Algo está mal", "spell_holy_dispelmagic"], ["consejo", "Un consejo", "inv_misc_note_01"], ["otro", "Otra cosa", "inv_letter_15"]];
+let tipoAporte = "raro";
+
+function prepararAportar() {
+  const pintarTipos = () => {
+    $("ap-types").innerHTML = TIPOS_APORTE.map(([id, t, ic]) =>
+      `<button type="button" class="bp-mode" data-t="${id}" aria-pressed="${tipoAporte === id}">${iconoWow(ic, "lg")}<span><b>${t}</b></span></button>`).join("");
+    $("ap-types").querySelectorAll("button").forEach(b => b.onclick = () => { tipoAporte = b.dataset.t; pintarTipos(); });
+  };
+  pintarTipos();
+  document.querySelectorAll(".ap-btn").forEach(b => b.onclick = () => {
+    const titulo = $("ap-title").value.trim(), texto = $("ap-text").value.trim();
+    if (!titulo || !texto) { $("ap-form").reportValidity(); return; }
+    const etiqueta = TIPOS_APORTE.find(x => x[0] === tipoAporte)[1];
+    const cuerpo = `${texto}\n\n(${etiqueta} · enviado desde Brújula de Azeroth)`;
+    const url = b.dataset.to === "reddit"
+      ? `https://www.reddit.com/r/WoWForeverEsp/submit?type=TEXT&title=${encodeURIComponent("[Aporte] " + titulo)}&text=${encodeURIComponent(cuerpo)}`
+      : `https://github.com/bgarciaa181/brujula-de-azeroth/discussions/new?category=announcements&title=${encodeURIComponent("[Aporte] " + titulo)}&body=${encodeURIComponent(cuerpo)}`;
+    window.open(url, "_blank", "noopener");
+  });
+}
+
 // ---------- PORTADA: TU PERSONAJE ----------
 // Si guardaste tu personaje, la portada te dice qué hacer a tu nivel
 function pintarMiPersonaje() {
@@ -1917,6 +1944,7 @@ if ($("hero-classes")) {
 }
 if ($("explore")) pintarExplora();
 if ($("mi-pj")) pintarMiPersonaje();
+if ($("ap-form")) prepararAportar();
 if ($("pregunta")) pintarPregunta();
 if ($("relojes")) { pintarRelojes(); setInterval(pintarRelojes, 1000); }
 if ($("mt-pvp")) pintarMeta();

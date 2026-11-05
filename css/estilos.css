@@ -1655,3 +1655,27 @@ button.cta.ghost { border: 1px solid var(--oro-osc); }
   .slot-name { font-size: .62rem; }
   .abar .site-nav { padding: 5px 6px 3px; }
 }
+.pet-btns { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pet-look { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--linea); color: var(--oro-claro); text-decoration: none; font-size: .82rem; font-weight: 700; }
+.pet-look:hover { border-color: var(--oro); }
+.pet-explain { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.pet-explain div { display: grid; gap: 2px; padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--linea); border-top: 3px solid var(--oro-osc); }
+.pet-explain b { color: var(--oro-claro); }
+.pet-explain span { color: var(--suave); font-size: .86rem; }
+.pet-explain span b { color: var(--texto); }
+
+/* ---------- Comunidad: aportar ---------- */
+.ap-form { display: grid; gap: 12px; max-width: 720px; }
+.ap-types { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.ap-types .bp-mode { flex-direction: column; text-align: center; gap: 4px; }
+@media (max-width: 620px) { .ap-types { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.ap-field { display: grid; gap: 4px; color: var(--suave); font-size: .85rem; }
+.ap-field input, .ap-field textarea { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--linea); background: var(--noche-2); color: var(--texto); font: inherit; resize: vertical; }
+.ap-field input:focus, .ap-field textarea:focus { outline: none; border-color: var(--oro); }
+.ap-send { display: flex; flex-wrap: wrap; gap: 8px; }
+.ap-btn { display: flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; border: 0; font: inherit; font-weight: 700; cursor: pointer; color: #fff; }
+.ap-btn.reddit { background: #ff4500; }
+.ap-btn.github { background: #2b3137; border: 1px solid #57606a; }
+.ap-btn:hover { filter: brightness(1.1); }
+.ap-ico { font-weight: 800; }
+.ap-note { color: var(--suave); font-size: .82rem; }

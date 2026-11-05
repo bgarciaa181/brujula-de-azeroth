@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=28">
+<link rel="stylesheet" href="css/estilos.css?v=29">
 </head>
 <body>
 <header id="site-header"></header>
@@ -77,6 +77,23 @@
       </div>
     </section>
 
+    <section id="aportar" data-tab="Aportar" data-icon="inv_letter_15">
+      <div class="section-head">
+        <h2>¿Has visto algo que falta?</h2>
+        <p>Un raro, una mascota, un fallo o un consejo. Escríbelo y lo revisamos para meterlo en la web.</p>
+      </div>
+      <form class="ap-form" id="ap-form">
+        <div class="ap-types" id="ap-types" role="group" aria-label="Qué quieres aportar"></div>
+        <label class="ap-field">Título <input id="ap-title" maxlength="100" placeholder="Ej.: Lobo raro en Durotar, nivel 8" required></label>
+        <label class="ap-field">Cuéntalo <textarea id="ap-text" rows="5" maxlength="2000" placeholder="Dónde, a qué nivel, qué hace… Si tienes una captura, súbela al publicar." required></textarea></label>
+        <div class="ap-send">
+          <button type="button" class="ap-btn reddit" data-to="reddit"><span class="ap-ico">r/</span> Publicar en Reddit</button>
+          <button type="button" class="ap-btn github" data-to="github"><span class="ap-ico">◆</span> Publicar en el foro (GitHub)</button>
+        </div>
+        <p class="ap-note">Se abre la página para publicar con tu texto ya puesto: solo tienes que iniciar sesión con tu cuenta de Reddit o de GitHub y darle a publicar. Nosotros no vemos tu cuenta ni tu contraseña.</p>
+      </form>
+    </section>
+
     <section id="noticias" data-tab="Noticias" data-icon="inv_scroll_03">
       <div class="section-head">
         <h2>Últimas noticias</h2>
@@ -92,11 +109,11 @@
 
 <div class="achievement" id="achievement" hidden></div>
 
-<script src="js/datos.js?v=28"></script>
-<script src="js/talentos-datos.js?v=28"></script>
-<script src="js/talentos-es.js?v=28"></script>
-<script src="js/meta-datos.js?v=28"></script>
-<script src="js/layout.js?v=28"></script>
-<script src="js/app.js?v=28"></script>
+<script src="js/datos.js?v=29"></script>
+<script src="js/talentos-datos.js?v=29"></script>
+<script src="js/talentos-es.js?v=29"></script>
+<script src="js/meta-datos.js?v=29"></script>
+<script src="js/layout.js?v=29"></script>
+<script src="js/app.js?v=29"></script>
 </body>
 </html>

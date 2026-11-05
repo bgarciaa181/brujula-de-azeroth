@@ -23,7 +23,7 @@ const SECCION_PAGINA = {
   mascotas: "mascotas.html", mejores: "mascotas.html",
   modo: "pve-pvp.html", raids: "pve-pvp.html", calendario: "pve-pvp.html",
   profesiones: "oficios.html", cual: "oficios.html", "elige-oficio": "oficios.html", "plan-alts": "oficios.html", preguntas: "oficios.html", "tus-oficios": "oficios.html", campamento: "oficios.html",
-  comunidad: "comunidad.html", noticias: "comunidad.html",
+  comunidad: "comunidad.html", aportar: "comunidad.html", noticias: "comunidad.html",
   elige: "meta.html", "meta-pvp": "meta.html", "meta-pve": "meta.html", "meta-clases": "meta.html",
   juego: "juegos.html", ruleta: "juegos.html", nombres: "juegos.html"
 };
