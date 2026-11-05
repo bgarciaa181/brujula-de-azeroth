@@ -531,3 +531,12 @@ const MAPA_ZONA = {
   "Tierras Inhóspitas": 3, "Feralas": 357, "Las Tierras Devastadas": 4, "Las Estepas Ardientes": 46
 };
 const MAPA_URL = id => `https://wow.zamimg.com/images/wow/classic/maps/enus/zoom/${id}.jpg`;
+
+// Cómo es cada mascota: foto del modelo del juego (la aloja Wowhead). Número = modelo del bicho.
+// Las mascotas nuevas de Forever con modelo propio aún no tienen foto publicada.
+const MASCOTA_MODELO = {
+  "Broken Tooth": 6082, "Deathmaw": 9562, "Humar the Pridelord": 4424, "Lupos": 11412,
+  "Matriarch Bristlefur": 806, "Mist Howler": 165, "Mother Fang": 2541, "Ravage": 10904, "Shal'ma": 6805,
+  "Snarler": 780, "The Rake": 1973, "Timber": 11422
+};
+const FOTO_MODELO = id => `https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/${id % 256}/${id}.webp`;

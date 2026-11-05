@@ -793,7 +793,9 @@ function pintarMascotas() {
 
   document.getElementById("pets").innerHTML = lista.map(({ m, f }) => `
     <div class="pet ${m[5]}" data-nivel="${m[2]}">
-      ${iconoFamilia(m[1])}
+      ${MASCOTA_MODELO[m[0]]
+        ? `<span class="pet-photo"><img src="${FOTO_MODELO(MASCOTA_MODELO[m[0]])}" alt="Cómo es ${m[0]}" loading="lazy" onerror="this.parentNode.classList.add('sin');this.remove()">${iconoFamilia(m[1])}</span>`
+        : `<span class="pet-photo sin">${iconoFamilia(m[1])}</span>`}
       <div class="pet-main">
         <b>${m[0]}</b>
         <span class="pet-meta">${m[1]} · nivel ${m[2]} · ${m[3]}</span>
@@ -801,7 +803,7 @@ function pintarMascotas() {
         <p>${m[6]}</p>
         <div class="pet-btns">
           <button type="button" class="pet-where" data-pet="${m[0]}" aria-expanded="false">Dónde está y habilidades</button>
-          <a class="pet-look" href="https://wowforeverpets.com/pets/${m[0].toLowerCase().replace(/'/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}" target="_blank" rel="noopener" title="Abre su ficha con foto en wowforeverpets.com">👁 Ver cómo es</a>
+
         </div>
       </div>
       <div class="pet-side">
@@ -862,6 +864,7 @@ function abrirMascota(boton) {
   const slug = m[0].toLowerCase().replace(/'/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   panel.innerHTML = `
+    ${MASCOTA_MODELO[m[0]] ? `<figure class="pet-big"><img src="${FOTO_MODELO(MASCOTA_MODELO[m[0]])}" alt="Cómo es ${m[0]}" onerror="this.closest('figure').remove()"><figcaption>Cómo es · imagen: Blizzard, vía Wowhead</figcaption></figure>` : ""}
     <div class="mm-wrap">
       <div class="minimap mm-big${MAPA_ZONA[m[3]] ? " mm-real" : ""}" aria-label="Mapa de ${m[3]} con los sitios donde aparece ${m[0]}"${MAPA_ZONA[m[3]] ? ` style="background-image:url(${MAPA_URL(MAPA_ZONA[m[3]])})"` : ""}>
         ${MAPA_ZONA[m[3]] ? "" : [10, 20, 30, 40, 50, 60, 70, 80, 90].map(v => `<i class="mm-gv" style="left:${v}%"></i><i class="mm-gh" style="top:${v}%"></i>`).join("")}
