@@ -268,10 +268,17 @@ function iconoRaza(id, genero = "male", extra = "") {
 
 // ---------- RAIDS DEL 9 DE DICIEMBRE ----------
 const APERTURA_RAIDS = new Date("2026-12-09T00:00:00+01:00");
+// Jefes según Method.gg (avance de las raids de Forever)
 const RAIDS = [
-  { nombre: "Barrow Deeps", jugadores: 10, jefes: 8, icono: null, nota: "Nueva en Forever" },
-  { nombre: "Cima Hyjal", jugadores: 20, jefes: 13, icono: "achievement_boss_archimonde", nota: "Hyjal Summit" },
-  { nombre: "Guarida de Onyxia", jugadores: 40, jefes: 1, icono: "achievement_boss_onyxia", nota: "Onyxia's Lair" }
+  { nombre: "Barrow Deeps", jugadores: 10, jefes: 8, icono: null, nota: "Nueva en Forever",
+    lista: ["Deepscar Matriarch", "Khalith the Dreadspinner", "Amethrax", "Ravus and Darlissa", "Elder Tangleclaw", "Well of Sorrow", "Del'lynar Songwood", "Sonya Darkhallow"],
+    final: "Sonya Darkhallow parece la jefa final." },
+  { nombre: "Cima Hyjal", jugadores: 20, jefes: 13, icono: "achievement_boss_archimonde", nota: "Hyjal Summit",
+    lista: ["Ancient Guardian", "Bandalar", "Ancient of Decay", "Time-Lost Battalion", "Sylvestris Dusksong", "Old Gloomlurker", "Gharalis the Abyssal", "Kathris the Haunted", "Anara Chillwind", "Elder Minderel", "Tracker Stillwind", "Council of Thorns", "Nythus the Dreambound", "The Wild King"],
+    final: "Empieza con el Ancient Guardian y se abre en varios caminos. The Wild King es el jefe final. Blizzard dice 13 jefes y Method nombra 14 encuentros: aún no está claro cuál no cuenta." },
+  { nombre: "Guarida de Onyxia", jugadores: 40, jefes: 1, icono: "achievement_boss_onyxia", nota: "Onyxia's Lair",
+    lista: ["Onyxia"],
+    final: "Tres fases con mucho fuego: lleva resistencia al fuego. Necesitas el Drakefire Amulet." }
 ];
 
 // ---------- TEST: ¿QUÉ CLASE VA CONTIGO? ----------

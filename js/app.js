@@ -674,7 +674,12 @@ function pintarRaids() {
         <div><b>${r.jefes}</b><span>${r.jefes === 1 ? "jefe" : "jefes"}</span></div>
       </div>
       <div class="raid-people" aria-hidden="true">${"<i></i>".repeat(r.jugadores)}</div>
-    </div>`).join("");
+      ${r.lista ? `<details class="raid-bosses">
+        <summary>Ver los jefes</summary>
+        <ol>${r.lista.map(j => `<li>${iconoWow("inv_misc_bone_humanskull_01", "sm")}<span>${j}</span></li>`).join("")}</ol>
+        <p>${r.final}</p>
+      </details>` : ""}
+    </div>`).join("") + '<p class="bp-note">Jefes según <a href="https://www.method.gg/wow-forever/wow-forever-raids-a-look-at-barrow-deeps-hyjal-summit-and-onyxias-lair" target="_blank" rel="noopener">Method</a>. Los nombres salen en inglés porque aún no hay traducción oficial.</p>';
 }
 
 // ---------- COMPARADOR ----------
@@ -1375,6 +1380,57 @@ function pintarRelojes() {
   }).join("");
 }
 
+// ---------- OFICIOS: CUÁL ME COJO ----------
+const MODOS_OFICIO = [
+  ["pve", "PvE", "achievement_dungeon_classicdungeonmaster"],
+  ["pvp", "PvP", "achievement_pvp_p_250k"],
+  ["oro", "Oro", "inv_misc_coin_01"],
+  ["subir", "Subir de nivel", "inv_misc_map_01"]
+];
+let modoOficio = "oro";
+
+function iconoOficio(nombre, tam = "xl") {
+  const p = [...PROFESIONES.principales, ...PROFESIONES.secundarias].find(x => x[0] === nombre);
+  return iconoWow(p ? p[4] : "inv_misc_note_01", tam);
+}
+
+function pintarCualOficio() {
+  // Si tienes personaje, empezamos por lo que más te interesa
+  $("of-modes").innerHTML = MODOS_OFICIO.map(([id, t, ic]) =>
+    `<button type="button" class="bp-mode" data-m="${id}" aria-pressed="${modoOficio === id}">${iconoWow(ic, "lg")}<span><b>${t}</b></span></button>`).join("");
+  $("of-modes").querySelectorAll("button").forEach(b => b.onclick = () => { modoOficio = b.dataset.m; pintarCualOficio(); });
+
+  const tarjeta = (nombre, txt, letra, puesto) => `
+    <div class="bp-card p${puesto}">
+      ${puesto <= 3 ? `<span class="bp-medal">${["🥇", "🥈", "🥉"][puesto - 1]}</span>` : ""}
+      ${iconoOficio(nombre)}
+      <b>${nombre}</b>
+      <span class="bp-what">${txt}</span>
+      ${letra ? `<span class="bp-tier t-${letra}">${letra}</span>` : ""}
+    </div>`;
+
+  if (modoOficio === "subir") {
+    $("of-podium").innerHTML = OFICIO_SUBIR.slice(0, 3).map(([n, t], i) => tarjeta(n, t, null, i + 1)).join("");
+    $("of-rest").innerHTML = OFICIO_SUBIR.slice(3).map(([n, t], i) => tarjeta(n, t, null, i + 4)).join("") +
+      '<p class="of-tip">Puedes llegar a 60 sin profesiones. Cocina y Primeros auxilios no ocupan hueco: cógelas siempre.</p>';
+  } else {
+    const lista = OFICIO_META[modoOficio].slice().sort((a, b) => puntosMeta(b[1]) - puntosMeta(a[1]));
+    $("of-podium").innerHTML = lista.slice(0, 3).map(([n, notas, t], i) => tarjeta(n, t, letraMedia(notas), i + 1)).join("");
+    $("of-rest").innerHTML = lista.slice(3).map(([n, notas, t], i) => tarjeta(n, t, letraMedia(notas), i + 4)).join("");
+  }
+
+  const p = leerPerfil();
+  const miClase = p && CLASSES.find(c => c.id === p.clase);
+  $("of-combos").innerHTML = OFICIO_COMBOS.map(([a, b, t]) => {
+    const mia = miClase && t.toLowerCase().includes(miClase.nombre.toLowerCase().slice(0, 5));
+    const marcado = (modoOficio === "pvp" && t === "PvP") || (modoOficio === "pve" && t === "PvE") || (modoOficio === "oro" && /oro/i.test(t)) || (modoOficio === "subir" && /subes/.test(t));
+    return `<div class="of-combo${marcado || mia ? " on" : ""}">${iconoOficio(a, "lg")}<i>+</i>${iconoOficio(b, "lg")}<span><b>${t}</b><small>${a} + ${b}</small></span>${mia ? '<em>tu clase</em>' : ""}</div>`;
+  }).join("");
+  $("of-sell").innerHTML = SE_VENDE.map(([prof, txt]) => `<div class="of-item">${iconoOficio(prof, "sm")}<span>${txt}</span></div>`).join("");
+  $("of-note").innerHTML = "Notas de: " + Object.values(OFICIO_FUENTES).map(([n, u, f]) => `<a href="${u}" target="_blank" rel="noopener">${n}</a> (${f})`).join(" · ") +
+    ". Aún no hay precios reales de la subasta: se verán cuando salga el juego.";
+}
+
 // ---------- PORTADA: TU PERSONAJE ----------
 // Si guardaste tu personaje, la portada te dice qué hacer a tu nivel
 function pintarMiPersonaje() {
@@ -1692,6 +1748,7 @@ if ($("dg-chart")) {
   pintarPvP();
 }
 if ($("races-list")) pintarRazas();
+if ($("of-podium")) pintarCualOficio();
 if ($("prof-main")) pintarProfesiones();
 if ($("timeline")) pintarCalendario();
 if ($("news-list")) cargarNoticias();

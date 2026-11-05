@@ -252,3 +252,72 @@ const MASCOTA_META = {
     ["Raptor", { M: "C" }, "Pega mucho, aguanta poco"]
   ]
 };
+
+// ---------- PROFESIONES: CUÁL ME COJO ----------
+// L = Leprestore (tier por PvE, PvP y oro), C = ConquestCapped (notas de oro, venta y subida)
+const OFICIO_FUENTES = {
+  L: ["Leprestore", "https://leprestore.com/guides/world-of-warcraft-forever/wow-forever-profession-tier-list-best-pve-pvp-goldmaking/", "24 oct"],
+  C: ["ConquestCapped", "https://conquestcapped.com/guides/wow-forever/wow-forever-best-professions/", "1 nov"]
+};
+// [profesión, notas, por qué (corto)]
+const OFICIO_META = {
+  pve: [
+    ["Alquimia", { L: "S" }, "Pociones y frascos para raid"],
+    ["Ingeniería", { L: "S" }, "Bombas y aparatos útiles"],
+    ["Minería", { L: "A" }, "Metal para tu equipo"],
+    ["Encantamiento", { L: "A" }, "Mejora tu equipo"],
+    ["Sastrería", { L: "A" }, "Equipo de tela y bolsas"],
+    ["Herrería", { L: "A" }, "Equipo de placas"],
+    ["Herboristería", { L: "B" }, "Hierbas para alquimia"],
+    ["Peletería", { L: "B" }, "Equipo de cuero y malla"],
+    ["Desuello", { L: "B" }, "Cuero para peletería"]
+  ],
+  pvp: [
+    ["Ingeniería", { L: "S", C: "S" }, "Granadas y capa de escape"],
+    ["Minería", { L: "S" }, "Va con ingeniería"],
+    ["Alquimia", { L: "A" }, "Pociones para aguantar"],
+    ["Encantamiento", { L: "A" }, "Mejora tu equipo"],
+    ["Herboristería", { L: "A" }, "Hierbas para pociones"],
+    ["Sastrería", { L: "B" }, "Equipo de tela"],
+    ["Herrería", { L: "B" }, "Equipo de placas"],
+    ["Peletería", { L: "B" }, "Equipo de cuero y malla"],
+    ["Desuello", { L: "D" }, "No aporta en PvP"]
+  ],
+  oro: [
+    ["Encantamiento", { L: "S", C: "S" }, "Encantar y vender polvo"],
+    ["Alquimia", { L: "S", C: "S" }, "Pociones y frascos siempre se venden"],
+    ["Herboristería", { L: "S", C: "S" }, "Las hierbas raras valen mucho"],
+    ["Minería", { L: "S", C: "B" }, "Todos necesitan metal"],
+    ["Sastrería", { L: "A", C: "A" }, "Bolsas desde el día 1"],
+    ["Desuello", { L: "A", C: "S" }, "Oro rápido mientras subes"],
+    ["Herrería", { L: "B", C: "B" }, "Solo con recetas raras"],
+    ["Peletería", { L: "B", C: "B" }, "Normal"],
+    ["Ingeniería", { L: "C", C: "C" }, "Lo que hace casi solo lo usan ingenieros"]
+  ]
+};
+// Para subir de nivel (lo que dicen las guías, sin ranking)
+const OFICIO_SUBIR = [
+  ["Cocina", "+5% de experiencia con su comida", "C"],
+  ["Peletería", "Su tienda de campaña da descanso (más experiencia)", "L"],
+  ["Desuello", "El oro más rápido mientras subes: despellejas lo que ya matas", "C"],
+  ["Primeros auxilios", "Ahora hace las pociones de vida", "L"]
+];
+// Lo que más se vende (según ConquestCapped)
+const SE_VENDE = [
+  ["Encantamiento", "Encantamientos y polvo"],
+  ["Alquimia", "Elixir of the Mongoose, Flask of the Titans y pociones los días de raid"],
+  ["Herboristería", "Hierbas raras: Frilled Lichen, Mountain Silversage"],
+  ["Sastrería", "Bolsas"],
+  ["Herboristería", "Black Lotus (ahora el vendedor le pone precio máximo)"],
+  ["Desuello", "Light Leather y materiales básicos: siempre hay compradores"]
+];
+// Parejas recomendadas [prof 1, prof 2, para qué]
+const OFICIO_COMBOS = [
+  ["Ingeniería", "Minería", "PvP"],
+  ["Ingeniería", "Alquimia", "PvE"],
+  ["Sastrería", "Encantamiento", "Oro a nivel 60"],
+  ["Herboristería", "Alquimia", "Consumibles y oro"],
+  ["Desuello", "Herboristería", "Oro mientras subes"],
+  ["Desuello", "Peletería", "Cazadores, pícaros, chamanes y druidas"],
+  ["Minería", "Herrería", "Guerreros y paladines"]
+];

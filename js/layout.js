@@ -22,7 +22,7 @@ const SECCION_PAGINA = {
   clases: "clases.html", test: "clases.html", personaje: "clases.html", comparador: "clases.html", razas: "clases.html", basico: "clases.html",
   mascotas: "mascotas.html", mejores: "mascotas.html",
   modo: "pve-pvp.html", raids: "pve-pvp.html", calendario: "pve-pvp.html",
-  profesiones: "oficios.html",
+  profesiones: "oficios.html", cual: "oficios.html",
   comunidad: "comunidad.html", noticias: "comunidad.html",
   elige: "meta.html", "meta-pvp": "meta.html", "meta-pve": "meta.html", "meta-clases": "meta.html",
   juego: "juegos.html", ruleta: "juegos.html", nombres: "juegos.html"

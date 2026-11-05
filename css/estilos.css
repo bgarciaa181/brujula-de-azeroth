@@ -1480,3 +1480,34 @@ button.cta.ghost { border: 1px solid var(--oro-osc); }
 .clock small { font-size: .78rem; color: var(--suave); }
 .clock b { font-family: var(--font-display); font-size: 1.25rem; color: var(--oro-claro); font-variant-numeric: tabular-nums; }
 .clock em { font-style: normal; font-size: .72rem; color: var(--suave); }
+
+/* ---------- Oficios: cuál me cojo ---------- */
+.of-modes { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.of-modes .bp-mode { justify-content: center; }
+@media (max-width: 620px) { .of-modes .bp-mode b { font-size: .9rem; } }
+#of-podium .wow-icon.xl { width: 64px; height: 64px; }
+#of-podium .p1 .wow-icon.xl { width: 84px; height: 84px; }
+#of-rest .wow-icon.xl { width: 44px; height: 44px; }
+.of-tip { grid-column: 1 / -1; color: var(--suave); font-size: .88rem; }
+.of-combos { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.of-combo { position: relative; display: flex; align-items: center; gap: 8px; padding: 10px; border-radius: 12px; background: var(--panel); border: 1px solid var(--linea); }
+.of-combo.on { border-color: var(--oro); background: radial-gradient(circle at 0 0, rgba(214, 176, 106, .16), transparent 60%), var(--panel); }
+.of-combo i { font-style: normal; color: var(--oro); font-weight: 700; }
+.of-combo .wow-icon.lg { width: 40px; height: 40px; }
+.of-combo span { display: grid; line-height: 1.2; margin-left: 4px; }
+.of-combo small { color: var(--suave); font-size: .76rem; }
+.of-combo em { position: absolute; top: -8px; right: 8px; font-style: normal; font-size: .62rem; font-weight: 700; text-transform: uppercase; padding: 1px 7px; border-radius: 999px; background: var(--oro); color: #141826; }
+.of-sell { display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.of-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: var(--panel); border: 1px solid var(--linea); font-size: .9rem; }
+.of-item .wow-icon.sm { width: 30px; height: 30px; flex: none; }
+.bp-card { min-width: 0; }
+.bp-card b { max-width: 100%; overflow-wrap: anywhere; hyphens: auto; }
+@media (max-width: 520px) { .bp-podium .bp-card b, .bp-rest .bp-card b { font-size: .95rem; } .bp-what { font-size: .72rem; } }
+#cual .sub { margin-top: 22px; }
+.raid-bosses { width: 100%; text-align: left; }
+.raid-bosses summary { cursor: pointer; color: var(--oro-claro); font-weight: 700; padding: 6px 0; text-align: center; }
+.raid-bosses ol { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; counter-reset: jefe; }
+.raid-bosses li { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 8px; background: var(--noche-2); font-size: .88rem; counter-increment: jefe; }
+.raid-bosses li::before { content: counter(jefe); width: 18px; color: var(--suave); font-size: .75rem; text-align: right; }
+.raid-bosses li .wow-icon.sm { width: 22px; height: 22px; }
+.raid-bosses p { font-size: .8rem; color: var(--suave); margin-top: 6px; }

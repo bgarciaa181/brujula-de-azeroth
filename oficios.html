@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=20">
+<link rel="stylesheet" href="css/estilos.css?v=21">
 </head>
 <body>
 <header id="site-header"></header>
@@ -29,14 +29,29 @@
     <span class="wow-icon xl page-hero-icon" aria-hidden="true"><img src="https://render.worldofwarcraft.com/us/icons/56/trade_blacksmithing.jpg" alt="" onerror="this.remove()"></span>
     <div>
       <h1>Oficios</h1>
-      <p>Las 13 profesiones y cuáles combinar.</p>
+      <p>Cuál te conviene para PvE, PvP, oro o subir de nivel.</p>
     </div>
   </div>
 </div>
 
 <main>
   <div class="wrap">
-    <section id="profesiones">
+    <section id="cual" data-tab="¿Cuál me cojo?" data-icon="inv_misc_coin_01">
+      <div class="section-head">
+        <h2>¿Cuál me cojo?</h2>
+        <p>Toca para qué la quieres.</p>
+      </div>
+      <div class="bp-modes of-modes" id="of-modes" role="group" aria-label="Para qué la quieres"></div>
+      <div class="bp-podium" id="of-podium"></div>
+      <div class="bp-rest" id="of-rest"></div>
+      <h3 class="sub">Parejas que se suelen coger</h3>
+      <div class="of-combos" id="of-combos"></div>
+      <h3 class="sub">Lo que más se vende</h3>
+      <div class="of-sell" id="of-sell"></div>
+      <p class="bp-note" id="of-note"></p>
+    </section>
+
+    <section id="profesiones" data-tab="Todas" data-icon="trade_blacksmithing">
       <div class="section-head">
         <h2>Profesiones</h2>
         <p>Elige dos principales. Las secundarias, todas las que quieras.</p>
@@ -62,11 +77,11 @@
 
 <div class="achievement" id="achievement" hidden></div>
 
-<script src="js/datos.js?v=20"></script>
-<script src="js/talentos-datos.js?v=20"></script>
-<script src="js/talentos-es.js?v=20"></script>
-<script src="js/meta-datos.js?v=20"></script>
-<script src="js/layout.js?v=20"></script>
-<script src="js/app.js?v=20"></script>
+<script src="js/datos.js?v=21"></script>
+<script src="js/talentos-datos.js?v=21"></script>
+<script src="js/talentos-es.js?v=21"></script>
+<script src="js/meta-datos.js?v=21"></script>
+<script src="js/layout.js?v=21"></script>
+<script src="js/app.js?v=21"></script>
 </body>
 </html>
