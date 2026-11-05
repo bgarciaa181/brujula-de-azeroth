@@ -1511,3 +1511,62 @@ button.cta.ghost { border: 1px solid var(--oro-osc); }
 .raid-bosses li::before { content: counter(jefe); width: 18px; color: var(--suave); font-size: .75rem; text-align: right; }
 .raid-bosses li .wow-icon.sm { width: 22px; height: 22px; }
 .raid-bosses p { font-size: .8rem; color: var(--suave); margin-top: 6px; }
+
+/* ---------- Oficios: tus profesiones ---------- */
+.to-help { color: var(--suave); font-size: .88rem; margin: -4px 0 10px; }
+.to-empty { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 16px; border-radius: 14px; background: var(--panel); border: 1px dashed var(--linea); }
+.to-empty p { flex: 1; min-width: 200px; color: var(--suave); }
+.to-chars { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+@media (max-width: 400px) { .to-chars { grid-template-columns: 1fr; } }
+.to-char { display: grid; gap: 10px; padding: 14px; border-radius: 14px; background: radial-gradient(circle at 0 0, color-mix(in srgb, var(--cls) 16%, transparent), transparent 55%), var(--panel); border: 1px solid var(--linea); border-left: 3px solid var(--cls); }
+.to-who { display: flex; align-items: center; gap: 4px; }
+.to-who .wow-icon.lg { width: 44px; height: 44px; }
+.to-who .sigil { width: 24px; height: 24px; margin: 22px 8px 0 -14px; box-shadow: 0 0 0 2px var(--cls), 0 0 0 3px #000; }
+.to-who span { display: grid; line-height: 1.2; }
+.to-slot { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; padding: 8px; border-radius: 10px; background: var(--noche-2); }
+.to-pick { position: relative; display: block; cursor: pointer; }
+.to-pick .wow-icon.lg { width: 48px; height: 48px; }
+.to-pick select { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.to-plus { display: grid !important; place-items: center; font-size: 1.6rem; color: var(--oro); background: var(--panel) !important; }
+.to-skill { display: grid; gap: 6px; min-width: 0; }
+.to-skill-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.to-skill-top span { display: flex; align-items: center; gap: 4px; }
+.to-skill-top button { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--linea); background: var(--panel); color: var(--texto); font: inherit; cursor: pointer; }
+.to-skill-top input { width: 52px; padding: 3px 4px; border-radius: 6px; border: 1px solid var(--linea); background: var(--noche); color: var(--oro-claro); font: inherit; font-weight: 700; text-align: center; }
+.to-bar { position: relative; height: 10px; border-radius: 5px; background: var(--panel); }
+.to-bar i { display: block; height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--oro-osc), var(--oro)); }
+.to-bar em { position: absolute; top: -2px; width: 2px; height: 14px; background: #3a4266; }
+.to-bar u { position: absolute; top: -16px; transform: translateX(-50%); text-decoration: none; font-size: .7rem; color: #4a5070; }
+.to-bar u.ok { color: #ffcf5a; text-shadow: 0 0 6px rgba(255, 207, 90, .6); }
+.to-next { color: var(--suave); font-size: .78rem; }
+.to-slot > .to-next { grid-column: 2; }
+.to-taller { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.to-t { display: grid; justify-items: center; gap: 4px; padding: 12px 8px; border-radius: 12px; background: var(--panel); border: 1px dashed var(--linea); text-align: center; opacity: .6; }
+.to-t.si { opacity: 1; border-style: solid; border-color: var(--oro-osc); }
+.to-t .wow-icon.lg { width: 40px; height: 40px; }
+.to-t:not(.si) .wow-icon.lg { filter: grayscale(1); }
+.to-t small { font-size: .76rem; color: var(--suave); }
+.to-t i { font-style: normal; font-weight: 700; }
+.to-legado { display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.to-l { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--panel); border: 1px solid var(--linea); }
+.to-l b { flex: 1; font-size: .92rem; }
+.to-l .wow-icon.sm { width: 28px; height: 28px; }
+.to-l u, .to-total u { text-decoration: none; font-size: 1.1rem; color: #3a4266; margin-left: 2px; }
+.to-l u.ok { color: #ffcf5a; text-shadow: 0 0 8px rgba(255, 207, 90, .6); }
+.to-total { grid-column: 1 / -1; color: var(--suave); }
+.to-total b { font-family: var(--font-display); font-size: 1.6rem; color: var(--oro-claro); }
+.pj-profs { color: var(--oro-claro) !important; }
+
+/* ---------- Oficios: campamento ---------- */
+.cp-fires { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.cp-fire { display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border-radius: 999px; background: rgba(255, 122, 61, .1); border: 1px solid rgba(255, 122, 61, .4); }
+.cp-fire .wow-icon.lg { width: 34px; height: 34px; border-radius: 50%; }
+.cp-fire span { display: grid; line-height: 1.1; }
+.cp-fire small { color: var(--suave); font-size: .75rem; }
+.camp-grid { display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.camp { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--linea); }
+.camp.mia { border-color: var(--oro); box-shadow: 0 0 14px rgba(214, 176, 106, .15); }
+.camp .wow-icon.lg { width: 44px; height: 44px; flex: none; }
+.camp div { display: grid; gap: 2px; line-height: 1.25; }
+.camp small { color: var(--suave); font-size: .78rem; }
+.camp em { font-style: normal; font-size: .72rem; color: #f0a04b; }

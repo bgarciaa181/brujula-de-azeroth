@@ -289,7 +289,7 @@ function pintarExtras() {
       const meta = typeof mejorSpec === "function" && ["pve", "pvp"].filter(m => {
         const mj = mejorSpec(clase, m);
         return mj && mj.nombre.split(" o ").some(n => n.split(" (")[0] === b.nombre);
-      }).map(m => m.toUpperCase()).join(" y ");
+      }).map(m => m === "pve" ? "PvE" : "PvP").join(" y ");
       const arbol = Object.keys(TALENTOS[clase]).indexOf(b.nombre);
       const icono = CLASSES.find(c => c.id === clase).arboles.find(a => a[0] === b.nombre);
       btn.innerHTML = `${icono ? iconoTalento({ icono: icono[2] }) : ""}<span class="bb-txt"><b>${b.nombre}</b>

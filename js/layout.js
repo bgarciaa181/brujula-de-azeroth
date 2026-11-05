@@ -22,7 +22,7 @@ const SECCION_PAGINA = {
   clases: "clases.html", test: "clases.html", personaje: "clases.html", comparador: "clases.html", razas: "clases.html", basico: "clases.html",
   mascotas: "mascotas.html", mejores: "mascotas.html",
   modo: "pve-pvp.html", raids: "pve-pvp.html", calendario: "pve-pvp.html",
-  profesiones: "oficios.html", cual: "oficios.html",
+  profesiones: "oficios.html", cual: "oficios.html", "tus-oficios": "oficios.html", campamento: "oficios.html",
   comunidad: "comunidad.html", noticias: "comunidad.html",
   elige: "meta.html", "meta-pvp": "meta.html", "meta-pve": "meta.html", "meta-clases": "meta.html",
   juego: "juegos.html", ruleta: "juegos.html", nombres: "juegos.html"
@@ -589,7 +589,7 @@ function leerCodigo(codigo) {
 
 // Enlace para llevarte los personajes a otro móvil u ordenador
 function enlacePersonajes() {
-  const datos = leerPersonajes().map(({ nombre, apellido, faccion, raza, clase, nivel, genero }) => ({ nombre, apellido, faccion, raza, clase, nivel, genero }));
+  const datos = leerPersonajes().map(({ nombre, apellido, faccion, raza, clase, nivel, genero, profs }) => ({ nombre, apellido, faccion, raza, clase, nivel, genero, profs }));
   const codigo = btoa(unescape(encodeURIComponent(JSON.stringify(datos)))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
   return location.href.split(/[?#]/)[0].replace(/[^/]*$/, "") + "index.html?pjs=" + codigo;
 }
@@ -651,12 +651,14 @@ function prepararPersonajes() {
                   <b>${nombreCompleto(p)}${es ? '<span class="pj-tag">jugando</span>' : ""}</b>
                   <small>${RACES[p.raza].nombre} <span style="color:${c.color}">${c.nombre}</span> · nivel ${p.nivel || 1}</small>
                   ${!p.nombre || !p.apellido ? '<small class="pj-warn">Le falta nombre y apellido</small>' : ""}
+                  ${(p.profs || []).length ? `<small class="pj-profs">${p.profs.map(x => `${x.n} ${x.s}`).join(" · ")}</small>` : ""}
                   ${lineaMeta(p)}
                 </div>`}
               <div class="pj-acts">
                 ${es ? "" : `<button type="button" class="pj-mini oro" data-a="usar" data-id="${p.id}">Jugar</button>`}
                 ${editando === p.id ? "" : `<button type="button" class="pj-mini" data-a="editar" data-id="${p.id}">Nombre</button>`}
                 <button type="button" class="pj-mini" data-a="imagen" data-id="${p.id}">Imagen</button>
+                <a class="pj-mini" href="oficios.html#tus-oficios">Profesiones</a>
                 <a class="pj-mini" href="directo.html?d=${codigoPersonaje(p)}" title="Para poner en OBS">Directo</a>
                 <button type="button" class="pj-mini rojo" data-a="borrar" data-id="${p.id}">${borrando === p.id ? "¿Seguro?" : "Borrar"}</button>
               </div>

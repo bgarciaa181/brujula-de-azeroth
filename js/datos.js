@@ -474,3 +474,25 @@ const CHECKLIST = [
   ["hermandad", "inv_misc_tournaments_banner_troll", "Únete a una hermandad", "Subir en grupo es más rápido y divertido"],
   ["comunidad", "inv_misc_note_01", "Deja tu build o tu duda en la web", "Ayudas a los que vienen detrás"]
 ];
+
+// ---------- CAMPAMENTOS (nuevo en Forever) ----------
+// Cada profesión construye un objeto para el campamento. Sentarte o fabricar 1 minuto junto al fuego
+// te da el bonus de todos los objetos durante 1 hora. Fuente: MmonsteR (datos de la beta, 21 oct).
+// [profesión, objeto nivel 1, qué da, no se acumula con, objeto nivel 2, objeto nivel 3]
+const CAMPAMENTO = [
+  ["Alquimia", "Mana Well", "Regeneración de maná", "Bendición de sabiduría", "Fermenter", "Alchemy Laboratory"],
+  ["Herrería", "Sharpening Wheel", "Fuerza", "Tótem Fuerza de la tierra", "Anvil", "Master Forge"],
+  ["Encantamiento", "Enchanted Lute", "Armadura, todas las estadísticas y resistencias", "Marca de lo salvaje", "Arcane Salvager", "Arcane Forge"],
+  ["Ingeniería", "Reagent Bot", "Vende componentes (el de nivel 2 también repara)", null, "Repair Bot", "Anarchist's Workbench"],
+  ["Herboristería", "Incense Candle", "Intelecto", "Intelecto Arcano", "Greenhouse", "Seed Hybridizer"],
+  ["Peletería", "Camp Tent", "Descanso: más experiencia (hasta 5% de un nivel)", null, "Tanning Rack", "Sewing Machine"],
+  ["Minería", "Lodestone", "Poder de ataque cuerpo a cuerpo", "Bendición de poderío", "Rock Garden", "Molten Foundry"],
+  ["Desuello", "Camp Chair", "+2% de crítico", "Aura de lechúcico lunar", "Field Guide", "Trapper's Workbench"],
+  ["Sastrería", "Faction Banner", "Espíritu (solo tu facción)", "Espíritu divino", "Spinning Wheel", "Loom"],
+  ["Primeros auxilios", "First Aid Kit", "Aguante", "Palabra de poder: entereza", "Toxin Study", "Plague Doctor's Laboratory"],
+  ["Pesca", "Fish Bowl", "+8% a todas las estadísticas", "Bendición de reyes", "Fishing Rack", null]
+];
+// Niveles del fuego: cuántos objetos caben
+const FUEGOS = [["Básico", 3], ["Oficial", 5], ["Experto", 10]];
+// Profesiones de fabricación que dan puntos de Legado (a 150, 225 y 300). Cuentan para toda la cuenta.
+const OFICIOS_LEGADO = ["Alquimia", "Herrería", "Encantamiento", "Ingeniería", "Peletería", "Sastrería"];

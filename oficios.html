@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
-<link rel="stylesheet" href="css/estilos.css?v=22">
+<link rel="stylesheet" href="css/estilos.css?v=23">
 </head>
 <body>
 <header id="site-header"></header>
@@ -36,6 +36,30 @@
 
 <main>
   <div class="wrap">
+    <section id="tus-oficios" data-tab="Tus profesiones" data-icon="trade_blacksmithing">
+      <div class="section-head">
+        <h2>Tus profesiones</h2>
+        <p>Ponle profesiones a cada personaje y mira qué te falta para fabricarte todo.</p>
+      </div>
+      <div class="to-chars" id="to-chars"></div>
+      <h3 class="sub">Tu taller</h3>
+      <p class="to-help">Quién de tus personajes hace cada cosa.</p>
+      <div class="to-taller" id="to-taller"></div>
+      <h3 class="sub">Legado de tu cuenta</h3>
+      <p class="to-help">Cada profesión de fabricación da 1 punto al llegar a 150, 225 y 300. Cuenta para toda la cuenta, así que repartirlas entre personajes da más puntos.</p>
+      <div class="to-legado" id="to-legado"></div>
+    </section>
+
+    <section id="campamento" data-tab="Campamento" data-icon="spell_fire_fire">
+      <div class="section-head">
+        <h2>El campamento</h2>
+        <p>Nuevo en Forever: siéntate 1 minuto junto al fuego y te llevas todos los bonus durante 1 hora.</p>
+      </div>
+      <div class="cp-fires" id="cp-fires"></div>
+      <div class="camp-grid" id="camp-grid"></div>
+      <p class="bp-note">Objeto de nivel 1 a 20 de habilidad, nivel 2 a 140 y nivel 3 a 300 (estos dos necesitan plano). Cada jugador pone 1 objeto por hora. El bonus de cada objeto no se suma con el de la clase que da lo mismo. Datos de la beta según <a href="https://mmonster.co/wow-forever/guides/professions/camping" target="_blank" rel="noopener">MmonsteR</a>.</p>
+    </section>
+
     <section id="cual" data-tab="¿Cuál me cojo?" data-icon="inv_misc_coin_01">
       <div class="section-head">
         <h2>¿Cuál me cojo?</h2>
@@ -77,11 +101,11 @@
 
 <div class="achievement" id="achievement" hidden></div>
 
-<script src="js/datos.js?v=22"></script>
-<script src="js/talentos-datos.js?v=22"></script>
-<script src="js/talentos-es.js?v=22"></script>
-<script src="js/meta-datos.js?v=22"></script>
-<script src="js/layout.js?v=22"></script>
-<script src="js/app.js?v=22"></script>
+<script src="js/datos.js?v=23"></script>
+<script src="js/talentos-datos.js?v=23"></script>
+<script src="js/talentos-es.js?v=23"></script>
+<script src="js/meta-datos.js?v=23"></script>
+<script src="js/layout.js?v=23"></script>
+<script src="js/app.js?v=23"></script>
 </body>
 </html>

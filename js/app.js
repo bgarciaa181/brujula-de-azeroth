@@ -1380,6 +1380,104 @@ function pintarRelojes() {
   }).join("");
 }
 
+// ---------- OFICIOS: TUS PROFESIONES, TALLER Y LEGADO ----------
+const TODAS_PRINCIPALES = () => PROFESIONES.principales.map(p => p[0]);
+
+// Lo próximo que te toca con una profesión según tu habilidad
+function siguientePaso(nombre, nivel) {
+  const pasos = [];
+  const rangos = [[75, "Oficial"], [150, "Experto"], [225, "Artesano"]];
+  const r = rangos.find(([n]) => nivel < n);
+  if (r) pasos.push([r[0], `Al acercarte a ${r[0]}, aprende ${r[1]} con el instructor`]);
+  if (nivel < 20) pasos.push([20, "A 20: objeto de campamento nivel 1"]);
+  else if (nivel < 140) pasos.push([140, "A 140: objeto de campamento nivel 2 (con plano)"]);
+  if (OFICIOS_LEGADO.includes(nombre)) {
+    const l = [150, 225, 300].find(n => nivel < n);
+    if (l) pasos.push([l, `A ${l}: punto de Legado`]);
+  }
+  pasos.sort((a, b) => a[0] - b[0]);
+  return nivel >= 300 ? "¡Al máximo!" : (pasos[0] ? pasos[0][1] : "");
+}
+
+function pintarTusOficios() {
+  const lista = leerPersonajes();
+  const caja = $("to-chars");
+  if (!lista.length) {
+    caja.innerHTML = `<div class="to-empty">${iconoWow("trade_blacksmithing", "xl")}<p>Primero crea tu personaje y aquí le pones sus profesiones.</p><a class="cta" href="clases.html#personaje">Crear personaje</a></div>`;
+  } else {
+    caja.innerHTML = lista.map(p => {
+      const c = CLASSES.find(x => x.id === p.clase);
+      if (!c) return "";
+      const profs = (p.profs || []).concat([null, null]).slice(0, 2);
+      return `<div class="to-char" style="--cls:${c.color}">
+        <div class="to-who">${iconoRaza(p.raza, p.genero || "male", "lg")}${iconoClase(c)}<span><b>${nombreCompleto(p)}</b><small style="color:${c.color}">${c.nombre} · ${p.nivel || 1}</small></span></div>
+        ${profs.map((pr, k) => `
+          <div class="to-slot">
+            <label class="to-pick">${pr ? iconoOficio(pr.n, "lg") : '<span class="wow-icon lg to-plus">+</span>'}
+              <select data-id="${p.id}" data-k="${k}" aria-label="Profesión ${k + 1}">
+                <option value="">Elegir profesión</option>
+                ${TODAS_PRINCIPALES().filter(n => !profs.some((o, j) => j !== k && o && o.n === n)).map(n => `<option ${pr && pr.n === n ? "selected" : ""}>${n}</option>`).join("")}
+              </select>
+            </label>
+            ${pr ? `<div class="to-skill">
+              <div class="to-skill-top"><b>${pr.n}</b><span><button type="button" data-id="${p.id}" data-k="${k}" data-d="-5" aria-label="Bajar">−</button><input type="number" min="1" max="300" value="${pr.s}" data-id="${p.id}" data-k="${k}" aria-label="Habilidad"><button type="button" data-id="${p.id}" data-k="${k}" data-d="5" aria-label="Subir">+</button></span></div>
+              <div class="to-bar"><i style="width:${pr.s / 3}%"></i>${[75, 150, 225].map(m => `<em style="left:${m / 3}%"></em>`).join("")}${OFICIOS_LEGADO.includes(pr.n) ? [150, 225, 300].map(m => `<u class="${pr.s >= m ? "ok" : ""}" style="left:${m / 3}%" title="Legado a ${m}">★</u>`).join("") : ""}</div>
+              <small class="to-next">${siguientePaso(pr.n, pr.s)}</small>
+            </div>` : '<small class="to-next">Sin profesión</small>'}
+          </div>`).join("")}
+      </div>`;
+    }).join("");
+  }
+
+  // Cambios
+  const guardar = (id, k, cambio) => {
+    const todos = leerPersonajes();
+    const p = todos.find(x => x.id === id);
+    if (!p) return;
+    const profs = (p.profs || []).concat([null, null]).slice(0, 2);
+    profs[k] = cambio(profs[k]);
+    p.profs = profs.filter(Boolean);
+    guardarPersonajes(todos);
+    pintarTusOficios();
+  };
+  caja.querySelectorAll("select").forEach(sel => sel.onchange = () =>
+    guardar(sel.dataset.id, +sel.dataset.k, old => sel.value ? { n: sel.value, s: old && old.n === sel.value ? old.s : 1 } : null));
+  caja.querySelectorAll(".to-skill button").forEach(b => b.onclick = () =>
+    guardar(b.dataset.id, +b.dataset.k, old => ({ ...old, s: Math.min(300, Math.max(1, old.s + Number(b.dataset.d))) })));
+  caja.querySelectorAll(".to-skill input").forEach(inp => inp.onchange = () =>
+    guardar(inp.dataset.id, +inp.dataset.k, old => ({ ...old, s: Math.min(300, Math.max(1, parseInt(inp.value, 10) || 1)) })));
+
+  // Taller: quién tiene cada profesión
+  const quien = {};
+  for (const p of lista) for (const pr of p.profs || []) (quien[pr.n] = quien[pr.n] || []).push(p);
+  $("to-taller").innerHTML = TODAS_PRINCIPALES().map(n => {
+    const ps = quien[n] || [];
+    return `<div class="to-t${ps.length ? " si" : ""}">${iconoOficio(n, "lg")}<b>${n}</b>
+      <small>${ps.length ? ps.map(p => `<i style="color:${CLASSES.find(c => c.id === p.clase).color}">${p.nombre || "?"}</i>`).join(", ") : "Nadie"}</small></div>`;
+  }).join("");
+
+  // Legado: la mejor habilidad de la cuenta en cada profesión de fabricación
+  let total = 0;
+  $("to-legado").innerHTML = OFICIOS_LEGADO.map(n => {
+    const max = Math.max(0, ...lista.flatMap(p => (p.profs || []).filter(pr => pr.n === n).map(pr => pr.s)));
+    const hechos = [150, 225, 300].filter(m => max >= m).length;
+    total += hechos;
+    return `<div class="to-l">${iconoOficio(n, "sm")}<b>${n}</b><span>${[150, 225, 300].map(m => `<u class="${max >= m ? "ok" : ""}">★</u>`).join("")}</span></div>`;
+  }).join("") + `<div class="to-total"><b>${total}</b> / 18 puntos de Legado por profesiones</div>`;
+  // El campamento marca los objetos que puedes poner tú
+  if ($("camp-grid")) pintarCampamento();
+}
+
+function pintarCampamento() {
+  $("cp-fires").innerHTML = FUEGOS.map(([n, obj]) => `<div class="cp-fire">${iconoWow("spell_fire_fire", "lg")}<span><b>Fuego ${n}</b><small>${obj} objetos</small></span></div>`).join("");
+  const mias = new Set(leerPersonajes().flatMap(p => (p.profs || []).map(pr => pr.n)));
+  $("camp-grid").innerHTML = CAMPAMENTO.map(([prof, obj, da, no, t2, t3]) => `
+    <div class="camp${mias.has(prof) ? " mia" : ""}">
+      ${iconoOficio(prof, "lg")}
+      <div><b>${da}</b><small>${prof} · ${obj}</small>${no ? `<em>No se suma con ${no}</em>` : ""}</div>
+    </div>`).join("");
+}
+
 // ---------- OFICIOS: CUÁL ME COJO ----------
 const MODOS_OFICIO = [
   ["pve", "PvE", "achievement_dungeon_classicdungeonmaster"],
@@ -1466,6 +1564,9 @@ function pintarMiPersonaje() {
     if (pet) objetivos.push([iconoFamilia(pet[1]), pet[0], `mascota nv ${pet[2]} · ${pet[3]}`, "mascotas.html"]);
   }
   if (n >= 10) objetivos.push([iconoWow("ability_marksmanship", "sm"), "Tu próximo talento", "en la calculadora", `talentos.html#${c.id}`]);
+  for (const pr of p.profs || []) {
+    if (pr.s < 300) objetivos.push([iconoOficio(pr.n, "sm"), `${pr.n} ${pr.s}`, siguientePaso(pr.n, pr.s), "oficios.html#tus-oficios"]);
+  }
 
   caja.className = "mi-pj";
   caja.style.setProperty("--cls", c.color);
@@ -1749,6 +1850,8 @@ if ($("dg-chart")) {
 }
 if ($("races-list")) pintarRazas();
 if ($("of-podium")) pintarCualOficio();
+if ($("to-chars")) pintarTusOficios();
+if ($("camp-grid")) pintarCampamento();
 if ($("prof-main")) pintarProfesiones();
 if ($("timeline")) pintarCalendario();
 if ($("news-list")) cargarNoticias();
