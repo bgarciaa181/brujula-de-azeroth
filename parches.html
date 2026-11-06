@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parches · Brújula de Azeroth</title>
+<meta name="description" content="Parches de WoW Forever en español: qué ha mejorado y qué ha empeorado en cada clase, con iconos. Filtra por tu clase.">
+<link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/parches.html">
+<meta property="og:title" content="Parches · Brújula de Azeroth">
+<meta property="og:description" content="Parches de WoW Forever en español: qué ha mejorado y qué ha empeorado en cada clase, con iconos. Filtra por tu clase.">
+<meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
+<meta property="og:url" content="https://bgarciaa181.github.io/brujula-de-azeroth/parches.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="img/icono.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/app-192.png">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
+<link rel="stylesheet" href="css/estilos.css?v=34">
+</head>
+<body>
+<header id="site-header"></header>
+
+<div class="page-hero">
+  <div class="wrap page-hero-in">
+    <span class="wow-icon xl page-hero-icon" aria-hidden="true"><img src="https://render.worldofwarcraft.com/us/icons/56/inv_misc_note_06.jpg" alt="" onerror="this.remove()"></span>
+    <div>
+      <h1>Parches</h1>
+      <p>Lo que ha cambiado en el juego, en español. <span class="pch-up">⬆ mejora</span> · <span class="pch-down">⬇ empeora</span></p>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <section id="parches-clases" data-tab="Clases" data-icon="classicon_warrior">
+      <div class="section-head">
+        <h2>Cambios por clase</h2>
+        <p>Actualizado el <b id="pch-fecha"></b>. Toca tu clase.</p>
+      </div>
+      <div class="pch-clases" id="pch-clases" role="group" aria-label="Clase"></div>
+      <div class="mt-modes" id="pch-tipo" role="group" aria-label="Tipo de cambio">
+        <button type="button" class="chip" data-v="todo">Todo</button>
+        <button type="button" class="chip" data-v="+">⬆ Mejoras</button>
+        <button type="button" class="chip" data-v="-">⬇ Empeora</button>
+      </div>
+      <div id="pch-resumen" class="pch-resumen"></div>
+      <div id="pch-lista"></div>
+    </section>
+
+    <section id="parches-general" data-tab="General" data-icon="inv_misc_map_01">
+      <div class="section-head">
+        <h2>Cambios generales</h2>
+        <p>Lo que afecta a todos: bichos, PvP, interfaz y razas.</p>
+      </div>
+      <div id="pch-general"></div>
+      <p class="pch-fuente">Fuentes: <a href="https://foreverchanges.pro/patch-notes" target="_blank" rel="noopener">ForeverChanges</a> · <a href="https://worldofwarcraft.blizzard.com/en-us/news/24315281/wow-forever-hotfixes-november-5-2026" target="_blank" rel="noopener">Blizzard (hotfix 5 nov)</a></p>
+    </section>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+<div class="achievement" id="achievement" hidden></div>
+
+<script src="js/datos.js?v=34"></script>
+<script src="js/talentos-datos.js?v=34"></script>
+<script src="js/talentos-es.js?v=34"></script>
+<script src="js/meta-datos.js?v=34"></script>
+<script src="js/parches-datos.js?v=34"></script>
+<script src="js/layout.js?v=34"></script>
+<script src="js/app.js?v=34"></script>
+</body>
+</html>

@@ -1101,6 +1101,8 @@ function pintarClase() {
       </div>
     </section>
 
+  ${cajaParchesClase(c.id)}
+
     <section class="cp-block">
       <h2>Talentos especiales</h2>
       <p class="cp-sub">Los de un solo punto. Suelen ser los que cambian tu forma de jugar.</p>
@@ -2055,6 +2057,122 @@ if ($("hero-classes")) {
 }
 if ($("explore")) pintarExplora();
 if ($("mi-pj")) pintarMiPersonaje();
+// ---------- PARCHES ----------
+// Convierte una línea de PARCHES en algo fácil de usar (icono y nombre en español incluidos)
+function datosParche(p) {
+  const [fecha, clase, en, es, tipo, nota, icono] = p;
+  const c = CLASSES.find(x => x.id === clase);
+  let talento = null;
+  if (c && TALENTOS[clase]) {
+    for (const lista of Object.values(TALENTOS[clase])) talento = talento || lista.find(t => t[0] === en);
+  }
+  const traducido = ((TALENTOS_ES[clase] || {})[en] || [])[0];
+  return {
+    fecha, clase, tipo, nota, c,
+    nombre: es !== en ? es : (traducido || en),
+    icono: icono || (talento && talento[3]) || (c ? c.icono : "inv_misc_note_06")
+  };
+}
+
+function iconoParche(d) {
+  // Si el icono no existe, sale el de la clase
+  const reserva = d.c ? `${ICONOS_URL}${d.c.icono}.jpg` : "";
+  return `<span class="wow-icon pch-icon" aria-hidden="true"><img src="${ICONOS_URL}${d.icono}.jpg" alt="" loading="lazy"
+    onerror="if(this.dataset.r){this.remove()}else{this.dataset.r=1;this.src='${reserva}'}"></span>`;
+}
+
+const FLECHA_PARCHE = { "+": ["⬆", "up", "Mejora"], "-": ["⬇", "down", "Empeora"], "=": ["•", "eq", "Cambio"] };
+
+function filaParche(d, conClase) {
+  const [flecha, cls, txt] = FLECHA_PARCHE[d.tipo];
+  return `
+    <div class="pch-row ${cls}">
+      ${iconoParche(d)}
+      <div class="pch-txt">
+        <b>${d.nombre}</b>${conClase && d.c ? `<small class="pch-cls" style="--cls:${d.c.color}">${d.c.nombre}</small>` : ""}
+        <span>${d.nota}</span>
+      </div>
+      <span class="pch-arrow" title="${txt}" aria-label="${txt}">${flecha}</span>
+    </div>`;
+}
+
+// Agrupa por fecha, lo más nuevo arriba
+function porFecha(lista, conClase) {
+  const fechas = [...new Set(lista.map(d => d.fecha))].sort().reverse();
+  return fechas.map(f => `
+    <div class="pch-day">
+      <h3 class="pch-date"><span>${PARCHES_FECHAS[f] || f}</span></h3>
+      <div class="pch-rows">${lista.filter(d => d.fecha === f).map(d => filaParche(d, conClase)).join("")}</div>
+    </div>`).join("");
+}
+
+function contarParche(lista) {
+  const n = t => lista.filter(d => d.tipo === t).length;
+  return `<span class="up">⬆ ${n("+")}</span><span class="down">⬇ ${n("-")}</span><span class="eq">• ${n("=")}</span>`;
+}
+
+let parcheClase = null;
+let parcheTipo = "todo";
+
+function pintarParches() {
+  const todos = PARCHES.map(datosParche);
+  const perfil = leerPerfil();
+  const pedida = new URLSearchParams(location.search).get("c");
+  if (!parcheClase) parcheClase = CLASSES.some(c => c.id === pedida) ? pedida : (perfil && perfil.clase) || "todas";
+  $("pch-fecha").textContent = PARCHES_ACTUALIZADO;
+
+  // Botones de clase con su balance de mejoras/empeoras
+  $("pch-clases").innerHTML = [{ id: "todas", nombre: "Todas", icono: "inv_misc_book_09", color: "#e8c25a" }, ...CLASSES].map(c => {
+    const suyos = todos.filter(d => c.id === "todas" ? d.c : d.clase === c.id);
+    const mia = perfil && perfil.clase === c.id;
+    return `<button type="button" class="pch-cbtn" data-v="${c.id}" aria-pressed="${parcheClase === c.id}" style="--cls:${c.color}">
+      ${iconoWow(c.icono, "")}<span>${c.nombre}${mia ? " ★" : ""}</span><small>${suyos.length}</small></button>`;
+  }).join("");
+  $("pch-clases").querySelectorAll("button").forEach(b => b.onclick = () => { parcheClase = b.dataset.v; pintarParches(); });
+
+  $("pch-tipo").querySelectorAll("button").forEach(b => {
+    b.setAttribute("aria-pressed", b.dataset.v === parcheTipo);
+    b.onclick = () => { parcheTipo = b.dataset.v; pintarParches(); };
+  });
+
+  const deClase = todos.filter(d => parcheClase === "todas" ? d.c : d.clase === parcheClase);
+  const lista = deClase.filter(d => parcheTipo === "todo" || d.tipo === parcheTipo);
+  const c = CLASSES.find(x => x.id === parcheClase);
+  $("pch-resumen").innerHTML = `<b>${c ? c.nombre : "Todas las clases"}</b>${contarParche(deClase)}
+    ${c ? `<a href="clase.html?c=${c.id}">Ver la clase</a><a href="talentos.html#${c.id}">Talentos</a>` : ""}`;
+  $("pch-lista").innerHTML = lista.length ? porFecha(lista, !c) : '<p class="empty">Sin cambios de este tipo.</p>';
+
+  $("pch-general").innerHTML = porFecha(todos.filter(d => d.clase === "general"), false);
+}
+
+// Recuadro "Últimos cambios" en la página de cada clase
+function cajaParchesClase(claseId) {
+  if (typeof PARCHES === "undefined") return "";
+  const suyos = PARCHES.filter(p => p[1] === claseId).map(datosParche);
+  if (!suyos.length) return "";
+  const ultimos = suyos.slice().sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 6);
+  return `
+    <section class="cp-block">
+      <h2>Últimos cambios</h2>
+      <p class="cp-sub">${contarParche(suyos)} desde el lanzamiento.</p>
+      <div class="pch-rows">${ultimos.map(d => filaParche(d, false)).join("")}</div>
+      <a class="cta ghost" href="parches.html?c=${claseId}">Ver los ${suyos.length} cambios</a>
+    </section>`;
+}
+
+// Inicio: los cambios de tu clase (o un resumen de todas)
+function pintarParcheInicio() {
+  const perfil = leerPerfil();
+  const todos = PARCHES.map(datosParche).filter(d => d.c);
+  const c = perfil && CLASSES.find(x => x.id === perfil.clase);
+  const lista = (c ? todos.filter(d => d.clase === c.id) : todos.filter(d => d.tipo !== "=")).sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 4);
+  $("pch-home").innerHTML = `
+    <div class="pch-rows">${lista.map(d => filaParche(d, !c)).join("")}</div>
+    <a class="cta ghost" href="parches.html${c ? `?c=${c.id}` : ""}">${c ? `Todos los cambios de ${c.nombre}` : "Ver todos los cambios"}</a>`;
+}
+
+if ($("pch-lista")) pintarParches();
+if ($("pch-home")) pintarParcheInicio();
 if ($("ap-form")) prepararAportar();
 if ($("pregunta")) pintarPregunta();
 if ($("relojes")) { pintarRelojes(); setInterval(pintarRelojes, 1000); }

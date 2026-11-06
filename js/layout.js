@@ -13,8 +13,12 @@ const PAGINAS = [
   ["oficios.html", "Profesiones", "trade_blacksmithing"],
   ["meta.html", "Meta", "achievement_bg_winwsg"],
   ["juegos.html", "Juegos", "inv_misc_dice_01"],
-  ["comunidad.html", "Comunidad", "inv_misc_note_01"]
+  ["comunidad.html", "Comunidad", "inv_misc_note_01"],
+  ["parches.html", "Parches", "inv_misc_note_06"]
 ];
+
+// Teclas de la barra, como en el juego: 1 2 3 ... 9 0 - =
+const TECLAS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "="];
 
 // En qué página está cada sección (para el buscador y los enlaces)
 const SECCION_PAGINA = {
@@ -25,7 +29,8 @@ const SECCION_PAGINA = {
   profesiones: "oficios.html", cual: "oficios.html", "elige-oficio": "oficios.html", "plan-alts": "oficios.html", preguntas: "oficios.html", "tus-oficios": "oficios.html", campamento: "oficios.html",
   comunidad: "comunidad.html", aportar: "comunidad.html", noticias: "comunidad.html",
   elige: "meta.html", "meta-pvp": "meta.html", "meta-pve": "meta.html", "meta-clases": "meta.html",
-  juego: "juegos.html", ruleta: "juegos.html", nombres: "juegos.html"
+  juego: "juegos.html", ruleta: "juegos.html", nombres: "juegos.html",
+  "parches-clases": "parches.html", "parches-general": "parches.html"
 };
 
 function paginaActual() {
@@ -122,15 +127,6 @@ function bloquearFondo(si) {
 }
 
 // ---------- MENÚ DE ARRIBA ----------
-// Dragón plateado de los lados de la barra (dibujo propio)
-const DRAGON_SVG = `<svg class="abar-dragon" viewBox="0 0 120 90" aria-hidden="true">
-  <defs><linearGradient id="plata" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f7fb"/><stop offset=".45" stop-color="#a9b3c2"/><stop offset="1" stop-color="#4a5262"/></linearGradient></defs>
-  <path fill="url(#plata)" stroke="#1b1f2b" stroke-width="1.5" d="M116 86 C100 70 92 58 88 44 C80 50 70 52 60 50 C66 44 70 38 70 30 C60 36 48 38 36 34 C44 28 50 20 50 10 C40 18 28 20 14 16 C30 6 52 2 70 6 C84 9 96 18 104 30 C110 40 114 56 116 86 Z"/>
-  <path fill="none" stroke="#1b1f2b" stroke-width="1.2" opacity=".55" d="M100 34 C88 30 76 26 62 24 M104 46 C92 40 80 38 66 38 M96 22 C84 16 70 14 54 14"/>
-  <path fill="url(#plata)" stroke="#1b1f2b" stroke-width="1.5" d="M96 60 C88 62 80 68 76 78 C84 74 92 74 98 76 Z"/>
-  <circle cx="58" cy="11" r="2" fill="#ffcf5a"/>
-</svg>`;
-
 function pintarCabecera() {
   const actual = paginaActual();
   const cabecera = document.getElementById("site-header");
@@ -143,14 +139,12 @@ function pintarCabecera() {
         <span>Brújula<br>de Azeroth</span>
       </a>
       <div class="abar">
-        ${DRAGON_SVG}
         <nav class="site-nav" aria-label="Páginas">
           ${PAGINAS.map(([archivo, nombre, icono], i) => `
             <a href="${archivo}" class="site-link${archivo === actual ? " active" : ""}"${archivo === actual ? ' aria-current="page"' : ""} title="${nombre} (tecla ${(i + 1) % 10})">
-              <span class="slot">${iconoWow(icono, "sm")}<kbd>${(i + 1) % 10}</kbd></span><span class="slot-name">${nombre}</span>
+              <span class="slot">${iconoWow(icono, "sm")}<kbd>${TECLAS[i] || ""}</kbd></span><span class="slot-name">${nombre}</span>
             </a>`).join("")}
         </nav>
-        ${DRAGON_SVG.replace('class="abar-dragon"', 'class="abar-dragon der"')}
       </div>
       <button type="button" class="pj-btn" id="pj-open" aria-label="Mis personajes"></button>
       <button type="button" class="search-btn" id="search-open" aria-label="Buscar">
@@ -163,14 +157,14 @@ function pintarCabecera() {
   if (activo) activo.scrollIntoView({ block: "nearest", inline: "center" });
 }
 
-// Atajos de teclado como en el juego: del 1 al 0 cambias de página
+// Atajos de teclado como en el juego: del 1 al 0 (y el -) cambias de página
 document.addEventListener("keydown", e => {
   if (e.ctrlKey || e.altKey || e.metaKey || e.repeat) return;
   const t = e.target;
   if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
   if (document.querySelector(".search-layer:not([hidden]), .pj-layer:not([hidden]), dialog[open]")) return;
-  if (!/^[0-9]$/.test(e.key)) return;
-  const i = e.key === "0" ? 9 : Number(e.key) - 1;
+  const i = TECLAS.indexOf(e.key);
+  if (i < 0) return;
   if (PAGINAS[i]) {
     const slot = document.querySelectorAll(".site-link")[i];
     if (slot) slot.classList.add("pulsado");
