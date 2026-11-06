@@ -3,7 +3,7 @@
 // Cuando salga un parche, se cambian las letras de aquí y la fecha. Nada más.
 // Letras: S (lo mejor), A, B, C, D.
 
-const META_FECHA = "5 nov 2026";
+const META_FECHA = "6 nov 2026";
 const META_PARCHE = "Lanzamiento (cliente 1.60.1). Las simulaciones ya son a nivel 60";
 
 // Las fuentes. La letra corta es la que sale en cada especialización.
@@ -87,7 +87,7 @@ const META = {
   // Duelos y mundo abierto
   duelo: [
     ["brujo", "Aflicción", { I: "S", M: "A" }],
-    ["brujo", "Demonología", { I: "S", M: "S" }],
+    ["brujo", "Demonología", { I: "S", M: "S", L: "S" }],
     ["picaro", "Sutileza", { I: "S", M: "A" }],
     ["mago", "Escarcha", { I: "S", M: "A" }],
     ["sacerdote", "Sombras", { I: "S", M: "A" }],
@@ -95,10 +95,10 @@ const META = {
     ["brujo", "Destrucción", { I: "A", M: "B" }],
     ["picaro", "Asesinato", { I: "A", M: "B" }],
     ["picaro", "Combate", { I: "A", M: "B" }],
-    ["cazador", "Puntería", { I: "A", M: "A" }],
-    ["cazador", "Bestias", { I: "A", M: "A" }],
+    ["cazador", "Puntería", { I: "A", M: "A", L: "C" }],
+    ["cazador", "Bestias", { I: "A", M: "A", L: "B" }],
     ["chaman", "Mejora", { I: "A", M: "B" }],
-    ["chaman", "Elemental", { I: "A", M: "B" }],
+    ["chaman", "Elemental", { I: "A", M: "B", L: "B" }],
     ["guerrero", "Armas", { I: "B", M: "B" }],
     ["druida", "Restauración", { I: "B", M: "A" }],
     ["paladin", "Sagrado", { I: "B", M: "A" }],
@@ -106,12 +106,12 @@ const META = {
     ["mago", "Fuego", { I: "B", M: "B" }],
     ["mago", "Arcano", { I: "B", M: "C" }],
     ["druida", "Equilibrio", { I: "B", M: "C" }],
-    ["cazador", "Supervivencia", { I: "B", M: "A" }],
-    ["druida", "Combate feral", { I: "B", M: "A" }, "felino"],
-    ["paladin", "Reprensión", { I: "C", M: "B" }],
+    ["cazador", "Supervivencia", { I: "B", M: "A", L: "B" }],
+    ["druida", "Combate feral", { I: "B", M: "A", L: "C" }, "felino"],
+    ["paladin", "Reprensión", { I: "C", M: "B", L: "S" }],
     ["guerrero", "Furia", { I: "C", M: "C" }],
-    ["chaman", "Restauración", { I: "C", M: "B" }],
-    ["druida", "Combate feral", { I: "C", M: "A" }, "oso"],
+    ["chaman", "Restauración", { I: "C", M: "B", L: "A" }],
+    ["druida", "Combate feral", { I: "C", M: "A", L: "C" }, "oso"],
     ["guerrero", "Protección", { I: "D", M: "C" }],
     ["paladin", "Protección", { I: "D", M: "C" }]
   ]

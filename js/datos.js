@@ -537,7 +537,8 @@ const MAPA_URL = id => `https://wow.zamimg.com/images/wow/classic/maps/enus/zoom
 const MASCOTA_MODELO = {
   "Broken Tooth": 6082, "Deathmaw": 9562, "Humar the Pridelord": 4424, "Lupos": 11412,
   "Matriarch Bristlefur": 806, "Mist Howler": 165, "Mother Fang": 2541, "Ravage": 10904, "Shal'ma": 6805,
-  "Snarler": 780, "The Rake": 1973, "Timber": 11422
+  "Snarler": 780, "The Rake": 1973, "Timber": 11422,
+  "Coldrasp": 2446, "Ghostfang": 9949, "Mystmane": 136608, "Fernfeather": 144242, "Nightscreech": 144559
 };
 const FOTO_MODELO = id => `https://wow.zamimg.com/modelviewer/classicplus/webthumbs/npc/${id % 256}/${id}.webp`;
 
@@ -569,3 +570,64 @@ const CAZADOR_MASCOTA_USO = [
   ["PvP", "Araña", "Telaraña: inmoviliza 4 s"],
   ["PvP (emboscar)", "Felino", "Acecho: ataca desde sigilo con daño extra"]
 ];
+
+// ---------- GUÍAS RÁPIDAS DE PALADÍN Y SACERDOTE ----------
+// Fuentes: LFCarry (guía del paladín y tier list, 4 nov), LepreStore (guías de paladín y sacerdote, 4–6 nov), ConquestCapped (sacerdote, 2 nov).
+// specs: [árbol (como en META), icono, qué es, para quién]
+// usos: [etiqueta, título, explicación, icono]
+const GUIAS = {
+  paladin: {
+    titulo: "¿Qué paladín me hago?",
+    sub: "La spec más fuerte ahora mismo y para qué sirve cada una.",
+    specs: [
+      ["Sagrado", "spell_holy_holybolt", "Curas muy fuertes a un objetivo. Vigilia de la Luz cura también al grupo.", "Si te gusta curar mazmorras"],
+      ["Protección", "spell_holy_devotionaura", "Tanque de verdad: Sello de furia y un Juicio que provoca a 10 m.", "Encuentras grupo de mazmorra al momento"],
+      ["Reprensión", "spell_holy_auraoflight", "Daño cuerpo a cuerpo. Campeón de la Luz suma tu intelecto al daño.", "La mejor para subir sola"]
+    ],
+    usosTitulo: "Cómo subirlo",
+    usos: [
+      ["Sola", "Reprensión", "Matas rápido y te curas entre pelea y pelea", "spell_holy_auraoflight"],
+      ["Mazmorras", "Protección", "Los tanques escasean: entras a grupo enseguida", "spell_holy_devotionaura"],
+      ["Curando", "Sagrado", "Más lento sola, pero en grupo vas genial", "spell_holy_holybolt"],
+      ["Nivel 40", "Doble especialización", "Puedes llevar dos specs y cambiar cuando quieras", "achievement_general"]
+    ],
+    nuevo: [
+      ["spell_holy_holysmite", "Golpe sagrado desde nivel 6", "Golpe instantáneo de daño Sagrado, cada 10 s"],
+      ["spell_holy_righteousfury", "El Juicio ya no gasta el sello", "Juzgas y el sello se queda puesto"],
+      ["spell_holy_innerfire", "Consagración de base", "Y Bendición de reyes: las dos a nivel 20, sin talento"],
+      ["spell_holy_sealoffury", "Furia justa a nivel 10", "Antes a nivel 16. +33% de amenaza (+90% con daño Sagrado)"],
+      ["spell_holy_sealofwrath", "Sello de furia (tanque)", "Daño Sagrado en cada golpe, un escudo pequeño y su Juicio provoca"],
+      ["spell_holy_sealofsalvation", "Adiós a Bendición de salvación", "La quitaron el 2 de noviembre"],
+      ["spell_holy_sealofmight", "No tienes interrupción", "El Martillo de justicia no corta todos los hechizos"],
+      ["achievement_character_undead_male", "No muerto paladín", "La Horda ya puede ser paladín (no muerto). Los Skyborne no"]
+    ]
+  },
+  sacerdote: {
+    titulo: "¿Qué sacerdote me hago?",
+    sub: "La spec más fuerte ahora mismo y para qué sirve cada una.",
+    specs: [
+      ["Disciplina", "spell_holy_wordfortitude", "Escudos y Penitencia (talento de 21 puntos). Infusión de poder.", "El sanador más fuerte ahora mismo"],
+      ["Sagrado", "spell_holy_guardianspirit", "Curas de grupo: Rezo de alivio salta hasta 5 personas. Sanación vinculante.", "Para curar raids"],
+      ["Sombras", "spell_shadow_shadowwordpain", "Daño con sombras: Dolor, Tortura mental y Plaga devoradora.", "La mejor para subir sola"]
+    ],
+    usosTitulo: "Hechizos según tu raza",
+    usos: [
+      ["Humano", "Gracia divina · Feedback", "Nivel 10 y nivel 20", "achievement_character_human_male"],
+      ["Enano", "Rezo desesperado · Castigar", "Nivel 10 y nivel 20", "achievement_character_dwarf_male"],
+      ["Elfo de la noche", "Fragmentos de estrella · Gracia de Elune", "Nivel 10 y nivel 20", "achievement_character_nightelf_male"],
+      ["Gnomo (nuevo)", "Confounding Flash · Contingency Plan", "El gnomo sacerdote es nuevo en Forever", "achievement_character_gnome_male"],
+      ["Trol", "Maleficio de debilidad · Guardia de las Sombras", "Nivel 10 y nivel 20", "achievement_character_troll_male"],
+      ["No muerto", "Toque de debilidad · Dark Sacrifice", "Nivel 10 y nivel 20", "achievement_character_undead_male"]
+    ],
+    nuevo: [
+      ["spell_holy_excorcism", "Custodia de miedo para todos", "Y Plaga devoradora: todas las razas, a nivel 20"],
+      ["spell_holy_divinespirit", "Espíritu divino de base", "Lo aprendes a nivel 30, sin talento"],
+      ["spell_shadow_demonicfortitude", "Palabra de las Sombras: muerte (nv 32)", "Si no mata, te quita el 30% de tu vida. Si fallas, nada"],
+      ["spell_holy_prayerofhealing02", "Rezo de sanación al grupo de tu objetivo", "Cura también a las mascotas"],
+      ["spell_holy_renew", "Renovar se apila", "Varios sacerdotes pueden poner Renovar al mismo objetivo"],
+      ["spell_magic_lesserinvisibilty", "Desvanecerse quita el doble de amenaza", "Ideal cuando el bicho se te viene encima"],
+      ["spell_holy_powerwordshield", "Escudo: se puede renovar", "Con un rango igual o mayor (parche del 3 nov)"],
+      ["spell_shadow_shadowform", "Forma de las Sombras no deja curar", "Tienes que salir de la forma para curarte"]
+    ]
+  }
+};

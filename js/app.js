@@ -1053,11 +1053,28 @@ function notaSpec(claseId, arbol, listas) {
   return ["D", "C", "B", "A", "S"][Math.min(4, Math.floor(media + 0.5))];
 }
 
-function guiaCazador() {
+// Datos de la guía de una clase (el cazador usa los suyos, con mascotas)
+function datosGuia(claseId) {
+  if (claseId === "cazador") return {
+    titulo: "¿Qué cazador me hago?",
+    sub: "La spec más fuerte ahora mismo y la mascota que va con cada una.",
+    specs: CAZADOR_SPECS.map(([arbol, icono, que, fam, porque, para]) => [arbol, icono, que, para, fam, porque]),
+    usosTitulo: "Mascota según lo que hagas",
+    usos: CAZADOR_MASCOTA_USO.map(([uso, fam, txt]) => [uso, fam, txt, null]),
+    nuevo: CAZADOR_FOREVER,
+    cta: ["Ver las 450 bestias que puedes domar, con foto", "mascotas.html#aspectos"]
+  };
+  return GUIAS[claseId] || null;
+}
+
+function guiaClase(claseId) {
+  const g = datosGuia(claseId);
+  if (!g) return "";
+  const c = CLASSES.find(x => x.id === claseId);
   const perfil = leerPerfil();
-  const specs = CAZADOR_SPECS.map(([arbol, icono, que, fam, porque, para]) => ({
-    arbol, icono, que, fam, porque, para,
-    pve: notaSpec("cazador", arbol, ["dps"]), pvp: notaSpec("cazador", arbol, ["bg", "duelo"])
+  const specs = g.specs.map(([arbol, icono, que, para, fam, porque]) => ({
+    arbol, icono, que, para, fam, porque,
+    pve: notaSpec(claseId, arbol, ["dps", "tanque", "sanador"]), pvp: notaSpec(claseId, arbol, ["bg", "duelo"])
   }));
   // La estrella va a la(s) que tengan la nota más alta (si todas empatan, a ninguna)
   const puntos = l => ({ S: 4, A: 3, B: 2, C: 1, D: 0 })[l] ?? -1;
@@ -1068,10 +1085,11 @@ function guiaCazador() {
   };
   const metaPve = estrellas("pve");
   const metaPvp = estrellas("pvp");
+  const mio = perfil && perfil.clase === claseId ? ` Tu ${c.nombre.toLowerCase()}: <b>${perfil.nombre}</b>, nivel ${perfil.nivel || 1}.` : "";
   return `
     <section class="cp-block hg">
-      <h2>¿Qué cazador me hago?</h2>
-      <p class="cp-sub">La spec más fuerte ahora mismo y la mascota que va con cada una.${perfil && perfil.clase === "cazador" ? ` Tu cazador: <b>${perfil.nombre}</b>, nivel ${perfil.nivel || 1}.` : ""}</p>
+      <h2>${g.titulo}</h2>
+      <p class="cp-sub">${g.sub}${mio}</p>
       <div class="hg-specs">
         ${specs.map(s => `
           <div class="hg-spec${metaPve.includes(s) ? " top" : ""}">
@@ -1082,22 +1100,25 @@ function guiaCazador() {
               <span>PvP <i class="t-${s.pvp}">${s.pvp || "—"}</i></span>
             </div>
             <p>${s.que}</p>
-            <div class="hg-pet">${iconoFamilia(s.fam)}<span><b>Mascota: ${s.fam}</b><small>${s.porque}</small></span></div>
+            ${s.fam ? `<div class="hg-pet">${iconoFamilia(s.fam)}<span><b>Mascota: ${s.fam}</b><small>${s.porque}</small></span></div>` : ""}
             <small class="hg-for">${s.para}</small>
-            <a class="b-link" href="talentos.html#cazador">Ver la build →</a>
+            <a class="b-link" href="talentos.html#${claseId}">Ver la build →</a>
           </div>`).join("")}
       </div>
 
-      <h3 class="hg-h">Mascota según lo que hagas</h3>
+      <h3 class="hg-h">${g.usosTitulo}</h3>
       <div class="hg-uses">
-        ${CAZADOR_MASCOTA_USO.map(([uso, fam, txt]) => `<a class="hg-use" href="mascotas.html#aspectos">${iconoFamilia(fam)}<span><small>${uso}</small><b>${fam}</b><em>${txt}</em></span></a>`).join("")}
+        ${g.usos.map(([uso, titulo, txt, icono]) => {
+          const dentro = `${icono ? iconoWow(icono, "") : iconoFamilia(titulo)}<span><small>${uso}</small><b>${titulo}</b><em>${txt}</em></span>`;
+          return icono ? `<div class="hg-use">${dentro}</div>` : `<a class="hg-use" href="mascotas.html#aspectos">${dentro}</a>`;
+        }).join("")}
       </div>
 
-      <h3 class="hg-h">Lo nuevo del cazador en Forever</h3>
+      <h3 class="hg-h">Lo nuevo del ${c.nombre.toLowerCase()} en Forever</h3>
       <div class="hg-news">
-        ${CAZADOR_FOREVER.map(([ic, t, d]) => `<div class="hg-new">${iconoWow(ic, "")}<span><b>${t}</b><small>${d}</small></span></div>`).join("")}
+        ${g.nuevo.map(([ic, t, d]) => `<div class="hg-new">${iconoWow(ic, "")}<span><b>${t}</b><small>${d}</small></span></div>`).join("")}
       </div>
-      <a class="cta ghost" href="mascotas.html#aspectos">Ver las 450 bestias que puedes domar, con foto</a>
+      ${g.cta ? `<a class="cta ghost" href="${g.cta[1]}">${g.cta[0]}</a>` : `<a class="cta ghost" href="parches.html?c=${claseId}">Ver todos los cambios del ${c.nombre.toLowerCase()}</a>`}
     </section>`;
 }
 
@@ -1190,7 +1211,7 @@ function pintarClase() {
       </div>
     </section>`;
 
-  if (c.id === "cazador") html += guiaCazador();
+  html += guiaClase(c.id);
 
   if (c.id === "cazador") {
     const pets = MASCOTAS.slice().sort((a, b) => a[2] - b[2]).slice(0, 4);
