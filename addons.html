@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Addons · Brújula de Azeroth</title>
+<meta name="description" content="Addons que funcionan en WoW Forever, en español: para qué sirve cada uno y por qué te viene bien. Filtra por tu clase.">
+<link rel="canonical" href="https://bgarciaa181.github.io/brujula-de-azeroth/addons.html">
+<meta property="og:title" content="Addons · Brújula de Azeroth">
+<meta property="og:description" content="Addons que funcionan en WoW Forever, en español: para qué sirve cada uno y por qué te viene bien. Filtra por tu clase.">
+<meta property="og:image" content="https://bgarciaa181.github.io/brujula-de-azeroth/img/preview.png">
+<meta property="og:url" content="https://bgarciaa181.github.io/brujula-de-azeroth/addons.html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="img/icono.svg">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/app-192.png">
+<meta name="theme-color" content="#0b0e1a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@500;700&family=Alegreya+Sans:wght@400;500;700&family=Alegreya:ital@1&display=swap">
+<link rel="stylesheet" href="css/estilos.css?v=34">
+</head>
+<body>
+<header id="site-header"></header>
+
+<div class="page-hero">
+  <div class="wrap page-hero-in">
+    <span class="wow-icon xl page-hero-icon" aria-hidden="true"><img src="https://render.worldofwarcraft.com/us/icons/56/inv_gizmo_02.jpg" alt="" onerror="this.remove()"></span>
+    <div>
+      <h1>Addons</h1>
+      <p>Los que funcionan en Forever, para qué sirven y por qué te vienen bien.</p>
+    </div>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <section id="addons-lista" data-tab="Los mejores" data-icon="inv_misc_book_09">
+      <div class="section-head">
+        <h2>Addons para Forever</h2>
+        <p>Comprobado el <b id="ad-fecha"></b>. Toca tu clase y te salen primero los que más te sirven.</p>
+      </div>
+      <div class="ad-clases" id="ad-clases" role="group" aria-label="Clase"></div>
+      <div class="ad-cats" id="ad-cats" role="group" aria-label="Categoría"></div>
+      <div class="ad-grid" id="ad-grid"></div>
+    </section>
+
+    <section id="addons-serie" data-tab="Ya vienen en el juego" data-icon="inv_misc_gear_01">
+      <div class="section-head">
+        <h2>No instales esto: ya viene en el juego</h2>
+        <p>Forever trae de serie cosas que en Classic necesitabas un addon.</p>
+      </div>
+      <div class="hg-news" id="ad-serie"></div>
+      <div class="section-head ad-sub">
+        <h2>Los que no funcionan</h2>
+        <p>Y qué usar en su lugar.</p>
+      </div>
+      <div class="ad-rotos" id="ad-rotos"></div>
+    </section>
+
+    <section id="addons-instalar" data-tab="Cómo instalarlos" data-icon="inv_misc_wrench_01">
+      <div class="section-head">
+        <h2>Cómo instalarlos</h2>
+        <p>Dos formas. La fácil es la primera.</p>
+      </div>
+      <ol class="ad-pasos">
+        <li><b>Con la app de CurseForge</b><span>Elige tu instalación de World of Warcraft y la versión <b>Forever</b>. Busca el addon y dale a instalar. Se actualizan solos.</span></li>
+        <li><b>A mano</b><span>Baja el archivo de <b>Forever</b> (no el de Classic ni el de Retail), descomprímelo y mete la carpeta en <code>World of Warcraft\_forever_\Interface\AddOns</code>. Dentro de AddOns tiene que estar la carpeta con el archivo <code>.toc</code>, no otra carpeta encima.</span></li>
+        <li><b>Cierra el juego del todo y vuelve a abrirlo</b><span>Con <code>/reload</code> no basta para addons nuevos.</span></li>
+        <li><b>Actívalos</b><span>En la pantalla de personajes, botón <b>AddOns</b>. Si sale «desactualizado», espera a que el autor lo actualice: cambiar el número a mano no lo arregla.</span></li>
+        <li><b>Después de cada parche</b><span>Actualízalos. Un parche puede cambiar la versión (ahora es la 16001).</span></li>
+      </ol>
+      <p class="pch-fuente">Fuentes: <a href="https://forevermastery.com/en/addons/forever-compatibility" target="_blank" rel="noopener">ForeverMastery</a> · <a href="https://timesaver.gg/blog/wow-forever-addons-save-beta-ui-before-launch" target="_blank" rel="noopener">Timesaver</a> · <a href="https://leprestore.com/guides/world-of-warcraft-forever/wow-forever-best-addons/" target="_blank" rel="noopener">LepreStore</a></p>
+    </section>
+  </div>
+</main>
+
+<footer id="site-footer"></footer>
+<div class="achievement" id="achievement" hidden></div>
+
+<script src="js/datos.js?v=34"></script>
+<script src="js/talentos-datos.js?v=34"></script>
+<script src="js/talentos-es.js?v=34"></script>
+<script src="js/meta-datos.js?v=34"></script>
+<script src="js/addons-datos.js?v=34"></script>
+<script src="js/layout.js?v=34"></script>
+<script src="js/app.js?v=34"></script>
+</body>
+</html>

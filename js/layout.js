@@ -14,7 +14,8 @@ const PAGINAS = [
   ["meta.html", "Meta", "achievement_bg_winwsg"],
   ["juegos.html", "Juegos", "inv_misc_dice_01"],
   ["comunidad.html", "Comunidad", "inv_misc_note_01"],
-  ["parches.html", "Parches", "inv_misc_note_06"]
+  ["parches.html", "Parches", "inv_misc_note_06"],
+  ["addons.html", "Addons", "inv_gizmo_02"]
 ];
 
 // Teclas de la barra, como en el juego: 1 2 3 ... 9 0 - =
@@ -30,7 +31,8 @@ const SECCION_PAGINA = {
   comunidad: "comunidad.html", aportar: "comunidad.html", noticias: "comunidad.html",
   elige: "meta.html", "meta-pvp": "meta.html", "meta-pve": "meta.html", "meta-clases": "meta.html",
   juego: "juegos.html", ruleta: "juegos.html", nombres: "juegos.html",
-  "parches-clases": "parches.html", "parches-general": "parches.html"
+  "parches-clases": "parches.html", "parches-general": "parches.html",
+  "addons-lista": "addons.html", "addons-serie": "addons.html", "addons-instalar": "addons.html"
 };
 
 function paginaActual() {
@@ -157,7 +159,7 @@ function pintarCabecera() {
   if (activo) activo.scrollIntoView({ block: "nearest", inline: "center" });
 }
 
-// Atajos de teclado como en el juego: del 1 al 0 (y el -) cambias de página
+// Atajos de teclado como en el juego: del 1 al 0 (y el - y el =) cambias de página
 document.addEventListener("keydown", e => {
   if (e.ctrlKey || e.altKey || e.metaKey || e.repeat) return;
   const t = e.target;

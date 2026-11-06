@@ -1044,6 +1044,63 @@ function nombreTalento(claseId, t) {
   return es ? es[0] : t[0];
 }
 
+// ---------- GUÍA DEL CAZADOR (en su página de clase) ----------
+// Nota de una spec en PvE o PvP, sacada del meta
+function notaSpec(claseId, arbol, listas) {
+  const notas = listas.flatMap(l => META[l].filter(m => m[0] === claseId && m[1] === arbol).map(m => puntosMeta(m[2])));
+  if (!notas.length) return null;
+  const media = notas.reduce((a, b) => a + b, 0) / notas.length;
+  return ["D", "C", "B", "A", "S"][Math.min(4, Math.floor(media + 0.5))];
+}
+
+function guiaCazador() {
+  const perfil = leerPerfil();
+  const specs = CAZADOR_SPECS.map(([arbol, icono, que, fam, porque, para]) => ({
+    arbol, icono, que, fam, porque, para,
+    pve: notaSpec("cazador", arbol, ["dps"]), pvp: notaSpec("cazador", arbol, ["bg", "duelo"])
+  }));
+  // La estrella va a la(s) que tengan la nota más alta (si todas empatan, a ninguna)
+  const puntos = l => ({ S: 4, A: 3, B: 2, C: 1, D: 0 })[l] ?? -1;
+  const estrellas = campo => {
+    const max = Math.max(...specs.map(s => puntos(s[campo])));
+    const top = specs.filter(s => puntos(s[campo]) === max);
+    return top.length === specs.length ? [] : top;
+  };
+  const metaPve = estrellas("pve");
+  const metaPvp = estrellas("pvp");
+  return `
+    <section class="cp-block hg">
+      <h2>¿Qué cazador me hago?</h2>
+      <p class="cp-sub">La spec más fuerte ahora mismo y la mascota que va con cada una.${perfil && perfil.clase === "cazador" ? ` Tu cazador: <b>${perfil.nombre}</b>, nivel ${perfil.nivel || 1}.` : ""}</p>
+      <div class="hg-specs">
+        ${specs.map(s => `
+          <div class="hg-spec${metaPve.includes(s) ? " top" : ""}">
+            <div class="hg-head">${iconoWow(s.icono, "lg")}<b>${s.arbol}</b>
+              ${metaPve.includes(s) ? '<span class="hg-star">★ Meta PvE</span>' : ""}${metaPvp.includes(s) ? '<span class="hg-star pvp">★ Meta PvP</span>' : ""}</div>
+            <div class="hg-tiers">
+              <span>PvE <i class="t-${s.pve}">${s.pve || "—"}</i></span>
+              <span>PvP <i class="t-${s.pvp}">${s.pvp || "—"}</i></span>
+            </div>
+            <p>${s.que}</p>
+            <div class="hg-pet">${iconoFamilia(s.fam)}<span><b>Mascota: ${s.fam}</b><small>${s.porque}</small></span></div>
+            <small class="hg-for">${s.para}</small>
+            <a class="b-link" href="talentos.html#cazador">Ver la build →</a>
+          </div>`).join("")}
+      </div>
+
+      <h3 class="hg-h">Mascota según lo que hagas</h3>
+      <div class="hg-uses">
+        ${CAZADOR_MASCOTA_USO.map(([uso, fam, txt]) => `<a class="hg-use" href="mascotas.html#aspectos">${iconoFamilia(fam)}<span><small>${uso}</small><b>${fam}</b><em>${txt}</em></span></a>`).join("")}
+      </div>
+
+      <h3 class="hg-h">Lo nuevo del cazador en Forever</h3>
+      <div class="hg-news">
+        ${CAZADOR_FOREVER.map(([ic, t, d]) => `<div class="hg-new">${iconoWow(ic, "")}<span><b>${t}</b><small>${d}</small></span></div>`).join("")}
+      </div>
+      <a class="cta ghost" href="mascotas.html#aspectos">Ver las 450 bestias que puedes domar, con foto</a>
+    </section>`;
+}
+
 function pintarClase() {
   const pedida = new URLSearchParams(location.search).get("c");
   const perfil = leerPerfil();
@@ -1132,6 +1189,8 @@ function pintarClase() {
           </div>`).join("")}
       </div>
     </section>`;
+
+  if (c.id === "cazador") html += guiaCazador();
 
   if (c.id === "cazador") {
     const pets = MASCOTAS.slice().sort((a, b) => a[2] - b[2]).slice(0, 4);
@@ -1325,7 +1384,7 @@ function pintarBestiario() {
       </button>
       <b>${mejor[0]}</b>
       <small>${iconoFamilia(fam)} ${fam} · ${mejor[3] || "—"}</small>
-      ${abierto ? `<ul class="be-list">${bestias.map(b => `<li><a href="https://www.wowhead.com/classic/npc=${b[4]}" target="_blank" rel="noopener">${b[0]}</a><span>nv ${b[1]}${b[2] !== b[1] ? "–" + b[2] : ""} · ${b[3] || "—"}</span></li>`).join("")}</ul>` : ""}
+      ${abierto ? `<ul class="be-list">${bestias.map(b => `<li><a href="https://www.wowhead.com/forever/npc=${b[4]}" target="_blank" rel="noopener">${b[0]}</a><span>nv ${b[1]}${b[2] !== b[1] ? "–" + b[2] : ""} · ${b[3] || "—"}</span></li>`).join("")}</ul>` : ""}
     </div>`;
   }).join("") + (total > bestiario.mostrar ? `<button type="button" class="cta ghost be-vermas" id="be-vermas">Ver ${Math.min(48, total - bestiario.mostrar)} más</button>` : "")
     || '<p class="empty">No hay bestias con ese filtro.</p>';
@@ -2171,6 +2230,54 @@ function pintarParcheInicio() {
     <a class="cta ghost" href="parches.html${c ? `?c=${c.id}` : ""}">${c ? `Todos los cambios de ${c.nombre}` : "Ver todos los cambios"}</a>`;
 }
 
+// ---------- ADDONS ----------
+let addonClase = null;
+let addonCat = "todas";
+
+function pintarAddons() {
+  const perfil = leerPerfil();
+  if (!addonClase) addonClase = perfil && CLASSES.some(c => c.id === perfil.clase) ? perfil.clase : "todas";
+  $("ad-fecha").textContent = ADDONS_FECHA;
+
+  $("ad-clases").innerHTML = [{ id: "todas", nombre: "Todas", icono: "inv_misc_book_09", color: "#e8c25a" }, ...CLASSES].map(c =>
+    `<button type="button" class="pch-cbtn" data-v="${c.id}" aria-pressed="${addonClase === c.id}" style="--cls:${c.color}">
+      ${iconoWow(c.icono, "")}<span>${c.nombre}${perfil && perfil.clase === c.id ? " ★" : ""}</span></button>`).join("");
+  $("ad-clases").querySelectorAll("button").forEach(b => b.onclick = () => { addonClase = b.dataset.v; pintarAddons(); });
+
+  $("ad-cats").innerHTML = [["todas", "Todos", "inv_misc_book_09"], ...ADDON_CATS].map(([id, n, ic]) =>
+    `<button type="button" class="chip" data-v="${id}" aria-pressed="${addonCat === id}">${n}</button>`).join("");
+  $("ad-cats").querySelectorAll("button").forEach(b => b.onclick = () => { addonCat = b.dataset.v; pintarAddons(); });
+
+  // Primero los de tu clase, luego los imprescindibles
+  const deClase = a => addonClase !== "todas" && a[6].includes(addonClase);
+  const lista = ADDONS.filter(a => addonCat === "todas" || a[1] === addonCat)
+    .map((a, i) => ({ a, i, peso: (deClase(a) ? 2 : 0) + (a[7] ? 1 : 0) }))
+    .sort((x, y) => y.peso - x.peso || x.i - y.i);
+
+  $("ad-grid").innerHTML = lista.map(({ a }) => {
+    const [nombre, cat, icono, que, porque, estado, clases, top] = a;
+    const catInfo = ADDON_CATS.find(c => c[0] === cat);
+    return `
+      <div class="ad-card${deClase(a) ? " mine" : ""}">
+        <div class="ad-head">${iconoWow(icono, "lg")}
+          <div><b>${nombre}</b><small>${catInfo ? catInfo[1] : ""}</small></div>
+          ${estado === "prueba" ? '<span class="ad-tag beta" title="El autor la tiene en pruebas">En pruebas</span>' : '<span class="ad-tag ok">Funciona</span>'}
+        </div>
+        <p>${que}</p>
+        <p class="ad-why"><b>En Forever:</b> ${porque}</p>
+        <div class="ad-foot">
+          ${top ? '<span class="ad-must">★ Imprescindible</span>' : ""}
+          ${clases.map(id => { const c = CLASSES.find(x => x.id === id); return c ? `<span class="ad-cls" style="--cls:${c.color}">${c.nombre}</span>` : ""; }).join("")}
+          <a href="https://www.curseforge.com/wow/search?search=${encodeURIComponent(nombre.replace(/\s*\(.*\)|\s*\+.*/g, ""))}" target="_blank" rel="noopener">Buscar</a>
+        </div>
+      </div>`;
+  }).join("") || '<p class="empty">No hay addons con ese filtro.</p>';
+
+  $("ad-serie").innerHTML = ADDONS_DE_SERIE.map(([ic, t, d]) => `<div class="hg-new">${iconoWow(ic, "")}<span><b>${t}</b><small>${d}</small></span></div>`).join("");
+  $("ad-rotos").innerHTML = ADDONS_ROTOS.map(([n, alt]) => `<div class="ad-roto"><b>${n}</b><span>→ ${alt}</span></div>`).join("");
+}
+
+if ($("ad-grid")) pintarAddons();
 if ($("pch-lista")) pintarParches();
 if ($("pch-home")) pintarParcheInicio();
 if ($("ap-form")) prepararAportar();

@@ -539,4 +539,33 @@ const MASCOTA_MODELO = {
   "Matriarch Bristlefur": 806, "Mist Howler": 165, "Mother Fang": 2541, "Ravage": 10904, "Shal'ma": 6805,
   "Snarler": 780, "The Rake": 1973, "Timber": 11422
 };
-const FOTO_MODELO = id => `https://wow.zamimg.com/modelviewer/classic/webthumbs/npc/${id % 256}/${id}.webp`;
+const FOTO_MODELO = id => `https://wow.zamimg.com/modelviewer/classicplus/webthumbs/npc/${id % 256}/${id}.webp`;
+
+// ---------- GUÍA RÁPIDA DEL CAZADOR ----------
+// Lo que cambia en Forever y qué mascota va con cada especialización.
+// Fuentes: notas de parche, LFCarry (tier list 4 nov), LepreStore (mascotas, 27 oct), WoWForeverBuilds (BM 60).
+const CAZADOR_SPECS = [
+  // [árbol (como en META), icono, qué es, mascota (familia), por qué esa mascota, para quién]
+  ["Bestias", "ability_hunter_beasttaming", "Tu mascota pega casi tanto como tú. Halcón invocado y Cólera de las bestias.", "Felino", "Más daño de mascota. Raptor también vale", "La más fácil para subir"],
+  ["Puntería", "ability_marksmanship", "Daño a distancia tuyo: Disparo apuntado y Disparo de francotirador.", "Zancaalta", "Baja la armadura del jefe: sube tu daño y el de los guerreros", "La más segura en raid (la mascota muere menos)"],
+  ["Supervivencia", "ability_hunter_swiftstrike", "Cuerpo a cuerpo con trampas, Mordedura de mangosta y sangrados.", "Lobo", "Aullido furioso: más poder de ataque para ti y tu grupo", "Si te gusta pegar de cerca"]
+];
+
+const CAZADOR_FOREVER = [
+  // [icono, título, explicación corta]
+  ["inv_spear_07", "Disparo apuntado de base", "Lo aprendes en el instructor a nivel 20. No gastas talento"],
+  ["ability_whirlwind", "Disparo automático: quieto 0,5 s", "Tienes que estar medio segundo parado para que empiece a disparar"],
+  ["spell_fire_selfdestruct", "Trampas en combate", "Puedes poner una de fuego y una de hielo a la vez. La de fuego escala con tu poder de ataque"],
+  ["ability_trueshot", "Aura de disparo certero para toda la raid", "Antes solo para tu grupo. Por eso Puntería y Bestias están arriba en raid"],
+  ["ability_hunter_pet_cat", "La mascota usa tu mejor crítico", "Coge el más alto entre tu crítico cuerpo a cuerpo y el de distancia, y aprovecha la pericia"],
+  ["ability_hunter_beasttaming", "No puedes domar bestias de más nivel", "Solo de tu nivel o menos. Desde nivel 10"],
+  ["achievement_character_orc_male", "Orco: +5% de daño de mascota", "El mejor racial para Bestias en la Horda. En la Alianza, enano (+1% de golpe)"]
+];
+
+const CAZADOR_MASCOTA_USO = [
+  // [para qué, familia, por qué]
+  ["Subir de nivel", "Carroñero", "Grito desmoralizador: aguanta grupos de bichos"],
+  ["Subir sin complicarte", "Oso", "Mucha vida y Zarpazo a 3 enemigos"],
+  ["PvP", "Araña", "Telaraña: inmoviliza 4 s"],
+  ["PvP (emboscar)", "Felino", "Acecho: ataca desde sigilo con daño extra"]
+];

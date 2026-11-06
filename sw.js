@@ -3,9 +3,9 @@
 const CACHE = "brujula-v34";
 const BASICOS = [
   "./", "index.html", "aventura.html", "clases.html", "clase.html", "talentos.html", "mascotas.html",
-  "pve-pvp.html", "oficios.html", "meta.html", "juegos.html", "comunidad.html", "parches.html",
+  "pve-pvp.html", "oficios.html", "meta.html", "juegos.html", "comunidad.html", "parches.html", "addons.html",
   "css/estilos.css?v=34", "css/talentos.css?v=34",
-  "js/datos.js?v=34", "js/talentos-datos.js?v=34", "js/talentos-es.js?v=34", "js/meta-datos.js?v=34", "js/parches-datos.js?v=34",
+  "js/datos.js?v=34", "js/talentos-datos.js?v=34", "js/talentos-es.js?v=34", "js/meta-datos.js?v=34", "js/parches-datos.js?v=34", "js/addons-datos.js?v=34", "js/bestiario-datos.js?v=34",
   "js/layout.js?v=34", "js/app.js?v=34", "js/talentos.js?v=34", "img/icono.svg"
 ];
 
